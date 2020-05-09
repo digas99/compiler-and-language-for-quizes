@@ -1,0 +1,25 @@
+Ideias de features da linguagem de criação de questionários
+
+Quem vai usar a linguagem pode:
+    - Definir como uma questão pode ser inicializada:
+    Ex.:
+        - Ser, ou não, do mesmo tema, ou dificuldade da questão anterior
+        - Quantas opções de resposta deve ter
+        - Se a questão deve ter tempo
+
+    - Definir o que acontece após uma questão após esta ter sido respondida:
+    Ex.:
+        - Ir para uma nova questão do mesmo tema ou de outro tema
+        - Ir para uma nova questão com a mesma ou diferente dificuldade
+        - Acabar o questionário caso, estando a usar um sistema de vidas, as vidas terem acabado
+
+    - Criar um padrão para o seguimentos de perguntas, tanto em termos de tema como de dificuldade
+
+    - Estruturar as estatísitcas que são contadas e que vão aparecer no final do questionário
+
+    - Criação de powerups customizados que prosteriormente o utilizador pode usufruir:
+    Ex.:
+        - Remoção de respostas erradas
+        - Adição de tempo
+        - Skip da pergunta
+        - ...
