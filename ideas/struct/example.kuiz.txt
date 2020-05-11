@@ -1,0 +1,43 @@
+!! this is a comment
+!! create an instance of a quiz
+!! each instance has default properties that can be accessed
+!! properties: struct, question, source
+new quiz newQuiz;
+
+!! each property of quiz have its own properties that can have a
+!! default value set by the user
+
+!! set default structure
+set newQuiz[struct] {
+    PTS -> true;  !! questions have points
+    SHOW_PTS -> false;  !! display points
+    STATS -> true;  !! track stats 
+}
+
+!! set default questions settings
+set newQuiz[question] {
+    ANS -> 4;  !! number of answers
+    TIME -> 5;  !! time for each questions in seconds
+    PPS -> true;  !! powerups
+}
+
+!! set source of questions
+set newQuiz[source] { SRC -> “questions/examples.qts” }
+!! quiz[source] has its own properties:
+!! quiz[source].SRC.size: number of questions
+!! quiz[source].SRC.questions: array with all questions
+!! quiz[source].SRC.source: path of its source
+
+!! create powerup
+new pp1 {
+    NAME -> “changeAnswer”  !! name of powerup
+    USAGES -> 2;  !! number of times it can be used
+    JOB -> changeQuestion(current, “Changing answer for no reason”, 2);  !! function that dictates what powerup does
+}
+
+!! function to change answer text
+new changeQuestion [return: nothing] (questionIndex, text, answerIndex) {
+    new list questions = newQuiz[source].SRC.questions;
+    new currentQuestion = questions/questionIndex/;
+     currentQuestion.answers/answerIndex/ = text;
+}
