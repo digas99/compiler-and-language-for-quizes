@@ -1,0 +1,89 @@
+KEYWORDS ->
+
+new: creates new variable
+quiz: creates new instance of a quiz
+set: defines the default values of a property of quiz
+list: creates an array
+true: boolean value for true
+false: boolean value for false
+current: gives the index of the current question in the quiz
+nothing: function returns nothing
+aslong: while loop
+
+
+COMMENTS ->
+
+!! comment text
+
+
+QUIZ ->
+
+A quiz, when created, has properties that can be set and accessed
+Access property of a quiz named newQuiz: newQuiz[property]
+Properties:
+    - struct (Structure of the quiz)
+    - question (settings of the questions)
+    - source (directory of the questions file)
+
+Each property has its own properties too
+Struct:
+    newQuiz[struct].PTS - if questions have points associated
+    newQuiz[struct].SHOW_PTS - if shows points
+    newQuiz[struct].STATS - if stats are tracked
+
+Question:
+    newQuiz[question].ANS - number of answers displayed
+    newQuiz[question].TIME - time for each question in seconds
+    newQuiz[question].PPS - if questions have powerups
+
+Source:
+    newQuiz[source].SRC - set the source of questions
+
+
+POWERUPS ->
+
+To create a new powerup just use the keyword new and fill in the default
+properties
+Example:
+new pp1 {
+    NAME -> "name";
+    USAGES -> 2;
+    JOB -> function();
+}
+
+pp1.NAME - set the name of the powerup
+pp1.USAGES - set the number of usages of the powerup
+pp1.JOB - give a function that sets the job of the powerup
+
+
+FUNCTIONS ->
+
+To create a function use the keyword new, give it a return and its parametrs
+Example:
+new func[return: something] (index) {
+    ...
+}
+
+To call a function just type its name and pass the arguments to it
+Example:
+func(3);
+
+
+ARRAYS ->
+
+To create an array use the keyword new followed by the keyword list
+Example:
+new list arr;
+
+To add values to the array put the index within /
+Example:
+list/2/
+
+
+LOOPS ->
+
+To create a while loop use the keyword aslong followed by the condition
+Example:
+aslong counter < 5 {
+    ...
+}
