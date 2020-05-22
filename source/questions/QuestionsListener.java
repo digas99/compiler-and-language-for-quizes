@@ -27,6 +27,66 @@ public interface QuestionsListener extends ParseTreeListener {
 	 */
 	void exitQuestion(QuestionsParser.QuestionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code DificultyEasy}
+	 * labeled alternative in {@link QuestionsParser#dificulty}.
+	 * @param ctx the parse tree
+	 */
+	void enterDificultyEasy(QuestionsParser.DificultyEasyContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DificultyEasy}
+	 * labeled alternative in {@link QuestionsParser#dificulty}.
+	 * @param ctx the parse tree
+	 */
+	void exitDificultyEasy(QuestionsParser.DificultyEasyContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DificultyMedium}
+	 * labeled alternative in {@link QuestionsParser#dificulty}.
+	 * @param ctx the parse tree
+	 */
+	void enterDificultyMedium(QuestionsParser.DificultyMediumContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DificultyMedium}
+	 * labeled alternative in {@link QuestionsParser#dificulty}.
+	 * @param ctx the parse tree
+	 */
+	void exitDificultyMedium(QuestionsParser.DificultyMediumContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DificultyHard}
+	 * labeled alternative in {@link QuestionsParser#dificulty}.
+	 * @param ctx the parse tree
+	 */
+	void enterDificultyHard(QuestionsParser.DificultyHardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DificultyHard}
+	 * labeled alternative in {@link QuestionsParser#dificulty}.
+	 * @param ctx the parse tree
+	 */
+	void exitDificultyHard(QuestionsParser.DificultyHardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Open}
+	 * labeled alternative in {@link QuestionsParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterOpen(QuestionsParser.OpenContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Open}
+	 * labeled alternative in {@link QuestionsParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitOpen(QuestionsParser.OpenContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Multiple}
+	 * labeled alternative in {@link QuestionsParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterMultiple(QuestionsParser.MultipleContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Multiple}
+	 * labeled alternative in {@link QuestionsParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitMultiple(QuestionsParser.MultipleContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link QuestionsParser#answers}.
 	 * @param ctx the parse tree
 	 */
@@ -66,34 +126,4 @@ public interface QuestionsListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitWrong(QuestionsParser.WrongContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link QuestionsParser#easy}.
-	 * @param ctx the parse tree
-	 */
-	void enterEasy(QuestionsParser.EasyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link QuestionsParser#easy}.
-	 * @param ctx the parse tree
-	 */
-	void exitEasy(QuestionsParser.EasyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link QuestionsParser#medium}.
-	 * @param ctx the parse tree
-	 */
-	void enterMedium(QuestionsParser.MediumContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link QuestionsParser#medium}.
-	 * @param ctx the parse tree
-	 */
-	void exitMedium(QuestionsParser.MediumContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link QuestionsParser#hard}.
-	 * @param ctx the parse tree
-	 */
-	void enterHard(QuestionsParser.HardContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link QuestionsParser#hard}.
-	 * @param ctx the parse tree
-	 */
-	void exitHard(QuestionsParser.HardContext ctx);
 }

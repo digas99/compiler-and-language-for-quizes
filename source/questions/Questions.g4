@@ -1,19 +1,27 @@
 
 grammar Questions;
 
-prog    : question+ 
-        | (easy|medium|hard)+
-        ;
+prog    : question+ ;
 
-question : ID ': {' Title answers 
-         | ID ': {' Title Tries answers 
-         | ID ': {' Title Tries Points answers
-         | ID ': {' Title Tries Points Time answers
-         | ID ': {' Title Tries Time answers
-         | ID ': {' Title Points Time answers
-         | ID ': {' Title Time answers
-         | ID ': {' Title Points answers
+question : ID ': {' Title dificulty answers '}'
+         | ID ': {' Title dificulty Tries answers '}'
+         | ID ': {' Title dificulty Tries Points answers '}'
+         | ID ': {' Title dificulty Tries Points Time answers '}'
+         | ID ': {' Title dificulty Tries Time answers '}'
+         | ID ': {' Title dificulty Points Time answers '}'
+         | ID ': {' Title dificulty Time answers '}'
+         | ID ': {' Title dificulty Points answers '}'
          ;
+
+dificulty   : 'dificulty: easy'           #DificultyEasy
+            | 'dificulty: medium'         #DificultyMedium
+            | 'dificulty: hard'           #DificultyHard
+            ;
+
+type        : 'type: open'                #Open
+            | 'type: multiple'            #Multiple
+            ;
+            
 answers : 'answers: {' right '}'
         | '{' answer'}'
         | '{' right wrong '}'
@@ -27,9 +35,7 @@ right : 'right: {' (ID ':' TEXT)+ '}'
 wrong : 'wrong: {' (ID ':' TEXT)+ '}'
       ;
 
-easy      : 'easy [' question+ ']';
-medium    : 'medium [' question+ ']';
-hard      : 'hard [' question+ ']';
+
 
 Title  : 'title: "' .*? '"';
 
