@@ -10,12 +10,12 @@ easy [
         answers: {
             right: {
                 1: "Lisboa"
-               -- 2: "Madrid"
+                2: "Madrid"
             }
             wrong: {
                 1: "Portugal"
-               -- 2: "Espanha"
-               -- 3: "Brasil"
+                2: "Espanha"
+                3: "Brasil"
             }
         }
     }
@@ -28,7 +28,7 @@ medium [
         points: 5
         answers: {
             1: "Lisboa"
-           -- 2: "Madrid"
+            2: "Madrid"
         }
     }
     1: {

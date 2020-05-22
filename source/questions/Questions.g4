@@ -15,14 +15,16 @@ question : ID ': {' Title answers
          | ID ': {' Title Points answers
          ;
 answers : 'answers: {' right '}'
+        | '{' answer'}'
         | '{' right wrong '}'
         | '{' wrong right'}'
         ;
 
-right : 'right: {' ID ':' TEXT '}' 
+answer: (ID ':' TEXT)+; 
+right : 'right: {' (ID ':' TEXT)+ '}' 
       ;
 
-wrong : 'wrong: {'ID ':' TEXT '}'
+wrong : 'wrong: {' (ID ':' TEXT)+ '}'
       ;
 
 easy      : 'easy [' question+ ']';

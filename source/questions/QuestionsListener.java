@@ -37,6 +37,16 @@ public interface QuestionsListener extends ParseTreeListener {
 	 */
 	void exitAnswers(QuestionsParser.AnswersContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link QuestionsParser#answer}.
+	 * @param ctx the parse tree
+	 */
+	void enterAnswer(QuestionsParser.AnswerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link QuestionsParser#answer}.
+	 * @param ctx the parse tree
+	 */
+	void exitAnswer(QuestionsParser.AnswerContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link QuestionsParser#right}.
 	 * @param ctx the parse tree
 	 */
