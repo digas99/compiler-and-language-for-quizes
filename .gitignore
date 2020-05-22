@@ -13,3 +13,7 @@
 *Lexer.java
 *Parser.java
 *Visitor.java
+
+#GIT
+*.un~
+*.gitignore~
