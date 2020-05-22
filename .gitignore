@@ -1,0 +1,15 @@
+#JAVA
+*.class
+
+#VSCODE
+.vscode
+
+#ANTLR4
+*.interp
+*.tokens
+*BaseListener.java
+*BaseVisitor.java
+*Listener.java
+*Lexer.java
+*Parser.java
+*Visitor.java
