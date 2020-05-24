@@ -62,7 +62,8 @@ function () test =>
 
 !! FUNCTIONS
 function (number n1, number n2) sumNums =>
-    return n1;
+    number sum => 2 + b;
+    return n1 + n2;
 >>
 
 !! example of usage

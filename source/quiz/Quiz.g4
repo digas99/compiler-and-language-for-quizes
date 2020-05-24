@@ -8,7 +8,7 @@ block   : function* main function*;
 main    : 'main' '=>' content+ '>>';
 
 // FUNCTIONS
-function : 'function' '(' (('text'|'number'|'boolean'|'question') ID ',')* (('text'|'number'|'boolean'|'question') ID)? ')' ID '=>' (content)* 'return' ID ';' '>>';
+function : 'function' '(' (('text'|'number'|'boolean'|'question') ID ',')* (('text'|'number'|'boolean'|'question') ID)? ')' ID '=>' (content)* 'return' expr ';' '>>';
 
 // LISTS
 list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
@@ -20,7 +20,7 @@ list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
 // VARIABLES
 var      : 'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                         # varText
          | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                       # varTextRead
-         | 'number'? ID ('=>' (NUMBER|ID '[' NUMBER ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
+         | 'number'? ID ('=>' (expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
          | 'boolean'? ID ('=>' ('TRUE'|'FALSE'))? ';'                                                                   # varBoolean
          | 'question'? ID ';'                                                                                           # varQuestion
          | ID '=>' add                                                                                                  # varListAdd
@@ -45,9 +45,9 @@ question : questionFetchTitle '=>' TEXT ';'                   # questionTitle
          | questionFetchAnsWrong '=>' ListFormatText ';'      # questionAnsWrong
          | questionFetchDiff '=>' ('easy'|'medium'|'hard') ';'# questionDifficulty
          | questionFetchType '=>' ('multiple'|'open') ';'     # questionType
-         | questionFetchTries '=>' NUMBER ';'                 # questionTries
-         | questionFetchTime '=>' NUMBER ';'                  # questionTime
-         | questionFetchPoints '=>' NUMBER ';'                # questionPoints
+         | questionFetchTries '=>' (ID|NUMBER) ';'                 # questionTries
+         | questionFetchTime '=>' (ID|NUMBER) ';'                  # questionTime
+         | questionFetchPoints '=>' (ID|NUMBER) ';'                # questionPoints
          ;
 
 ListFormatNumber : '{' (NUMBER ', ')* NUMBER '}';
@@ -92,7 +92,7 @@ callfunction : 'call' ID '(' ((TEXT|NUMBER|ID) ',')* (TEXT|NUMBER|ID) ')' ';';
 
 // CONDITIONAL STATEMENTS
 conditional : 'NOT'? ID
-            | ((ID|NUMBER) ('AND'|'OR'|'=='|'>'|'<'))+ (ID|NUMBER)
+            | (expr ('AND'|'OR'|'=='|'>'|'<'))+ expr
             | TEXT '==' TEXT
             ;
 
@@ -106,6 +106,15 @@ varmanipulation : ID '++'               # varManipPlus
                 | ID '*=' NUMBER        # varManipTimesEquals
                 | ID '/=' NUMBER        # varManipDivideEquals
                 ;
+
+// Aritmetics
+expr    :   op=('-'|'+') expr           # ExprUnary
+        |   expr op=('*'|'/'|'%') expr  # ExprMultDivMod
+        |   expr op=('+'|'-') expr      # ExprAddSub
+        |   NUMBER                      # ExprNumber
+        |   '(' expr ')'                # ExprParens
+        |   ID                          # ExprId
+        ;
 
 content  : list|var|write|question|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';');
 
