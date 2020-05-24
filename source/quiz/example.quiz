@@ -1,13 +1,13 @@
 function () test =>
-    list question qList => get ("linguagem_questions"); !! 'get' imports a 'list' of questions from a file
+    list question qList => get("linguagem_questions"); !! 'get' imports a 'list' of questions from a file
 
     question newQuestion;
     newQuestion.title => "What dogs do?";
     newQuestion.answers.right => {"Bark", "Howl"};
     !! etc...
 
-    text fromFile => read ("example/ex.txt"); !! 'read' reads 'text' from file
-    text fromKeyboard => read (CONSOLE);      !! or from the console with the keyword 'CONSOLE'
+    text fromFile => read("example/ex.txt"); !! 'read' reads 'text' from file
+    text fromKeyboard => read(CONSOLE);      !! or from the console with the keyword 'CONSOLE'
 
     number n => 8; !! creating a variable of type number (equivalent to double and int in Java)
 
@@ -27,17 +27,14 @@ function () test =>
     >>
 
     !! while loop
-    aslong (count < 10 AND TRUE) =>
+    aslong (count < 10) =>
         count++;
     >>
 
     do =>
         count++;
     >>
-    aslong (count < 10 OR FALSE);
-
-    boolean check => TRUE;
-    boolean check => FALSE;
+    aslong (count < 10);
 
     !! NOT check is equivalent to !check in Java
     if (NOT check) =>
@@ -59,11 +56,13 @@ function () test =>
     number x => listNumber[2]; !! put the value of indice 2 of listNumber in x
     listNumber => remove(5); !! removes all 5s in the list
     listNumber => remove([2]); !! removes the element in the indice 2 of list
+
+    return a;
 >>
 
 !! FUNCTIONS
 function (number n1, number n2) sumNums =>
-    return n1 + n2;
+    return n1;
 >>
 
 !! example of usage

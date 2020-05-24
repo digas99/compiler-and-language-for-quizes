@@ -1,67 +1,65 @@
 grammar Quiz;
 
-program : block*;
+program : block+ EOF;
 
-block   : main;
+block   : function* main function*;
 
 // MAIN
-main    : MAIN '=>' content '>>';
+main    : 'main' '=>' content+ '>>';
 
 // FUNCTIONS
-function : FUNCTION '(' (TYPE ID ',')* (TYPE ID)? ')' ID '=>' (content)+ RETURN ID '>>';
+function : 'function' '(' (('text'|'number'|'boolean'|'question') ID ',')* (('text'|'number'|'boolean'|'question') ID)? ')' ID '=>' (content)* 'return' ID ';' '>>';
 
 // LISTS
-list    : LIST 'question' ID '=>' GET '(' TEXT ');'       # listQuestion
-        | LIST 'number' ID InitList                       # listNums
-        | LIST 'text' ID InitList                         # listText
-        | LIST 'boolean' ID InitList                      # listBoolean
+list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
+        | 'list' 'number' ID ('=>' ListFormatNumber)? ';'   # listNums
+        | 'list' 'text' ID ('=>' ListFormatText)? ';'       # listText
+        | 'list' 'boolean' ID ('=>' ListFormatBool)? ';'    # listBoolean
         ;
 
-InitList : ';'                  
-         | '=>' ListFormatNumber ';'
-         | '=>' ListFormatText ';'
-         | '=>' ListFormatBool ';'
-         ; 
-
-REMOVE   : 'remove('NUMBER');'          
-         | 'remove('TEXT');' 
-         | 'remove('ID');'
-         | 'remove(['NUMBER']);'
-         ;
-add      : 'add('(ListFormatNumber|ListFormatBool|ListFormatText)');'
-         | 'add('TEXT');'
-         | 'add('ID');'
-         | 'add('NUMBER');'
-         ;
-
 // VARIABLES
-var      : ID '=>' add                                   # varListAdd
-         | 'text'? ID ('=>' TEXT)? ';'                   # varText
-         | 'text'? ID ('=>' READ)? ';'                   # varTextRead
-         | 'number'? ID ('=>' NUMBER)? ';'               # varNumber
-         | 'boolean'? ID ('=>' (TRUE|FALSE))? ';'        # varBoolean
-         | 'question'? ID ';'                            # varQuestion
+var      : 'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                         # varText
+         | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                       # varTextRead
+         | 'number'? ID ('=>' (NUMBER|ID '[' NUMBER ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
+         | 'boolean'? ID ('=>' ('TRUE'|'FALSE'))? ';'                                                                   # varBoolean
+         | 'question'? ID ';'                                                                                           # varQuestion
+         | ID '=>' add                                                                                                  # varListAdd
+         | ID '=>' REMOVE                                                                                               # varListRemove
+         ;
+
+REMOVE   : 'remove' '(' NUMBER ')' ';'          
+         | 'remove' '(' TEXT ')' ';' 
+         | 'remove' '(' ID ')' ';'
+         | 'remove' '(' '[' NUMBER ']' ')' ';'
+         ;
+add      : 'add' '(' (ListFormatNumber|ListFormatBool|ListFormatText) ')' ';'
+         | 'add' '(' questionFetch ')' ';'
+         | 'add' '(' TEXT ')' ';'
+         | 'add' '(' ID ')' ';'
+         | 'add' '(' NUMBER ')' ';'
          ;
 
 // QUESTION OBJECT CREATION
-question : ID '.title =>' TEXT ';'                              # questionTitle                         
-         | ID '.answers.right =>' ListFormatText ';'            # questionAnsRight
-         | ID '.answers.wrong =>' ListFormatText ';'            # questionAnsWrong
-         | ID '.difficulty =>' ('easy'|'medium'|'hard') ';'     # questionDifficulty
-         | ID '.type =>' ('multiple'|'open') ';'                # questionType
-         | ID '.tries =>' NUMBER ';'                            # questionTries
-         | ID '.time =>' NUMBER ';'                             # questionTime
-         | ID '.points =>' NUMBER ';'                           # questionPoints
+question : questionFetchTitle '=>' TEXT ';'                   # questionTitle                         
+         | questionFetchAnsRight '=>' ListFormatText ';'      # questionAnsRight
+         | questionFetchAnsWrong '=>' ListFormatText ';'      # questionAnsWrong
+         | questionFetchDiff '=>' ('easy'|'medium'|'hard') ';'# questionDifficulty
+         | questionFetchType '=>' ('multiple'|'open') ';'     # questionType
+         | questionFetchTries '=>' NUMBER ';'                 # questionTries
+         | questionFetchTime '=>' NUMBER ';'                  # questionTime
+         | questionFetchPoints '=>' NUMBER ';'                # questionPoints
          ;
 
-ListFormatNumber : '{' (NUMBER ',')* NUMBER '}';
+ListFormatNumber : '{' (NUMBER ', ')* NUMBER '}';
 ListFormatText   : '{' (TEXT ',')* TEXT '}';
-ListFormatBool   : '{' ((TRUE|FALSE) ',')* TRUE|FALSE '}';
+ListFormatBool   : '{' (('TRUE'|'FALSE') ',')* ('TRUE'|'FALSE') '}';
 
 // QUESTION OBJECT FETCHING
+questionFetch    : questionFetchTitle|questionFetchAnsRight|questionFetchAnsWrong|questionFetchDiff|questionFetchType|questionFetchTries|questionFetchTime|questionFetchPoints;
+
 questionFetchTitle    :  ID '.title';
 questionFetchAnsRight :  ID '.answers.right';              
-questionFetchAnsWrong :  ID '.answers.wrong';            
+questionFetchAnsWrong :  ID '.answers.wrong';         
 questionFetchDiff     :  ID '.difficulty';        
 questionFetchType     :  ID '.type';                  
 questionFetchTries    :  ID '.tries';                              
@@ -69,33 +67,33 @@ questionFetchTime     :  ID '.time';
 questionFetchPoints   :  ID '.points';
 
 // WRITE
-write    : WRITE;
+write    : 'write' '(' (TEXT|'CONSOLE') ')' '=>' (ID|TEXT|NUMBER|questionFetch) ';';
 
 // LOOPS
-forLoop  : FOR '(' TYPE ID IN ID ') =>' (content)+ '>>'
-         | FOR '(' NUMBER TO NUMBER ')' ('['('+'|'-') NUMBER ']')? '=>' (content)+ '>>'
+forLoop  : 'for' '(' ('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'
+         | 'for' '(' NUMBER 'to' NUMBER ')' ('['('+'|'-') NUMBER ']')? '=>' content+ '>>'
          ;
 
-doaslong : DO '=>' (content)+ '>>' ASLONG '(' conditional ');';
+doaslong : 'do' '=>' content+ '>>' 'aslong' '(' conditional ')' ';';
 
-aslong   : ASLONG '(' conditional ') =>' content '>>';
+aslong   : 'aslong' '(' conditional ')' '=>' content+ '>>';
 
 // IF
-ifCond   : IF '(' conditional ') =>' content '>>' finalCond?
-         | IF '(' conditional ') =>' content '>>' elsif+ finalCond
+ifCond   : 'if' '(' conditional ')' '=>' content+ '>>' finalCond?
+         | 'if' '(' conditional ')' '=>' content+ '>>' elsif+ finalCond
          ;
 
-elsif    : ELSIF '(' conditional ') =>' content '>>';
+elsif    : 'elsif' '(' conditional ')' '=>' content+ '>>';
 
-finalCond : FINAL '=>' content '>>';
+finalCond : 'final' '=>' content+ '>>';
 
 // CALL FUNCTION
-callfunction : CALL ID '(' (FORMAT ',')* FORMAT ');';
+callfunction : 'call' ID '(' ((TEXT|NUMBER|ID) ',')* (TEXT|NUMBER|ID) ')' ';';
 
 // CONDITIONAL STATEMENTS
-conditional : NOT? ID
-            | ((ID|NUMBER) (AND|OR|EQUALS|'>'|'<'))+ (ID|NUMBER)
-            | TEXT EQUALS TEXT
+conditional : 'NOT'? ID
+            | ((ID|NUMBER) ('AND'|'OR'|'=='|'>'|'<'))+ (ID|NUMBER)
+            | TEXT '==' TEXT
             ;
 
 // Manipulation var
@@ -109,50 +107,10 @@ varmanipulation : ID '++'               # varManipPlus
                 | ID '/=' NUMBER        # varManipDivideEquals
                 ;
 
-content  : list|var|write|question|forLoop|ifCond|doaslong|aslong|callfunction|varmanipulation;
+content  : list|var|write|question|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';');
 
-LIST     : 'list';
-QUESTION : 'question';
-
-TYPE     : 'text' | 'number' | BOOLEAN | QUESTION ;  
-
-TRUE     : 'true';
-FALSE    : 'false';
-BOOLEAN  : 'boolean';
-
-AND      : 'AND';
-OR       : 'OR';
-
-EQUALS   : '==';
-NOT      : 'NOT';
-
-IF       : 'if';
-ELSIF    : 'elsif';
-FINAL    : 'final';
-FOR      : 'for';
-DO       : 'do';
-ASLONG   : 'aslong';
-FUNCTION : 'function';
-
-IN       : 'in';
-TO       : 'to';
-RETURN   : 'return';
-CALL     : 'call';
-
-GET      : 'get';
-WRITE    : 'write('(TEXT|CONSOLE)')';
-READ     : 'read('(TEXT|CONSOLE)')';
-
-CONSOLE  : 'CONSOLE';
-
-MAIN     : 'main';
-
-ID       : [a-zA-Z0-9]+;
 TEXT     : '"'.*?'"' ;
 NUMBER   : [0-9]+;
-
-FORMAT   : TEXT|NUMBER|BOOLEAN|ID;
-
+ID       : [a-zA-Z0-9]+;
 Comment  : '!!'.*? '\n' -> skip;
 WS       : [ \n\t\r]+ -> skip;
-
