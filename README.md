@@ -3,5 +3,11 @@ Project of **Linguagens Formais e Autómatos**, made by Beatriz Rodrigues, Bruno
 This project uses **ANTLR4** with **Java** to create an Interpreter and a Compiler.
 ## Interpreter
 The Interpreter is used to fetch questions data from a file with the extention *.qst*. This data is meant to be used by the compiler to create a Quiz.
+### Files to consider:
+ - **Source Code:** *linguagem_questions.qst*
+ - **Grammar:** *Questions.g4*
 ## Compiler
 The Compiler builds a Quiz according to the *.quiz* file written and the questions fetched from the *.qst* file.
+### Files to consider:
+ - **Source Code:** *example.quiz*
+ - **Grammar:** *Quiz.g4*
