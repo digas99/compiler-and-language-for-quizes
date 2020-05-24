@@ -147,11 +147,12 @@ CONSOLE  : 'CONSOLE';
 
 MAIN     : 'main';
 
-FORMAT   : TEXT|NUMBER|BOOLEAN|ID;
-
 ID       : [a-zA-Z0-9]+;
 TEXT     : '"'.*?'"' ;
 NUMBER   : [0-9]+;
+
+FORMAT   : TEXT|NUMBER|BOOLEAN|ID;
+
 Comment  : '!!'.*? '\n' -> skip;
 WS       : [ \n\t\r]+ -> skip;
 
