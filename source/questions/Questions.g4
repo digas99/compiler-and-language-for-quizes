@@ -3,39 +3,21 @@ grammar Questions;
 
 prog    : question+ ;
 
-question : ID ': {' Title dificulty answers '}'
-         | ID ': {' Title dificulty Tries answers '}'
-         | ID ': {' Title dificulty Tries Points answers '}'
-         | ID ': {' Title dificulty Tries Points Time answers '}'
-         | ID ': {' Title dificulty Tries Time answers '}'
-         | ID ': {' Title dificulty Points Time answers '}'
-         | ID ': {' Title dificulty Time answers '}'
-         | ID ': {' Title dificulty Points answers '}'
-         ;
+question : ID '{' Title ',' Type ',' Difficulty ',' (Tries ',')? (Time ',')? (Points ',')? RightAns ',' WrongAns ','? '}';
 
-dificulty   : 'dificulty: easy'           #DificultyEasy
-            | 'dificulty: medium'         #DificultyMedium
-            | 'dificulty: hard'           #DificultyHard
+Difficulty  : 'difficulty: EASY'         
+            | 'difficulty: MEDIUM'         
+            | 'difficulty: HARD'           
             ;
 
-type        : 'type: open'                #Open
-            | 'type: multiple'            #Multiple
+Type        : 'type: OPEN'               
+            | 'type: MULTIPLE'            
             ;
-            
-answers : 'answers: {' right '}'
-        | '{' answer'}'
-        | '{' right wrong '}'
-        | '{' wrong right'}'
-        ;
 
-answer: (ID ':' TEXT)+; 
-right : 'right: {' (ID ':' TEXT)+ '}' 
-      ;
+RightAns : 'right: [' (TEXT ',')* TEXT ']' ;
 
-wrong : 'wrong: {' (ID ':' TEXT)+ '}'
-      ;
-
-
+WrongAns : 'wrong: [' ((TEXT ',')* TEXT)? ']';
+      
 
 Title  : 'title: "' .*? '"';
 
@@ -47,7 +29,7 @@ Time   : 'time: '[0-9]+;
 
 TEXT : '"'.*?'"' ;
 
-ID: [0-9]+;
+ID: '<'.*?'>';
 
 Comment: '--'.*? '\n' -> skip;
 WS: [ \n\t\r]+ -> skip;

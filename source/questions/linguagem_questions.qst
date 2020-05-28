@@ -1,36 +1,30 @@
-tries: 3;  -- default: 1
-time: 300; -- default: no time
-points: 10; -- default: no points
-questions: 5|2|3 -- easy|medium|hard 
-                 -- default: all questions bellow
+tries: 3 -- default: 1
+time: 300 -- default: no time
+points: 10 -- default: no points
 
-[
-title: "Quais sao cidades?",
+
+
+<cidades> { title: "Quais sao cidades?",
 difficulty: EASY,
 type: MULTIPLE,
-answers: {
-    right: <"Lisboa","Madrid">
-    wrong: <"Portugal","Espanha","Brasil">
-}
-]
+right: ["Lisboa"],
+wrong: ["Portugal","Espanha","Brasil"] }
 
-[
-title: "Quais sao cidades?",
+
+
+<cidades01> { title: "Quais sao cidades?",
 type: OPEN,
 difficulty: HARD,
 tries: 2,
 points: 5,
-answers: {
-    right: <"Lisboa","Madrid">
-    wrong: <>
-}
-]
+right: ["Lisboa","Madrid"],
+wrong: [] }
 
-[title: "Os patos voam",
+
+
+<patinhos> { title: "Os patos voam",
 type: MULTIPLE,
 difficulty: MEDIUM,
 time: 250,
-answers: {
-    right: <"Verdadeiro">
-    wrong: <"False">
-}]
+right: ["Verdadeiro"],
+wrong: ["False"] }
