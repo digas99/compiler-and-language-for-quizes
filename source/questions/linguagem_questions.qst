@@ -4,45 +4,33 @@ points: 10; -- default: no points
 questions: 5|2|3 -- easy|medium|hard 
                  -- default: all questions bellow
 
-0: {
-    title: "Quais sao cidades?",
-    difficulty: easy,
-    type: multiple,
-    answers: {
-        right: {
-            1: "Lisboa",
-            2: "Madrid"
-        }
-        wrong: {
-            1: "Portugal",
-            2: "Espanha",
-            3: "Brasil"
-        }
-    }
-},
-1: {
-    title: "Quais sao cidades?",
-    type: open,
-    difficulty: hard,
-    tries: 2,
-    points: 5,
-    answers: {
-        1: "Lisboa",
-        2: "Madrid"
-    }
-},
-2: {
-    title: "Os patos voam",
-    type: multiple,
-    difficulty: medium,
-    time: 250,
-    answers: {
-        right: {
-            1: "verdadeiro"
-        }
-        wrong: {
-            1: "false"
-        }
-    }
+[
+title: "Quais sao cidades?",
+difficulty: EASY,
+type: MULTIPLE,
+answers: {
+    right: <"Lisboa","Madrid">
+    wrong: <"Portugal","Espanha","Brasil">
 }
+]
 
+[
+title: "Quais sao cidades?",
+type: OPEN,
+difficulty: HARD,
+tries: 2,
+points: 5,
+answers: {
+    right: <"Lisboa","Madrid">
+    wrong: <>
+}
+]
+
+[title: "Os patos voam",
+type: MULTIPLE,
+difficulty: MEDIUM,
+time: 250,
+answers: {
+    right: <"Verdadeiro">
+    wrong: <"False">
+}]
