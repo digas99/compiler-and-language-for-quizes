@@ -1,0 +1,43 @@
+module(name, stat) ::= <<
+import java.util.HashMap;
+
+public class <name> {
+    static HashMap\<String, Integer> vars = new HashMap\<>();
+
+    public static void main(String[] args) {
+        <stats(stat)>
+    }
+}
+>>
+
+main(stat) ::= <<
+<stats(stat)>
+>>
+
+handle_var_number(stat, type, var, value) ::= <<
+<stats(stat)>
+<atrib(type, var, value)>
+>>
+
+stats(stat) ::= <<
+<if(stat)><stat; separator="\n"><endif>
+>>
+
+get_from_map(id, var) ::= <<
+int <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
+>>
+
+atrib(type, var, value, id) ::= <<
+<type> <var> = <value>;
+vars.put("<id>", <var>);
+>>
+
+binary_operation(stat, id, type, var, e1, op, e2) ::= <<
+<stats(stat)>
+<atrib(type, var, [e1, op, e2], id)>
+>>
+
+print(stat, text) ::= <<
+<stats(stat)>
+System.out.println(<text>);
+>>

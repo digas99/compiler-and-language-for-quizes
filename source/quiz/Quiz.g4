@@ -18,7 +18,8 @@ list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
         ;
 
 // VARIABLES
-var      : 'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                         # varText
+var returns[String varx = null]: 
+           'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                         # varText
          | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                       # varTextRead
          | 'number'? ID ('=>' (expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
          | 'boolean'? ID ('=>' ('TRUE'|'FALSE'))? ';'                                                                   # varBoolean
@@ -67,7 +68,9 @@ questionFetchTime     :  ID '.time';
 questionFetchPoints   :  ID '.points';
 
 // WRITE
-write    : 'write' '(' (TEXT|'CONSOLE') ')' '=>' (ID|TEXT|NUMBER|questionFetch) ';';
+write    : 'write' '(' 'CONSOLE' ')' '=>' (TEXT|expr|questionFetch) ';' # writeConsole
+         | 'write' '(' TEXT ')' '=>' (TEXT|expr|questionFetch) ';'      # writeText
+         ;
 
 // LOOPS
 forLoop  : 'for' '(' ('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'
@@ -108,7 +111,8 @@ varmanipulation : ID '++'               # varManipPlus
                 ;
 
 // Aritmetics
-expr    :   op=('-'|'+') expr           # ExprUnary
+expr returns[String varx = null]:  
+            op=('-'|'+') expr # ExprUnary
         |   expr op=('*'|'/'|'%') expr  # ExprMultDivMod
         |   expr op=('+'|'-') expr      # ExprAddSub
         |   NUMBER                      # ExprNumber
