@@ -2,7 +2,7 @@ module(name, stat) ::= <<
 import java.util.HashMap;
 
 public class <name> {
-    static HashMap\<String, Integer> vars = new HashMap\<>();
+    static HashMap\<String, Double> vars = new HashMap\<>();
 
     <stats(stat)>
 }
@@ -24,7 +24,11 @@ stats(stat) ::= <<
 >>
 
 get_from_map(id, var) ::= <<
-int <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
+double <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
+>>
+
+tmp_atrib(type, var, value) ::= <<
+<type> <var> = <value>;
 >>
 
 atrib(type, var, value, id) ::= <<
@@ -52,4 +56,8 @@ public static <return_type> <name>(<param>) {
     return <ret>;
     <endif>
 }
+>>
+
+callfunc(name, param) ::= <<
+<name>(<param>);
 >>

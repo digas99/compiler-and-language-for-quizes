@@ -1,8 +1,17 @@
 main =>
     number b => 2;
+    number a => 4*b;
+    number res => a/b;
+    call sumNums(b, res);
+    call printHello();
 >>
 
 function (number n1, number n2) sumNums =>
     number sum => 2 + n1;
+    write (CONSOLE) => sum;
     return sum;
+>>
+
+function () printHello =>
+    write (CONSOLE) => "Hello World";
 >>

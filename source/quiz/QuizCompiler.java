@@ -10,6 +10,8 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private String tmpId = "";
    private int numVars = 0;
    private HashMap<String, String> types = new HashMap<>();
+   private HashMap<String, String> idToTmpVar = new HashMap<>();
+   private List<String> funcParamsNames = new ArrayList<>();
    private String newVar() {
       numVars++;
       return "var"+numVars;
@@ -55,20 +57,22 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST func = templates.getInstanceOf("function");
       func.add("name", ctx.name.getText());
       List<TerminalNode> paramsTypes = ctx.getTokens(7);
-      System.out.println(paramsTypes);
 
-      // take all TerminalNodes but the last one (which is the func name)
-      List<TerminalNode> paramsNames = new ArrayList<>();
-      for (int i = 0; i < ctx.ID().size()-1; i++) {
-         paramsNames.add(ctx.ID(i));
-      }
-
-      if (paramsTypes.size() > 1) {
-         for (int j = 0; j < paramsTypes.size()-1; j++) {
-            func.add("param", types.get(paramsTypes.get(j).getText()) + " " + paramsNames.get(j) + ", ");
+         if (paramsTypes.size() > 0) {
+         // take all TerminalNodes but the last one (which is the func name)
+         List<TerminalNode> paramsNames = new ArrayList<>();
+         for (int i = 0; i < ctx.ID().size()-1; i++) {
+            funcParamsNames.add(ctx.ID(i).getText());
+            paramsNames.add(ctx.ID(i));
          }
+
+         if (paramsTypes.size() > 1) {
+            for (int j = 0; j < paramsTypes.size()-1; j++) {
+               func.add("param", types.get(paramsTypes.get(j).getText()) + " " + paramsNames.get(j) + ", ");
+            }
+         }
+         func.add("param", types.get(paramsTypes.get(paramsTypes.size()-1).getText()) + " " + paramsNames.get(paramsNames.size()-1));
       }
-      func.add("param", types.get(paramsTypes.get(paramsTypes.size()-1).getText()) + " " + paramsNames.get(paramsNames.size()-1));
 
       for (QuizParser.ContentContext content : ctx.content()) {
          func.add("stat", visit(content).render());
@@ -82,8 +86,8 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          String[] words = expr.split(" ");
          boolean isInt = false;
          for (String word : words) {
-            if (word.equals("int")) {
-               func.add("return_type", "int");
+            if (word.equals("double")) {
+               func.add("return_type", "double");
                isInt = true;
                break;
             }
@@ -124,7 +128,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // IN PROGRESS
    @Override public ST visitVarNumber(QuizParser.VarNumberContext ctx) {
       tmpId = ctx.ID(0).getText();
-      return visit(ctx.expr());
+      ST visit = visit(ctx.expr());
+      idToTmpVar.put(tmpId, ctx.expr().varx);
+      return visit;
    }
 
    @Override public ST visitVarBoolean(QuizParser.VarBooleanContext ctx) {
@@ -257,8 +263,41 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
+   // COMPLETED
    @Override public ST visitCallfunction(QuizParser.CallfunctionContext ctx) {
-      return visitChildren(ctx);
+      ST call = templates.getInstanceOf("callfunc");
+      String paramsBuild = "";
+      boolean hasAtLeastOneParam = false;
+      int i;
+      call.add("name", ctx.ID(0).getText());
+      // if there is another ID other than the name of the function
+      if (ctx.ID().size() > 1) {
+         hasAtLeastOneParam = true;
+         for (i = 1; i < ctx.ID().size(); i++) {
+            String id = ctx.ID(i).getText();
+            String getTemp = idToTmpVar.containsKey(id) ? idToTmpVar.get(id) : id;
+            paramsBuild += getTemp + ", ";
+         }
+      }
+      if (ctx.TEXT().size() > 0) {
+         hasAtLeastOneParam = true;
+         for (i = 0; i < ctx.TEXT().size(); i++) {
+            paramsBuild += "\"" + ctx.TEXT(i).getText() + "\", ";
+         }
+      }
+      if (ctx.NUMBER().size() > 0) {
+         hasAtLeastOneParam = true;
+         for (i = 0; i < ctx.NUMBER().size(); i++) {
+            paramsBuild += ctx.NUMBER(i).getText() + ", ";
+         }
+      }
+      
+      if (hasAtLeastOneParam) {
+         // remove last comma and space   
+         call.add("param", paramsBuild.substring(0, paramsBuild.length()-2));
+      }
+
+      return call;
    }
 
    @Override public ST visitConditional(QuizParser.ConditionalContext ctx) {
@@ -304,7 +343,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       op.add("stat", visit(ctx.expr(0)).render());
       op.add("stat", visit(ctx.expr(1)).render());
       op.add("id", tmpId);
-      op.add("type", "int");
+      op.add("type", "double");
       op.add("var", ctx.varx);
       op.add("e1", ctx.expr(0).varx);
       op.add("op", ctx.op.getText());
@@ -324,8 +363,8 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitExprNumber(QuizParser.ExprNumberContext ctx) {
       ST res = templates.getInstanceOf("atrib");
       ctx.varx = newVar();
-      res.add("id", ctx.varx);
-      res.add("type", "int");
+      res.add("id", tmpId);
+      res.add("type", "double");
       res.add("var", ctx.varx);
       res.add("value", ctx.NUMBER().getText());
       return res;
@@ -333,11 +372,21 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    // COMPLETED
    @Override public ST visitExprId(QuizParser.ExprIdContext ctx) {
-      ST fetch = templates.getInstanceOf("get_from_map");
+      String id = ctx.ID().getText();
+      ST res;
       ctx.varx = newVar();
-      fetch.add("id", ctx.ID().getText());
-      fetch.add("var", ctx.varx);
-      return fetch;
+      if (!funcParamsNames.contains(id)) {
+         res = templates.getInstanceOf("get_from_map");
+         res.add("id", id);
+         res.add("var", ctx.varx);
+      }
+      else {
+         res = templates.getInstanceOf("tmp_atrib");
+         res.add("type", "double");
+         res.add("var", ctx.varx);
+         res.add("value", id);
+      }
+      return res;
    }
 
    // COMPLETED
@@ -347,7 +396,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       op.add("stat", visit(ctx.expr(0)).render());
       op.add("stat", visit(ctx.expr(1)).render());
       op.add("id", tmpId);
-      op.add("type", "int");
+      op.add("type", "double");
       op.add("var", ctx.varx);
       op.add("e1", ctx.expr(0).varx);
       op.add("op", ctx.op.getText());

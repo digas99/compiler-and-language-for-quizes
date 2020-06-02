@@ -91,7 +91,7 @@ elsif    : 'elsif' '(' conditional ')' '=>' content+ '>>';
 finalCond : 'final' '=>' content+ '>>';
 
 // CALL FUNCTION
-callfunction : 'call' ID '(' ((TEXT|NUMBER|ID) ',')* (TEXT|NUMBER|ID) ')' ';';
+callfunction : 'call' ID '(' ((TEXT|NUMBER|ID) ',')* (TEXT|NUMBER|ID)? ')' ';';
 
 // CONDITIONAL STATEMENTS
 conditional : 'NOT'? ID
