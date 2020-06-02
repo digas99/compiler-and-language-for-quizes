@@ -6,6 +6,7 @@ The Interpreter is used to fetch questions data from a file with the extention *
 ### Files to consider:
  - **Source Code:** *linguagem_questions.qst*
  - **Grammar:** *Questions.g4*
+ 
 ## Compiler
 The Compiler builds a Quiz according to the *.quiz* file written and the questions fetched from the *.qst* file.
 ### Files to consider:
