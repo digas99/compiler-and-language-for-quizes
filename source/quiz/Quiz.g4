@@ -2,7 +2,7 @@ grammar Quiz;
 
 program : block+ EOF;
 
-block   : function* main function*;
+block   : (function|main);
 
 // MAIN
 main    : 'main' '=>' content+ '>>';

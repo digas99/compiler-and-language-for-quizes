@@ -24,6 +24,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       types.put("question", "Question");
    }
 
+   // COMPLETED
    @Override public ST visitProgram(QuizParser.ProgramContext ctx) {
       ST module = templates.getInstanceOf("module");
       module.add("name", file);
@@ -33,13 +34,14 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return module;
    }
 
+   // COMPLETED
    @Override public ST visitBlock(QuizParser.BlockContext ctx) {
-      if (ctx.function(0) != null) { System.out.println("func 0"); return visit(ctx.function(0));}
-      if (ctx.main() != null) { System.out.println("main"); return visit(ctx.main()); }
-      if (ctx.function(1) != null) { System.out.println("func 1"); return visit(ctx.function(1)); }
+      if (ctx.function() != null) return visit(ctx.function());
+      if (ctx.main() != null) return visit(ctx.main());
       return null;
    }
 
+   // COMPLETED
    @Override public ST visitMain(QuizParser.MainContext ctx) {
       ST main = templates.getInstanceOf("main");
       for (QuizParser.ContentContext content : ctx.content()) {
@@ -48,6 +50,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return main;
    }
 
+   // IN PROGRESS
    @Override public ST visitFunction(QuizParser.FunctionContext ctx) {
       ST func = templates.getInstanceOf("function");
       func.add("name", ctx.name.getText());
