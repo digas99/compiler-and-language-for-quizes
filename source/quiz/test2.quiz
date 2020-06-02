@@ -2,12 +2,19 @@ main =>
     number b => 2;
     number a => 4*b;
     number res => a/b;
+    write (CONSOLE) => res;
+    res -= 12;
+    write (CONSOLE) => res;
     call sumNums(b, res);
     call printHello();
 >>
 
 function (number n1, number n2) sumNums =>
     number sum => 2 + n1;
+    write (CONSOLE) => sum;
+    sum++;
+    write (CONSOLE) => sum;
+    sum+=n1;
     write (CONSOLE) => sum;
     return sum;
 >>

@@ -100,14 +100,15 @@ conditional : 'NOT'? ID
             ;
 
 // Manipulation var
-varmanipulation : ID '++'               # varManipPlus
+varmanipulation returns[String varx = null]: 
+                  ID '++'               # varManipPlus
                 | ID '--'               # varManipMinus
                 | '++' ID               # varManipPrePlus
                 | '--' ID               # varManipPreMinus
-                | ID '+=' NUMBER        # varManipPlusEquals
-                | ID '-=' NUMBER        # varManipMinusEquals        
-                | ID '*=' NUMBER        # varManipTimesEquals
-                | ID '/=' NUMBER        # varManipDivideEquals
+                | ID '+=' (NUMBER|ID)   # varManipPlusEquals
+                | ID '-=' (NUMBER|ID)   # varManipMinusEquals        
+                | ID '*=' (NUMBER|ID)   # varManipTimesEquals
+                | ID '/=' (NUMBER|ID)   # varManipDivideEquals
                 ;
 
 // Aritmetics

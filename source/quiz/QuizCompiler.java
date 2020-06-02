@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.stringtemplate.v4.*;
@@ -304,36 +305,108 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
+   // COMPLETED
    @Override public ST visitVarManipPlus(QuizParser.VarManipPlusContext ctx) {
-      return visitChildren(ctx);
+      ST manip = templates.getInstanceOf("varmanip_front");
+      manip.add("var", idToTmpVar.get(ctx.ID().getText()));
+      manip.add("action", "++");
+      manip.add("id", ctx.ID().getText());
+      return manip;
    }
 
+   // COMPLETED
    @Override public ST visitVarManipMinus(QuizParser.VarManipMinusContext ctx) {
-      return visitChildren(ctx);
+      ST manip = templates.getInstanceOf("varmanip_front");
+      manip.add("var", idToTmpVar.get(ctx.ID().getText()));
+      manip.add("action", "--");
+      manip.add("id", ctx.ID().getText());
+      return manip;
    }
 
+   // COMPLETED
    @Override public ST visitVarManipPrePlus(QuizParser.VarManipPrePlusContext ctx) {
-      return visitChildren(ctx);
+      ST manip = templates.getInstanceOf("varmanip_back");
+      manip.add("var", idToTmpVar.get(ctx.ID().getText()));
+      manip.add("action", "++");
+      manip.add("id", ctx.ID().getText());
+      return manip;
    }
 
+   // COMPLETED
    @Override public ST visitVarManipPreMinus(QuizParser.VarManipPreMinusContext ctx) {
-      return visitChildren(ctx);
+      ST manip = templates.getInstanceOf("varmanip_back");
+      manip.add("var", idToTmpVar.get(ctx.ID().getText()));
+      manip.add("action", "--");
+      manip.add("id", ctx.ID().getText());
+      return manip;
    }
 
+   // COMPLETED
    @Override public ST visitVarManipPlusEquals(QuizParser.VarManipPlusEqualsContext ctx) {
-      return visitChildren(ctx);
+      ST manip = templates.getInstanceOf("varmanip_number");
+      if (ctx.ID(1) != null) {
+         ctx.varx = newVar();
+         manip.add("newvar", ctx.varx);
+         manip.add("mod_var", ctx.ID(1).getText());
+      }
+      if (ctx.NUMBER() != null) {
+         manip.add("number", ctx.NUMBER().getText());
+      }
+      manip.add("var", idToTmpVar.get(ctx.ID(0).getText()));
+      manip.add("action", "+=");
+      manip.add("id", ctx.ID(0).getText());
+      return manip;
    }
 
+   // COMPLETED
    @Override public ST visitVarManipMinusEquals(QuizParser.VarManipMinusEqualsContext ctx) {
-      return visitChildren(ctx);
+      ST manip = templates.getInstanceOf("varmanip_number");
+      if (ctx.ID(1) != null) {
+         ctx.varx = newVar();
+         manip.add("newvar", ctx.varx);
+         manip.add("mod_var", ctx.ID(1).getText());
+      }
+      if (ctx.NUMBER() != null) {
+         manip.add("number", ctx.NUMBER().getText());
+      }
+      manip.add("var", idToTmpVar.get(ctx.ID(0).getText()));
+      manip.add("action", "-=");
+      manip.add("id", ctx.ID(0).getText());
+      return manip;
    }
 
+   // COMPLETED
    @Override public ST visitVarManipTimesEquals(QuizParser.VarManipTimesEqualsContext ctx) {
-      return visitChildren(ctx);
+      ST manip = templates.getInstanceOf("varmanip_number");
+      if (ctx.ID(1) != null) {
+         ctx.varx = newVar();
+         manip.add("newvar", ctx.varx);
+         manip.add("mod_var", ctx.ID(1).getText());
+      }
+      if (ctx.NUMBER() != null) {
+         manip.add("number", ctx.NUMBER().getText());
+      }
+      manip.add("var", idToTmpVar.get(ctx.ID(0).getText()));
+      manip.add("action", "*=");
+      manip.add("id", ctx.ID(0).getText());
+      return manip;
    }
 
+   // COMPLETED
    @Override public ST visitVarManipDivideEquals(QuizParser.VarManipDivideEqualsContext ctx) {
-      return visitChildren(ctx);
+      ST manip = templates.getInstanceOf("varmanip_number");
+      if (ctx.ID(1) != null) {
+         ctx.varx = newVar();
+         manip.add("newvar", ctx.varx);
+         manip.add("mod_var", ctx.ID(1).getText());
+      }
+      if (ctx.NUMBER() != null) {
+         manip.add("number", ctx.NUMBER().getText());
+      }
+      manip.add("var", idToTmpVar.get(ctx.ID(0).getText()));
+      manip.add("action", "/=");
+      manip.add("id", ctx.ID(0).getText());
+      return manip;
    }
 
    // COMPLETED
@@ -381,7 +454,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          res.add("var", ctx.varx);
       }
       else {
-         res = templates.getInstanceOf("tmp_atrib");
+         res = templates.getInstanceOf("handle_func_param");
          res.add("type", "double");
          res.add("var", ctx.varx);
          res.add("value", id);
@@ -416,6 +489,13 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (ctx.aslong() != null) return visit(ctx.aslong());
       if (ctx.callfunction() != null) return visit(ctx.callfunction());
       if (ctx.varmanipulation() != null) return visit(ctx.varmanipulation());
+      return null;
+   }
+
+   private String getKeyOfValue(String value, HashMap<String, String> map) {
+      for (Entry<String, String> entry : map.entrySet()) {
+         if (entry.getValue().equals(value)) return entry.getKey();
+      }
       return null;
    }
 }

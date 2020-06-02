@@ -61,3 +61,29 @@ public static <return_type> <name>(<param>) {
 callfunc(name, param) ::= <<
 <name>(<param>);
 >>
+
+varmanip_front(var, action, id) ::= <<
+<var><action>;
+vars.put("<id>", <var>);
+>>
+
+varmanip_back(var, action, id) ::= <<
+<action><var>;
+vars.put("<id>", <var>);
+>>
+
+varmanip_number(newvar, var, action, number, mod_var, id) ::= <<
+<if(mod_var)>
+<get_from_map(mod_var, newvar)>
+<var><action><mod_var>;
+<endif>
+<if(number)>
+<var><action><number>;
+<endif>
+vars.put("<id>", <var>);
+>>
+
+handle_func_param(type, var, value) ::= <<
+<tmp_atrib(type, var, value)>
+vars.put("<value>", <var>);
+>>
