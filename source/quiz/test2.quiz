@@ -1,0 +1,8 @@
+main =>
+    number b => 2;
+>>
+
+function (number n1, number n2) sumNums =>
+    number sum => 2 + n1;
+    return sum;
+>>

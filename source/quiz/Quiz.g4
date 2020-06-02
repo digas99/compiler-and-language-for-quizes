@@ -8,7 +8,7 @@ block   : function* main function*;
 main    : 'main' '=>' content+ '>>';
 
 // FUNCTIONS
-function : 'function' '(' (('text'|'number'|'boolean'|'question') ID ',')* (('text'|'number'|'boolean'|'question') ID)? ')' ID '=>' (content)* 'return' expr ';' '>>';
+function : 'function' '(' (('text'|'number'|'boolean'|'question') ID ',')* (('text'|'number'|'boolean'|'question') ID)? ')' name=ID '=>' (content)* ('return' expr ';')? '>>';
 
 // LISTS
 list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion

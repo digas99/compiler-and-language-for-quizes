@@ -4,14 +4,14 @@ import java.util.HashMap;
 public class <name> {
     static HashMap\<String, Integer> vars = new HashMap\<>();
 
-    public static void main(String[] args) {
-        <stats(stat)>
-    }
+    <stats(stat)>
 }
 >>
 
 main(stat) ::= <<
-<stats(stat)>
+public static void main(String[] args) {
+    <stats(stat)>
+}
 >>
 
 handle_var_number(stat, type, var, value) ::= <<
@@ -40,4 +40,16 @@ binary_operation(stat, id, type, var, e1, op, e2) ::= <<
 print(stat, text) ::= <<
 <stats(stat)>
 System.out.println(<text>);
+>>
+
+function(name, return_type, building_return, param, stat, ret) ::= <<
+public static <return_type> <name>(<param>) {
+    <stats(stat)>
+    <if(ret)>
+
+    // building the return statement
+    <building_return>
+    return <ret>;
+    <endif>
+}
 >>

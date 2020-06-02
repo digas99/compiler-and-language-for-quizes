@@ -1,4 +1,6 @@
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.stringtemplate.v4.*;
@@ -7,6 +9,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private STGroup templates = new STGroupFile("string_templates.stg");
    private String tmpId = "";
    private int numVars = 0;
+   private HashMap<String, String> types = new HashMap<>();
    private String newVar() {
       numVars++;
       return "var"+numVars;
@@ -15,6 +18,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    public QuizCompiler(String file) {
       this.file = file;
+      types.put("number", "double");
+      types.put("text", "String");
+      types.put("boolean", "boolean");
+      types.put("question", "Question");
    }
 
    @Override public ST visitProgram(QuizParser.ProgramContext ctx) {
@@ -27,9 +34,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitBlock(QuizParser.BlockContext ctx) {
-      if (ctx.function(0) != null) return visit(ctx.function(0));
-      if (ctx.main() != null) return visit(ctx.main());
-      if (ctx.function(1) != null) return visit(ctx.function(1));
+      if (ctx.function(0) != null) { System.out.println("func 0"); return visit(ctx.function(0));}
+      if (ctx.main() != null) { System.out.println("main"); return visit(ctx.main()); }
+      if (ctx.function(1) != null) { System.out.println("func 1"); return visit(ctx.function(1)); }
       return null;
    }
 
@@ -42,7 +49,49 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitFunction(QuizParser.FunctionContext ctx) {
-      return visitChildren(ctx);
+      ST func = templates.getInstanceOf("function");
+      func.add("name", ctx.name.getText());
+      List<TerminalNode> paramsTypes = ctx.getTokens(7);
+      System.out.println(paramsTypes);
+
+      // take all TerminalNodes but the last one (which is the func name)
+      List<TerminalNode> paramsNames = new ArrayList<>();
+      for (int i = 0; i < ctx.ID().size()-1; i++) {
+         paramsNames.add(ctx.ID(i));
+      }
+
+      if (paramsTypes.size() > 1) {
+         for (int j = 0; j < paramsTypes.size()-1; j++) {
+            func.add("param", types.get(paramsTypes.get(j).getText()) + " " + paramsNames.get(j) + ", ");
+         }
+      }
+      func.add("param", types.get(paramsTypes.get(paramsTypes.size()-1).getText()) + " " + paramsNames.get(paramsNames.size()-1));
+
+      for (QuizParser.ContentContext content : ctx.content()) {
+         func.add("stat", visit(content).render());
+      }
+
+      String expr = "";
+      if (ctx.expr() != null) {
+         expr = visit(ctx.expr()).render();
+         func.add("building_return", expr);
+         func.add("ret", ctx.expr().varx);
+         String[] words = expr.split(" ");
+         boolean isInt = false;
+         for (String word : words) {
+            if (word.equals("int")) {
+               func.add("return_type", "int");
+               isInt = true;
+               break;
+            }
+         }
+         if (!isInt) func.add("return_type", "String");
+      }
+      else {
+         func.add("return_type", "void");
+      }
+
+      return func;
    }
 
    @Override public ST visitListQuestion(QuizParser.ListQuestionContext ctx) {
