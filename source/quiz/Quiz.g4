@@ -20,7 +20,7 @@ list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
 // VARIABLES
 var returns[String varx = null]: 
            'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                         # varText
-         | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                       # varTextRead
+         | ('text'|'number')? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                       # varTextRead
          | 'number'? ID ('=>' (expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
          | 'boolean'? ID ('=>' ('TRUE'|'FALSE'))? ';'                                                                   # varBoolean
          | 'question'? ID ';'                                                                                           # varQuestion

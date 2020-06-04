@@ -13,6 +13,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private HashMap<String, String> types = new HashMap<>();
    private HashMap<String, String> idToTmpVar = new HashMap<>();
    private List<String> funcParamsNames = new ArrayList<>();
+   private HashMap<String, String> varTypes = new HashMap<>();
    private String newVar() {
       numVars++;
       return "var"+numVars;
@@ -36,7 +37,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       }
       if (numVars > 0) module.add("hasVars", numVars);
       else module.add("notHasVars", numVars);
-      
+
       return module;
    }
 
@@ -125,9 +126,17 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
-   // 
+   // COMPLETED
    @Override public ST visitVarTextRead(QuizParser.VarTextReadContext ctx) {
-      return visitChildren(ctx);
+      ST read = templates.getInstanceOf("read");
+      ctx.varx = newVar();
+      if (ctx.TEXT() == null) read.add("file", "System.in");
+      else read.add("file", ctx.TEXT().getText());
+      read.add("type", "String");
+      read.add("var", ctx.varx);
+      read.add("id", ctx.ID().getText());
+      varTypes.put(ctx.ID().getText(), "String");
+      return read;
    }
 
    // IN PROGRESS
@@ -425,6 +434,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       op.add("e1", ctx.expr(0).varx);
       op.add("op", ctx.op.getText());
       op.add("e2", ctx.expr(1).varx);
+      varTypes.put(tmpId, "double");
       return op;
    }
 
@@ -438,12 +448,13 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    // COMPLETED
    @Override public ST visitExprNumber(QuizParser.ExprNumberContext ctx) {
-      ST res = templates.getInstanceOf("atrib");
+      ST res = templates.getInstanceOf("atrib_double");
       ctx.varx = newVar();
       res.add("id", tmpId);
       res.add("type", "double");
       res.add("var", ctx.varx);
       res.add("value", ctx.NUMBER().getText());
+      varTypes.put(tmpId, "double");
       return res;
    }
 
@@ -456,6 +467,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          res = templates.getInstanceOf("get_from_map");
          res.add("id", id);
          res.add("var", ctx.varx);
+         String type = varTypes.containsKey(id) ? varTypes.get(id) : null;
+         switch(type) {
+            case "String":
+               res.add("string", "");
+               break;
+            case "double":
+               res.add("double", "");
+               break;
+         }
       }
       else {
          res = templates.getInstanceOf("handle_func_param");
@@ -478,6 +498,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       op.add("e1", ctx.expr(0).varx);
       op.add("op", ctx.op.getText());
       op.add("e2", ctx.expr(1).varx);
+      varTypes.put(tmpId, "double");
       return op;
    }
 

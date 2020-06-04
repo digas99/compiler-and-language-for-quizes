@@ -1,7 +1,11 @@
 main =>
-    call printHello();
+    number tmp => 5;
+    call printHello(tmp);
+    text input => read (CONSOLE);
+    write (CONSOLE) => input; 
 >>
 
-function () printHello =>
+function (number n) printHello =>
     write (CONSOLE) => "Hello Word";
+    write (CONSOLE) => n;
 >>

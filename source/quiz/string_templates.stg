@@ -1,9 +1,10 @@
 module(name, stat, hasVars, notHasVars) ::= <<
+import java.util.Scanner;
 <if(hasVars)>
 import java.util.HashMap;
 
 public class <name> {
-    static HashMap\<String, Double> vars = new HashMap\<>();
+    static HashMap\<String, String> vars = new HashMap\<>();
 <endif>
 <if(notHasVars)>
 public class <name> {
@@ -20,15 +21,28 @@ public static void main(String[] args) {
 
 handle_var_number(stat, type, var, value) ::= <<
 <stats(stat)>
-<atrib(type, var, value)>
+<atrib_double(type, var, value)>
 >>
 
 stats(stat) ::= <<
 <if(stat)><stat; separator="\n"><endif>
 >>
 
-get_from_map(id, var) ::= <<
-double <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
+get_from_map(string, double, id, var) ::= <<
+<if(double)>
+double <var> = vars.containsKey("<id>") ? Double.parseDouble(vars.get("<id>")) : null;
+<endif>
+<if(string)>
+String <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
+<endif>
+>>
+
+get_from_map_double(id, var) ::= <<
+double <var> = vars.containsKey("<id>") ? Double.parseDouble(vars.get("<id>")) : null;
+>>
+
+get_from_map_string(id, var) ::= <<
+String <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
 >>
 
 tmp_atrib(type, var, value) ::= <<
@@ -40,9 +54,14 @@ atrib(type, var, value, id) ::= <<
 vars.put("<id>", <var>);
 >>
 
+atrib_double(type, var, value, id) ::= <<
+<type> <var> = <value>;
+vars.put("<id>", Double.toString(<var>));
+>>
+
 binary_operation(stat, id, type, var, e1, op, e2) ::= <<
 <stats(stat)>
-<atrib(type, var, [e1, op, e2], id)>
+<atrib_double(type, var, [e1, op, e2], id)>
 >>
 
 print(stat, text) ::= <<
@@ -68,30 +87,31 @@ callfunc(name, param) ::= <<
 
 varmanip_front(var, action, id) ::= <<
 <var><action>;
-vars.put("<id>", <var>);
+vars.put("<id>", Double.toString(<var>));
 >>
 
 varmanip_back(var, action, id) ::= <<
 <action><var>;
-vars.put("<id>", <var>);
+vars.put("<id>", Double.toString(<var>));
 >>
 
 varmanip_number(newvar, var, action, number, mod_var, id) ::= <<
 <if(mod_var)>
-<get_from_map(mod_var, newvar)>
+<get_from_map_double(mod_var, newvar)>
 <var><action><mod_var>;
 <endif>
 <if(number)>
 <var><action><number>;
 <endif>
-vars.put("<id>", <var>);
+vars.put("<id>", Double.toString(<var>));
 >>
 
 handle_func_param(type, var, value) ::= <<
 <tmp_atrib(type, var, value)>
-vars.put("<value>", <var>);
+vars.put("<value>", Double.toString(<var>));
 >>
 
-read() ::= <<
-    
+read(file, type, var, id) ::= <<
+Scanner rd = new Scanner(<file>);
+<atrib(type, var, "rd.nextLine()", id)>
 >>
