@@ -30,7 +30,7 @@ stats(stat) ::= <<
 
 get_from_map(string, double, id, var) ::= <<
 <if(double)>
-double <var> = vars.containsKey("<id>") ? Double.parseDouble(vars.get("<id>")) : null;
+double <var> = vars.containsKey("<id>") ? Double.parseDouble(vars.get("<id>")) : Double.NaN;
 <endif>
 <if(string)>
 String <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
@@ -38,7 +38,7 @@ String <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
 >>
 
 get_from_map_double(id, var) ::= <<
-double <var> = vars.containsKey("<id>") ? Double.parseDouble(vars.get("<id>")) : null;
+double <var> = vars.containsKey("<id>") ? Double.parseDouble(vars.get("<id>")) : Double.NaN;
 >>
 
 get_from_map_string(id, var) ::= <<
