@@ -70,6 +70,10 @@ function (number n1, number n2) sumNums =>
 
 !! this is equivalent to function main in Java
 main =>
+    map text userOpenAnswers;
+    map boolean userTestMap;
+    map question quiz => get("linguagem_questions");
+    quiz => remove("cidades01");
     list text allTitles;
     list text rightAnswers;
     list text wrongAnswers;
@@ -89,6 +93,14 @@ main =>
         times => add(q1.time);
         points => add(q1.points);
     >>
+
+    for (question q in qList) =>
+        write (CONSOLE) => q.title;
+        userOpenAnswers => put(q.title, resposta);
+        userTestMap => put("FutureIdParameterOfQuestions", rightOrWrong);
+    >>
+
+    quiz => clear();
 
     call sumNums(1, 2);
 >>

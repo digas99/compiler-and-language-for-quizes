@@ -17,15 +17,26 @@ list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
         | 'list' 'boolean' ID ('=>' ListFormatBool)? ';'    # listBoolean
         ;
 
+// MAPS
+map     : 'map' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # mapQuestion
+        | 'map' 'number' ID ';'                            # mapNums
+        | 'map' 'text' ID ';'                              # mapText
+        | 'map' 'boolean' ID ';'                           # mapBoolean
+        ;
+
 // VARIABLES
 var returns[String varx = null]: 
            'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                         # varText
-         | ('text'|'number')? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                       # varTextRead
+         | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                       # varTextRead
          | 'number'? ID ('=>' (expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
          | 'boolean'? ID ('=>' ('TRUE'|'FALSE'))? ';'                                                                   # varBoolean
          | 'question'? ID ';'                                                                                           # varQuestion
          | ID '=>' add                                                                                                  # varListAdd
          | ID '=>' REMOVE                                                                                               # varListRemove
+         | ID '=>' 'get' '(' (TEXT|questionFetch) ')' ';'                                                                               # varMapGet
+         | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|BOOLEAN) ')' ';'                                                          # varMapPut
+         | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                                            # varMapRemove
+         | ID '=>' 'clear' '(' ')' ';'                                                                                  # varMapClear
          ;
 
 REMOVE   : 'remove' '(' NUMBER ')' ';'          
@@ -73,7 +84,7 @@ write    : 'write' '(' 'CONSOLE' ')' '=>' (TEXT|expr|questionFetch) ';' # writeC
          ;
 
 // LOOPS
-forLoop  : 'for' '(' ('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'
+forLoop  : 'for' '(' ('text'|'number'|'boolean'|'question'|'map') ID 'in' ID ')' '=>' content+ '>>'
          | 'for' '(' NUMBER 'to' NUMBER ')' ('['('+'|'-') NUMBER ']')? '=>' content+ '>>'
          ;
 
@@ -121,10 +132,11 @@ expr returns[String varx = null]:
         |   ID                          # ExprId
         ;
 
-content  : list|var|write|question|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';');
+content  : map|list|var|write|question|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';');
 
 TEXT     : '"'.*?'"' ;
 NUMBER   : [0-9]+;
+BOOLEAN  : ('TRUE'|'FALSE');
 ID       : [a-zA-Z0-9]+;
 Comment  : '!!'.*? '\n' -> skip;
 WS       : [ \n\t\r]+ -> skip;
