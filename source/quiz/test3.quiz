@@ -1,0 +1,7 @@
+main =>
+    call printHello();
+>>
+
+function () printHello =>
+    write (CONSOLE) => "Hello Word";
+>>

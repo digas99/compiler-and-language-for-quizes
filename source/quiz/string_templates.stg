@@ -1,9 +1,13 @@
-module(name, stat) ::= <<
+module(name, stat, hasVars, notHasVars) ::= <<
+<if(hasVars)>
 import java.util.HashMap;
 
 public class <name> {
     static HashMap\<String, Double> vars = new HashMap\<>();
-
+<endif>
+<if(notHasVars)>
+public class <name> {
+<endif>
     <stats(stat)>
 }
 >>
@@ -86,4 +90,8 @@ vars.put("<id>", <var>);
 handle_func_param(type, var, value) ::= <<
 <tmp_atrib(type, var, value)>
 vars.put("<value>", <var>);
+>>
+
+read() ::= <<
+    
 >>

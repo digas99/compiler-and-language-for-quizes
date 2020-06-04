@@ -2,7 +2,6 @@ import java.util.HashMap;
 
 public class Test3 {
     static HashMap<String, Double> vars = new HashMap<>();
-
     public static void main(String[] args) {
         double var1 = 2;
         vars.put("b", var1);

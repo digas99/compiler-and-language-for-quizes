@@ -34,6 +34,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       for (QuizParser.BlockContext block : ctx.block()) {
          module.add("stat", visit(block).render());
       }
+      if (numVars > 0) module.add("hasVars", numVars);
+      else module.add("notHasVars", numVars);
+      
       return module;
    }
 
@@ -122,6 +125,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
+   // 
    @Override public ST visitVarTextRead(QuizParser.VarTextReadContext ctx) {
       return visitChildren(ctx);
    }
