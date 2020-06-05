@@ -10,6 +10,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private STGroup templates = new STGroupFile("string_templates.stg");
    private String tmpId = "";
    private int numVars = 0;
+   private boolean hasScanner = false;
    private HashMap<String, String> types = new HashMap<>();
    private HashMap<String, String> idToTmpVar = new HashMap<>();
    private List<String> funcParamsNames = new ArrayList<>();
@@ -36,8 +37,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          module.add("stat", visit(block).render());
       }
       if (numVars > 0) module.add("hasVars", numVars);
-      else module.add("notHasVars", numVars);
 
+      if (hasScanner) module.add("hasScanner", "");
+      
       return module;
    }
 
@@ -130,6 +132,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitVarTextRead(QuizParser.VarTextReadContext ctx) {
       ST read = templates.getInstanceOf("read");
       ctx.varx = newVar();
+      hasScanner = true;
       if (ctx.TEXT() == null) read.add("file", "System.in");
       else read.add("file", ctx.TEXT().getText());
       read.add("type", "String");

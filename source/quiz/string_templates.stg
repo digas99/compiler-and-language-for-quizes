@@ -1,14 +1,15 @@
-module(name, stat, hasVars, notHasVars) ::= <<
+module(name, stat, hasVars, hasScanner) ::= <<
+<if(hasScanner)>
 import java.util.Scanner;
+<endif>
 <if(hasVars)>
 import java.util.HashMap;
+<endif>
 
 public class <name> {
+    <if(hasVars)>
     static HashMap\<String, String> vars = new HashMap\<>();
-<endif>
-<if(notHasVars)>
-public class <name> {
-<endif>
+    <endif>
     <stats(stat)>
 }
 >>
