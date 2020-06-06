@@ -27,6 +27,8 @@ public class Test2 {
         System.out.println(var9);
         sumNums(var1, var5);
         printHello();
+        unaryNum(var1);
+        parens(var1);
     }
     public static double sumNums(double n1, double n2) {
         double var11 = 2;
@@ -54,6 +56,34 @@ public class Test2 {
         double var17 = vars.containsKey("sum") ? Double.parseDouble(vars.get("sum")) : Double.NaN;
 
         return var17;
+    }
+    public static void unaryNum(double n1) {
+        double var20 = 2;
+        vars.put("n", Double.toString(var20));
+        double var19 = -var20;
+        vars.put("n", Double.toString(var19));
+        double var21 = 5;
+        vars.put("n", Double.toString(var21));
+        double var18 = var19+var21;
+        vars.put("n", Double.toString(var18));
+        double var22 = vars.containsKey("n") ? Double.parseDouble(vars.get("n")) : Double.NaN;
+
+        System.out.println(var22);
+    }
+    public static void parens(double n1) {
+        double var25 = 2;
+        vars.put("n", Double.toString(var25));
+        double var26 = 2;
+        vars.put("n", Double.toString(var26));
+        double var24 = var25+var26;
+        vars.put("n", Double.toString(var24));
+        double var27 = 2;
+        vars.put("n", Double.toString(var27));
+        double var23 = var24*var27;
+        vars.put("n", Double.toString(var23));
+        double var28 = vars.containsKey("n") ? Double.parseDouble(vars.get("n")) : Double.NaN;
+
+        System.out.println(var28);
     }
     public static void printHello() {
         System.out.println("Hello World");

@@ -60,15 +60,9 @@ atrib_double(type, var, value, id) ::= <<
 vars.put("<id>", Double.toString(<var>));
 >>
 
-atrib_parens(stat,id,type,var,e1,par1,par2) ::= <<
-<stats(stat)>
-<type> <var> = <par1><e1><par2>;
->>
-
-
 atrib_unary(stat,id,type,var,op,e1) ::= <<
 <stats(stat)>
-<type> <var> = <op><e1>;
+<atrib_double(type, var, [op, e1], id)>
 >>
 
 binary_operation(stat, id, type, var, e1, op, e2) ::= <<
