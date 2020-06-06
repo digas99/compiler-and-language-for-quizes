@@ -30,7 +30,7 @@ public class QuizMain {
          // System.out.println(tree.toStringTree(parser));
          String fileName = args[0];
          QuizCompiler compiler = new QuizCompiler(fileName);
-         FileWriter writer = new FileWriter("outputs/"+fileName+".java");
+         FileWriter writer = new FileWriter(fileName+".java");
          ST res = compiler.visit(tree);
          writer.write(res.render());
          writer.close();

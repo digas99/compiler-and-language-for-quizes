@@ -19,6 +19,11 @@ function (number n1, number n2) sumNums =>
     return sum;
 >>
 
+function(number n1) unaryNum =>
+ number n => (5+4)*2;
+ write(CONSOLE) => n;
+>>
+
 function () printHello =>
     write (CONSOLE) => "Hello World";
 >>

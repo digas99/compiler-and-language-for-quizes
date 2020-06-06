@@ -26,17 +26,17 @@ map     : 'map' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # mapQuestion
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                         # varText
-         | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                       # varTextRead
+           'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                            # varText
+         | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                          # varTextRead
          | 'number'? ID ('=>' (expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
-         | 'boolean'? ID ('=>' ('TRUE'|'FALSE'))? ';'                                                                   # varBoolean
-         | 'question'? ID ';'                                                                                           # varQuestion
-         | ID '=>' add                                                                                                  # varListAdd
-         | ID '=>' REMOVE                                                                                               # varListRemove
-         | ID '=>' 'get' '(' (TEXT|questionFetch) ')' ';'                                                                               # varMapGet
-         | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|BOOLEAN) ')' ';'                                                          # varMapPut
-         | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                                            # varMapRemove
-         | ID '=>' 'clear' '(' ')' ';'                                                                                  # varMapClear
+         | 'boolean'? ID ('=>' ('TRUE'|'FALSE'))? ';'                                                                      # varBoolean
+         | 'question'? ID ';'                                                                                              # varQuestion
+         | ID '=>' add                                                                                                     # varListAdd
+         | ID '=>' REMOVE                                                                                                  # varListRemove
+         | ID '=>' 'get' '(' (TEXT|questionFetch) ')' ';'                                                                  # varMapGet
+         | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|BOOLEAN) ')' ';'                                     # varMapPut
+         | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
+         | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
 
 REMOVE   : 'remove' '(' NUMBER ')' ';'          
@@ -52,14 +52,14 @@ add      : 'add' '(' (ListFormatNumber|ListFormatBool|ListFormatText) ')' ';'
          ;
 
 // QUESTION OBJECT CREATION
-question : questionFetchTitle '=>' TEXT ';'                   # questionTitle                         
-         | questionFetchAnsRight '=>' ListFormatText ';'      # questionAnsRight
-         | questionFetchAnsWrong '=>' ListFormatText ';'      # questionAnsWrong
-         | questionFetchDiff '=>' ('easy'|'medium'|'hard') ';'# questionDifficulty
-         | questionFetchType '=>' ('multiple'|'open') ';'     # questionType
-         | questionFetchTries '=>' (ID|NUMBER) ';'                 # questionTries
-         | questionFetchTime '=>' (ID|NUMBER) ';'                  # questionTime
-         | questionFetchPoints '=>' (ID|NUMBER) ';'                # questionPoints
+question : questionFetchTitle '=>' TEXT ';'                    # questionTitle                         
+         | questionFetchAnsRight '=>' ListFormatText ';'       # questionAnsRight
+         | questionFetchAnsWrong '=>' ListFormatText ';'       # questionAnsWrong
+         | questionFetchDiff '=>' ('easy'|'medium'|'hard') ';' # questionDifficulty
+         | questionFetchType '=>' ('multiple'|'open') ';'      # questionType
+         | questionFetchTries '=>' (ID|NUMBER) ';'             # questionTries
+         | questionFetchTime '=>' (ID|NUMBER) ';'              # questionTime
+         | questionFetchPoints '=>' (ID|NUMBER) ';'            # questionPoints
          ;
 
 ListFormatNumber : '{' (NUMBER ', ')* NUMBER '}';
@@ -124,7 +124,7 @@ varmanipulation returns[String varx = null]:
 
 // Aritmetics
 expr returns[String varx = null]:  
-            op=('-'|'+') expr # ExprUnary
+            op=('-'|'+') expr           # ExprUnary
         |   expr op=('*'|'/'|'%') expr  # ExprMultDivMod
         |   expr op=('+'|'-') expr      # ExprAddSub
         |   NUMBER                      # ExprNumber
