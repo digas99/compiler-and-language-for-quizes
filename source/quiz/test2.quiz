@@ -7,6 +7,8 @@ main =>
     write (CONSOLE) => res;
     call sumNums(b, res);
     call printHello();
+    call unaryNum(b);
+    call parens(b);
 >>
 
 function (number n1, number n2) sumNums =>
@@ -19,9 +21,14 @@ function (number n1, number n2) sumNums =>
     return sum;
 >>
 
-function(number n1) unaryNum =>
- number n => (5+4)*2;
- write(CONSOLE) => n;
+function (number n1) unaryNum =>
+    number n => -2+5;
+    write(CONSOLE) => n;
+>>
+
+function (number n1) parens =>
+    number n => ( 2 + 2 ) * 2;
+    write(CONSOLE) => n;
 >>
 
 function () printHello =>

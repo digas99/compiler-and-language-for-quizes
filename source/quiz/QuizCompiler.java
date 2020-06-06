@@ -442,12 +442,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitExprParens(QuizParser.ExprParensContext ctx) {
-      return visit(ctx.expr());
+      ST parens = visit(ctx.expr());
+      ctx.varx= ctx.expr().varx;
+      return parens;
    }
 
+   //COMPLETED
    @Override public ST visitExprUnary(QuizParser.ExprUnaryContext ctx) {
       ST unary = templates.getInstanceOf("atrib_unary");
-      ctx.varx= newVar();
+      ctx.varx= newVar(); 
       unary.add("stat", visit(ctx.expr()).render());
       unary.add("id",tmpId);
       unary.add("type","double");
@@ -456,7 +459,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       unary.add("e1",ctx.expr().varx);
       varTypes.put(tmpId,"double");
       return unary;
-      //return visitChildren(ctx);
    }
 
    // COMPLETED
