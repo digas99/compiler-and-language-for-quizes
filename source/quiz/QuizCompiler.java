@@ -382,7 +382,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
-   // IN PROGRESS
+   // COMPLETED
    @Override public ST visitCallfunction(QuizParser.CallfunctionContext ctx) {
       ST call = templates.getInstanceOf("callfunc");
       call.add("name", ctx.ID(0).getText());

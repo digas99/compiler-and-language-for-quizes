@@ -15,9 +15,9 @@ params : type=('text'|'number'|'boolean'|'question') ID ',';
 
 // LISTS
 list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
-        | 'list' 'number' ID ('=>' ListFormatNumber)? ';'   # listNums
-        | 'list' 'text' ID ('=>' ListFormatText)? ';'       # listText
-        | 'list' 'boolean' ID ('=>' ListFormatBool)? ';'    # listBoolean
+        | 'list' 'number' ID ('=>' listFormatNumber)? ';'   # listNums
+        | 'list' 'text' ID ('=>' listFormatText)? ';'       # listText
+        | 'list' 'boolean' ID ('=>' listFormatBool)? ';'    # listBoolean
         ;
 
 // MAPS
@@ -35,19 +35,19 @@ var returns[String varx = null]:
          | 'boolean'? ID ('=>' ('TRUE'|'FALSE'))? ';'                                                                      # varBoolean
          | 'question'? ID ';'                                                                                              # varQuestion
          | ID '=>' add                                                                                                     # varListAdd
-         | ID '=>' REMOVE                                                                                                  # varListRemove
+         | ID '=>' remove                                                                                                  # varListRemove
          | ID '=>' 'get' '(' (TEXT|questionFetch) ')' ';'                                                                  # varMapGet
          | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|BOOLEAN) ')' ';'                                     # varMapPut
          | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
 
-REMOVE   : 'remove' '(' NUMBER ')' ';'          
+remove   : 'remove' '(' NUMBER ')' ';'          
          | 'remove' '(' TEXT ')' ';' 
          | 'remove' '(' ID ')' ';'
          | 'remove' '(' '[' NUMBER ']' ')' ';'
          ;
-add      : 'add' '(' (ListFormatNumber|ListFormatBool|ListFormatText) ')' ';'
+add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'
          | 'add' '(' questionFetch ')' ';'
          | 'add' '(' TEXT ')' ';'
          | 'add' '(' ID ')' ';'
@@ -56,8 +56,8 @@ add      : 'add' '(' (ListFormatNumber|ListFormatBool|ListFormatText) ')' ';'
 
 // QUESTION OBJECT CREATION
 question : questionFetchTitle '=>' TEXT ';'                    # questionTitle                         
-         | questionFetchAnsRight '=>' ListFormatText ';'       # questionAnsRight
-         | questionFetchAnsWrong '=>' ListFormatText ';'       # questionAnsWrong
+         | questionFetchAnsRight '=>' listFormatText ';'       # questionAnsRight
+         | questionFetchAnsWrong '=>' listFormatText ';'       # questionAnsWrong
          | questionFetchDiff '=>' ('easy'|'medium'|'hard') ';' # questionDifficulty
          | questionFetchType '=>' ('multiple'|'open') ';'      # questionType
          | questionFetchTries '=>' (ID|NUMBER) ';'             # questionTries
@@ -65,9 +65,9 @@ question : questionFetchTitle '=>' TEXT ';'                    # questionTitle
          | questionFetchPoints '=>' (ID|NUMBER) ';'            # questionPoints
          ;
 
-ListFormatNumber : '{' (NUMBER ', ')* NUMBER '}';
-ListFormatText   : '{' (TEXT ',')* TEXT '}';
-ListFormatBool   : '{' (('TRUE'|'FALSE') ',')* ('TRUE'|'FALSE') '}';
+listFormatNumber : '{' (NUMBER ', ')* NUMBER '}';
+listFormatText   : '{' (TEXT ',')* TEXT '}';
+listFormatBool   : '{' (('TRUE'|'FALSE') ',')* ('TRUE'|'FALSE') '}';
 
 // QUESTION OBJECT FETCHING
 questionFetch    : questionFetchTitle|questionFetchAnsRight|questionFetchAnsWrong|questionFetchDiff|questionFetchType|questionFetchTries|questionFetchTime|questionFetchPoints;
