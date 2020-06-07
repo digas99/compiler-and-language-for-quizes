@@ -12,7 +12,8 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private int numVars = 0;
    private int numWriters = 0;
    private boolean hasScanner = false;
-   private HashMap<String, String> types = new HashMap<>();
+   private boolean hasList = false;
+   private HashMap<String, String> convertion = new HashMap<>();
    private HashMap<String, String> idToTmpVar = new HashMap<>();
    private HashMap<String, Double> realValueOfId = new HashMap<>();
    private List<String> funcParamsNames = new ArrayList<>();
@@ -29,10 +30,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    public QuizCompiler(String file) {
       this.file = file;
-      types.put("number", "double");
-      types.put("text", "String");
-      types.put("boolean", "boolean");
-      types.put("question", "Question");
+      convertion.put("number", "double");
+      convertion.put("text", "String");
+      convertion.put("boolean", "boolean");
+      convertion.put("question", "Question");
+      convertion.put("TRUE", "true");
+      convertion.put("FALSE", "false");
    }
 
    // COMPLETED
@@ -47,6 +50,8 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (hasScanner) module.add("hasScanner", "");
 
       if (numWriters > 0) module.add("hasPrintWriter", "");
+
+      if (hasList) module.add("hasList", "");
       
       return module;
    }
@@ -74,10 +79,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
       for (QuizParser.ParamsContext type : ctx.params()) {
          String[] splitted = visit(type).render().split(" ");
-         func.add("param", types.get(splitted[0])+" "+splitted[1]+", ");
+         func.add("param", convertion.get(splitted[0])+" "+splitted[1]+", ");
       }
 
-      if (ctx.type != null) func.add("param", types.get(ctx.type.getText())+" "+ctx.ID(0));
+      if (ctx.type != null) func.add("param", convertion.get(ctx.type.getText())+" "+ctx.ID(0));
       
       for (QuizParser.ContentContext content : ctx.content()) {
          func.add("stat", visit(content).render());
@@ -119,16 +124,80 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
+   // COMPLETED
    @Override public ST visitListNums(QuizParser.ListNumsContext ctx) {
-      return visitChildren(ctx);
+      ST list = templates.getInstanceOf("list_double");
+      hasList = true;
+      list.add("var", ctx.ID().getText());
+      if (ctx.listFormatNumber() != null) list.add("val", visit(ctx.listFormatNumber()).render());
+      list.add("tmpvar", newVar());
+      list.add("tmpvar2", newVar());
+      if (ctx.init != null) list.add("init", "");
+      return list;
    }
 
+   // COMPLETED
    @Override public ST visitListText(QuizParser.ListTextContext ctx) {
-      return visitChildren(ctx);
+      ST list = templates.getInstanceOf("list_string");
+      hasList = true;
+      list.add("var", ctx.ID().getText());
+      if (ctx.listFormatText() != null) list.add("val", visit(ctx.listFormatText()).render());
+      list.add("tmpvar", newVar());
+      list.add("tmpvar2", newVar());
+      if (ctx.init != null) list.add("init", "");
+      return list;
    }
 
+   // COMPLETED
    @Override public ST visitListBoolean(QuizParser.ListBooleanContext ctx) {
-      return visitChildren(ctx);
+      ST list = templates.getInstanceOf("list_boolean");
+      hasList = true;
+      list.add("var", ctx.ID().getText());
+      if (ctx.listFormatBool() != null) list.add("val", visit(ctx.listFormatBool()).render());
+      list.add("tmpvar", newVar());
+      list.add("tmpvar2", newVar());
+      if (ctx.init != null) list.add("init", "");
+      return list;
+   }
+
+   // COMPLETED
+   @Override public ST visitListFormatNumber(QuizParser.ListFormatNumberContext ctx) {
+      ST format = templates.getInstanceOf("return_plain_val");
+      String buildVals = "";
+      for (TerminalNode tm : ctx.NUMBER()) {
+         buildVals+=tm.getText()+", ";
+      }
+      format.add("val", buildVals.substring(0, buildVals.length()-2));
+      return format;
+   }
+
+   // COMPLETED
+   @Override public ST visitListFormatText(QuizParser.ListFormatTextContext ctx) {
+      ST format = templates.getInstanceOf("return_plain_val");
+      String buildVals = "";
+      for (TerminalNode tm : ctx.TEXT()) {
+         buildVals+=tm.getText()+", ";
+      }
+      format.add("val", buildVals.substring(0, buildVals.length()-2));
+      return format;
+   }
+
+   // COMPLETED
+   @Override public ST visitListFormatBool(QuizParser.ListFormatBoolContext ctx) {
+      ST format = templates.getInstanceOf("return_plain_val");
+      String buildVals = "";
+      for (QuizParser.BoolContext b : ctx.bool()) {
+         buildVals+=convertion.get(visit(b).render())+", ";
+      }
+      format.add("val", buildVals.substring(0, buildVals.length()-2));
+      return format;
+   }
+   
+   // COMPLETED
+   @Override public ST visitBool(QuizParser.BoolContext ctx) {
+      ST val = templates.getInstanceOf("return_plain_val");
+      val.add("val", ctx.getText());
+      return val;
    }
 
    // IN PROGRESS
@@ -295,7 +364,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST forLoop = templates.getInstanceOf("for_in");
       ctx.varx = newVar();
       forLoop.add("var", ctx.varx);
-      forLoop.add("type", types.get(ctx.type.getText()));
+      forLoop.add("type", convertion.get(ctx.type.getText()));
       String id = ctx.ID(0).getText();
       varTypes.put(id, "String");
       idToTmpVar.put(id, ctx.varx);

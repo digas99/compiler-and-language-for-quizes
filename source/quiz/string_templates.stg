@@ -1,4 +1,4 @@
-module(name, stat, hasVars, hasScanner, hasPrintWriter) ::= <<
+module(name, stat, hasVars, hasScanner, hasPrintWriter, hasList) ::= <<
 <if(hasScanner)>
 import java.util.Scanner;
 <endif>
@@ -8,6 +8,10 @@ import java.util.HashMap;
 <if(hasPrintWriter)>
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
+<endif>
+<if(hasList)>
+import java.util.ArrayList;
+import java.util.List;
 <endif>
 
 public class <name> {
@@ -158,4 +162,38 @@ for (<type> <var> : <var2>) {
     vars.put("<var1>", Double.toString(<var>));
     <stats(stat)>
 }
+>>
+
+return_plain_val(val) ::= <<
+<if(val)><val><endif>
+>>
+
+list_double(init, var, tmpvar, tmpvar2, val) ::= <<
+<if(init)>List\<Double> <var> = new ArrayList\<>();<endif>
+<if(val)>
+int[] <tmpvar> = {<val>};
+for (int <tmpvar2> : <tmpvar>) {
+    <var>.add(Double.valueOf(<tmpvar2>));
+}
+<endif>
+>>
+
+list_string(init, var, tmpvar, tmpvar2, val) ::= <<
+<if(init)>List\<String> <var> = new ArrayList\<>();<endif>
+<if(val)>
+String[] <tmpvar> = {<val>};
+for (String <tmpvar2> : <tmpvar>) {
+    <var>.add(<tmpvar2>);
+}
+<endif>
+>>
+
+list_boolean(init, var, tmpvar, tmpvar2, val) ::= <<
+<if(init)>List\<Boolean> <var> = new ArrayList\<>();<endif>
+<if(val)>
+boolean[] <tmpvar> = {<val>};
+for (boolean <tmpvar2> : <tmpvar>) {
+    <var>.add(<tmpvar2>);
+}
+<endif>
 >>

@@ -14,10 +14,10 @@ function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question')
 params : type=('text'|'number'|'boolean'|'question') ID ',';
 
 // LISTS
-list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
-        | 'list' 'number' ID ('=>' listFormatNumber)? ';'   # listNums
-        | 'list' 'text' ID ('=>' listFormatText)? ';'       # listText
-        | 'list' 'boolean' ID ('=>' listFormatBool)? ';'    # listBoolean
+list    : (init='list' 'question')? ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
+        | (init='list' 'number')? ID ('=>' listFormatNumber)? ';'   # listNums
+        | (init='list' 'text')? ID ('=>' listFormatText)? ';'       # listText
+        | (init='list' 'boolean')? ID ('=>' listFormatBool)? ';'    # listBoolean
         ;
 
 // MAPS
@@ -37,7 +37,7 @@ var returns[String varx = null]:
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
          | ID '=>' 'get' '(' (TEXT|questionFetch) ')' ';'                                                                  # varMapGet
-         | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|BOOLEAN) ')' ';'                                     # varMapPut
+         | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|bool) ')' ';'                                     # varMapPut
          | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
@@ -66,8 +66,10 @@ question : questionFetchTitle '=>' TEXT ';'                    # questionTitle
          ;
 
 listFormatNumber : '{' (NUMBER ', ')* NUMBER '}';
-listFormatText   : '{' (TEXT ',')* TEXT '}';
-listFormatBool   : '{' (('TRUE'|'FALSE') ',')* ('TRUE'|'FALSE') '}';
+listFormatText   : '{' (TEXT ', ')* TEXT '}';
+listFormatBool   : '{' (bool ', ')* bool '}';
+
+bool  : 'TRUE'|'FALSE';
 
 // QUESTION OBJECT FETCHING
 questionFetch    : questionFetchTitle|questionFetchAnsRight|questionFetchAnsWrong|questionFetchDiff|questionFetchType|questionFetchTries|questionFetchTime|questionFetchPoints;
@@ -142,7 +144,6 @@ content  : map|list|var|write|question|forLoop|ifCond|doaslong|aslong|callfuncti
 
 TEXT     : '"'.*?'"' ;
 NUMBER   : [0-9]+;
-BOOLEAN  : ('TRUE'|'FALSE');
 ID       : [a-zA-Z0-9]+;
 Comment  : '!!'.*? '\n' -> skip;
 WS       : [ \n\t\r]+ -> skip;
