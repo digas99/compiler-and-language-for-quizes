@@ -139,6 +139,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       atrib.add("var", ctx.varx);
       if (ctx.TEXT() != null) atrib.add("value", ctx.TEXT().getText());
       atrib.add("id", ctx.ID().getText());
+      idToTmpVar.put(ctx.ID().getText(), ctx.varx);
       varTypes.put(ctx.ID().getText(), "String");
       return atrib;
    }
@@ -384,38 +385,28 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // IN PROGRESS
    @Override public ST visitCallfunction(QuizParser.CallfunctionContext ctx) {
       ST call = templates.getInstanceOf("callfunc");
-      String paramsBuild = "";
-      boolean hasAtLeastOneParam = false;
-      int i;
       call.add("name", ctx.ID(0).getText());
-      // if there is another ID other than the name of the function
-      if (ctx.ID().size() > 1) {
-         hasAtLeastOneParam = true;
-         for (i = 1; i < ctx.ID().size(); i++) {
-            String id = ctx.ID(i).getText();
-            String getTemp = idToTmpVar.containsKey(id) ? idToTmpVar.get(id) : id;
-            paramsBuild += getTemp + ", ";
-         }
+      for (QuizParser.CallParamsContext p : ctx.callParams()) {
+         call.add("param", visit(p).render()+", ");
       }
-      if (ctx.TEXT().size() > 0) {
-         hasAtLeastOneParam = true;
-         for (i = 0; i < ctx.TEXT().size(); i++) {
-            paramsBuild += ctx.TEXT(i).getText() + ", ";
+      if (ctx.last != null) {
+         // if last is an id
+         if (ctx.ID(1) != null) {
+            call.add("param", idToTmpVar.get(ctx.last.getText()));   
          }
-      }
-      if (ctx.NUMBER().size() > 0) {
-         hasAtLeastOneParam = true;
-         for (i = 0; i < ctx.NUMBER().size(); i++) {
-            paramsBuild += ctx.NUMBER(i).getText() + ", ";
+         else {
+            call.add("param", ctx.last.getText());
          }
-      }
-      
-      if (hasAtLeastOneParam) {
-         // remove last comma and space   
-         call.add("param", paramsBuild.substring(0, paramsBuild.length()-2));
       }
 
       return call;
+   }
+
+
+   @Override public ST visitCallParams(QuizParser.CallParamsContext ctx) {
+      ST callp = templates.getInstanceOf("callparams");
+      callp.add("val", ctx.val.getText());
+      return callp;
    }
 
    @Override public ST visitConditional(QuizParser.ConditionalContext ctx) {

@@ -99,6 +99,10 @@ callfunc(name, param) ::= <<
 <name>(<param>);
 >>
 
+callparams(val) ::= <<
+<if(val)><val><endif>
+>>
+
 varmanip_front(var, action, id) ::= <<
 <var><action>;
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>

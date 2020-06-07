@@ -1,5 +1,8 @@
 main =>
     call test(2, "3", "qwd");
+    text t => "wfwe";
+    call test2(t);
+    call test3();
 >>
 
 function (number a, text c, text b) test =>
