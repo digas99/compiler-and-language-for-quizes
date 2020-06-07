@@ -84,8 +84,9 @@ write    : 'write' '(' 'CONSOLE' ')' '=>' (TEXT|expr|questionFetch) ';' # writeC
          ;
 
 // LOOPS
-forLoop  : 'for' '(' ('text'|'number'|'boolean'|'question'|'map') ID 'in' ID ')' '=>' content+ '>>'
-         | 'for' '(' NUMBER 'to' NUMBER ')' ('['('+'|'-') NUMBER ']')? '=>' content+ '>>'
+forLoop returns[String varx = null]:  
+           'for' '(' ('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'                # forIn
+         | 'for' ID'(' start=(NUMBER|ID) 'to' end=(NUMBER|ID) ')' ('['op=('+'|'-') incr=NUMBER ']')? '=>' content+ '>>' # forTo
          ;
 
 doaslong : 'do' '=>' content+ '>>' 'aslong' '(' conditional ')' ';';

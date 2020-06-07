@@ -14,6 +14,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private boolean hasScanner = false;
    private HashMap<String, String> types = new HashMap<>();
    private HashMap<String, String> idToTmpVar = new HashMap<>();
+   private HashMap<String, Double> realValueOfId = new HashMap<>();
    private List<String> funcParamsNames = new ArrayList<>();
    private HashMap<String, String> varTypes = new HashMap<>();
    private String newVar() {
@@ -131,6 +132,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
+   // IN PROGRESS
    @Override public ST visitVarText(QuizParser.VarTextContext ctx) {
       ST atrib = templates.getInstanceOf("atrib");
       ctx.varx = newVar();
@@ -267,6 +269,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return print;
    }
 
+   // COMPLETE
    @Override public ST visitWriteFile(QuizParser.WriteFileContext ctx) {
       ST writer = templates.getInstanceOf("write");
       writer.add("file", ctx.TEXT(0).getText());
@@ -287,8 +290,64 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return writer;
    }
 
-   @Override public ST visitForLoop(QuizParser.ForLoopContext ctx) {
+   // IN PROGRESS
+   @Override public ST visitForIn(QuizParser.ForInContext ctx) {
       return visitChildren(ctx);
+   }
+
+   // COMPLETED
+   @Override public ST visitForTo(QuizParser.ForToContext ctx) {
+      ST forLoop = templates.getInstanceOf("for_loop");
+      ctx.varx = newVar();
+      forLoop.add("var", ctx.varx);
+      
+      String id = ctx.ID(0).getText();
+      forLoop.add("id", id);
+      varTypes.put(id, "String");
+      idToTmpVar.put(id, ctx.varx);
+      
+      for (QuizParser.ContentContext content : ctx.content()) {
+         forLoop.add("stat", visit(content));
+      }
+
+      String start = ctx.start.getText();
+      String end = ctx.end.getText();
+      
+      if (isNumber(start)) forLoop.add("start", start);
+      else forLoop.add("start", idToTmpVar.get(start));
+
+      if (isNumber(end)) forLoop.add("end", end);
+      else forLoop.add("end", idToTmpVar.get(end));
+
+      double startInt, endInt;
+      try {
+         startInt = Integer.parseInt(start);
+      } catch(NumberFormatException e) {
+         startInt = realValueOfId.get(start);
+      }
+
+      try {
+         endInt = Integer.parseInt(end);
+      } catch(NumberFormatException e) {
+         endInt = realValueOfId.get(end);
+      }
+
+      double res = startInt - endInt;
+
+      if (res < 0)
+         forLoop.add("comp", "<");
+      else forLoop.add("comp", ">");
+
+      if (ctx.incr != null) {
+         forLoop.add("increment", ctx.incr.getText());
+         forLoop.add("op", ctx.op.getText());
+      }
+      else {
+         forLoop.add("increment", 1);
+         forLoop.add("op", "+");
+      }
+      
+      return forLoop; 
    }
 
    @Override public ST visitDoaslong(QuizParser.DoaslongContext ctx) {
@@ -503,6 +562,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitExprNumber(QuizParser.ExprNumberContext ctx) {
       ST res = templates.getInstanceOf("atrib_double");
       ctx.varx = newVar();
+      realValueOfId.put(tmpId, Double.parseDouble(ctx.NUMBER().getText()));
       ctx.type = "double";
       if (!tmpId.equals("")) {
          res.add("id", tmpId);
@@ -534,6 +594,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
                   res.add("double", "");
                   break;
             }
+         }
+         else {
+            System.out.println("Can't get from map because varTypes doesn't contain the key "+id);
          }
       }
       else {
@@ -584,5 +647,14 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          if (entry.getValue().equals(value)) return entry.getKey();
       }
       return null;
+   }
+
+   private boolean isNumber(String n) {
+      try {
+         Integer.parseInt(n);
+      } catch(NumberFormatException e) {
+         return false;
+      }
+      return true;
    }
 }

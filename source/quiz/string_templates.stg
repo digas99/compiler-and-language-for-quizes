@@ -137,3 +137,10 @@ try {
     System.out.println(e);
 }
 >>
+
+for_loop(stat, id, var, start, end, comp, increment, op) ::= <<
+for (double <var> = <start>; <var> <comp> <end>; <var><op>=<increment>) {
+    vars.put("<id>", Double.toString(<var>));
+    <stats(stat)>
+}
+>>
