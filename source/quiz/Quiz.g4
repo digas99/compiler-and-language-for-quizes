@@ -85,7 +85,7 @@ write    : 'write' '(' 'CONSOLE' ')' '=>' (TEXT|expr|questionFetch) ';' # writeC
 
 // LOOPS
 forLoop returns[String varx = null]:  
-           'for' '(' ('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'                # forIn
+           'for' '(' type=('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'                # forIn
          | 'for' ID'(' start=(NUMBER|ID) 'to' end=(NUMBER|ID) ')' ('['op=('+'|'-') incr=NUMBER ']')? '=>' content+ '>>' # forTo
          ;
 

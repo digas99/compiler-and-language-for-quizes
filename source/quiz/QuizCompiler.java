@@ -292,7 +292,19 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    // IN PROGRESS
    @Override public ST visitForIn(QuizParser.ForInContext ctx) {
-      return visitChildren(ctx);
+      ST forLoop = templates.getInstanceOf("for_in");
+      ctx.varx = newVar();
+      forLoop.add("var", ctx.varx);
+      forLoop.add("type", types.get(ctx.type.getText()));
+      String id = ctx.ID(0).getText();
+      varTypes.put(id, "String");
+      idToTmpVar.put(id, ctx.varx);
+      forLoop.add("var1", id);
+      forLoop.add("var2", ctx.ID(1).getText());
+      for (QuizParser.ContentContext content : ctx.content()) {
+         forLoop.add("stat", visit(content).render());
+      }
+      return forLoop;
    }
 
    // COMPLETED
@@ -307,7 +319,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       idToTmpVar.put(id, ctx.varx);
       
       for (QuizParser.ContentContext content : ctx.content()) {
-         forLoop.add("stat", visit(content));
+         forLoop.add("stat", visit(content).render());
       }
 
       String start = ctx.start.getText();

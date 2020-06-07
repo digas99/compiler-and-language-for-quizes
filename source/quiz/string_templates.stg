@@ -144,3 +144,10 @@ for (double <var> = <start>; <var> <comp> <end>; <var><op>=<increment>) {
     <stats(stat)>
 }
 >>
+
+for_in(stat, type, var, var1, var2) ::= <<
+for (<type> <var> : <var2>) {
+    vars.put("<var1>", Double.toString(<var>));
+    <stats(stat)>
+}
+>>
