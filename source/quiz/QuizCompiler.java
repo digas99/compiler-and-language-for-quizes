@@ -67,28 +67,18 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return main;
    }
 
-   // IN PROGRESS
+   // COMPLETED
    @Override public ST visitFunction(QuizParser.FunctionContext ctx) {
       ST func = templates.getInstanceOf("function");
       func.add("name", ctx.name.getText());
-      List<TerminalNode> paramsTypes = ctx.getTokens(7);
 
-         if (paramsTypes.size() > 0) {
-         // take all TerminalNodes but the last one (which is the func name)
-         List<TerminalNode> paramsNames = new ArrayList<>();
-         for (int i = 0; i < ctx.ID().size()-1; i++) {
-            funcParamsNames.add(ctx.ID(i).getText());
-            paramsNames.add(ctx.ID(i));
-         }
-
-         if (paramsTypes.size() > 1) {
-            for (int j = 0; j < paramsTypes.size()-1; j++) {
-               func.add("param", types.get(paramsTypes.get(j).getText()) + " " + paramsNames.get(j) + ", ");
-            }
-         }
-         func.add("param", types.get(paramsTypes.get(paramsTypes.size()-1).getText()) + " " + paramsNames.get(paramsNames.size()-1));
+      for (QuizParser.ParamsContext type : ctx.params()) {
+         String[] splitted = visit(type).render().split(" ");
+         func.add("param", types.get(splitted[0])+" "+splitted[1]+", ");
       }
 
+      if (ctx.type != null) func.add("param", types.get(ctx.type.getText())+" "+ctx.ID(0));
+      
       for (QuizParser.ContentContext content : ctx.content()) {
          func.add("stat", visit(content).render());
       }
@@ -114,6 +104,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       }
 
       return func;
+   }
+
+   @Override public ST visitParams(QuizParser.ParamsContext ctx) {
+      ST types = templates.getInstanceOf("types_formater");
+      if (ctx.type != null) {
+         types.add("type", ctx.type.getText());
+      }
+      types.add("id", ctx.ID().getText());
+      return types;
    }
 
    @Override public ST visitListQuestion(QuizParser.ListQuestionContext ctx) {
@@ -382,7 +381,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
-   // COMPLETED
+   // IN PROGRESS
    @Override public ST visitCallfunction(QuizParser.CallfunctionContext ctx) {
       ST call = templates.getInstanceOf("callfunc");
       String paramsBuild = "";
@@ -401,7 +400,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (ctx.TEXT().size() > 0) {
          hasAtLeastOneParam = true;
          for (i = 0; i < ctx.TEXT().size(); i++) {
-            paramsBuild += "\"" + ctx.TEXT(i).getText() + "\", ";
+            paramsBuild += ctx.TEXT(i).getText() + ", ";
          }
       }
       if (ctx.NUMBER().size() > 0) {

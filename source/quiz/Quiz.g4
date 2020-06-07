@@ -8,7 +8,10 @@ block   : (function|main);
 main    : 'main' '=>' content+ '>>';
 
 // FUNCTIONS
-function : 'function' '(' (('text'|'number'|'boolean'|'question') ID ',')* (('text'|'number'|'boolean'|'question') ID)? ')' name=ID '=>' (content)* ('return' expr ';')? '>>';
+function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question') ID)? ')' name=ID '=>' (content)* ('return' expr ';')? '>>';
+
+// auxiliar to function to give all possible parameters
+params : type=('text'|'number'|'boolean'|'question') ID ',';
 
 // LISTS
 list    : 'list' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion

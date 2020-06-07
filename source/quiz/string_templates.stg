@@ -91,6 +91,10 @@ public static <return_type> <name>(<param>) {
 }
 >>
 
+types_formater(type, id) ::= <<
+<type> <id>
+>>
+
 callfunc(name, param) ::= <<
 <name>(<param>);
 >>

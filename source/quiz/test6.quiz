@@ -1,0 +1,15 @@
+main =>
+    call test(2, "3", "qwd");
+>>
+
+function (number a, text c, text b) test =>
+    write (CONSOLE) => "sdaas";
+>>
+
+function (text d) test2 =>
+    write (CONSOLE) => "sdaas";
+>>
+
+function () test3 =>
+    write (CONSOLE) => "sdaas";
+>>
