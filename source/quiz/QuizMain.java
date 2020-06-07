@@ -1,4 +1,4 @@
-import java.io.FileWriter;
+import java.io.PrintWriter;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
@@ -30,7 +30,7 @@ public class QuizMain {
          // System.out.println(tree.toStringTree(parser));
          String fileName = args[0];
          QuizCompiler compiler = new QuizCompiler(fileName);
-         FileWriter writer = new FileWriter("outputs/"+fileName+".java");
+         PrintWriter writer = new PrintWriter("outputs/"+fileName+".java");
          ST res = compiler.visit(tree);
          writer.write(res.render());
          writer.close();

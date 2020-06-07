@@ -1,6 +1,5 @@
 import java.util.Scanner;
 import java.util.HashMap;
-
 public class Test3 {
     static HashMap<String, String> vars = new HashMap<>();
     public static void main(String[] args) {

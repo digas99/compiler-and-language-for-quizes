@@ -1,5 +1,4 @@
 import java.util.HashMap;
-
 public class Test1 {
     static HashMap<String, String> vars = new HashMap<>();
     public static void main(String[] args) {

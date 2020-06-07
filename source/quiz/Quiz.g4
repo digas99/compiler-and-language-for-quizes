@@ -80,7 +80,7 @@ questionFetchPoints   :  ID '.points';
 
 // WRITE
 write    : 'write' '(' 'CONSOLE' ')' '=>' (TEXT|expr|questionFetch) ';' # writeConsole
-         | 'write' '(' TEXT ')' '=>' (TEXT|expr|questionFetch) ';'      # writeText
+         | 'write' '(' TEXT ')' '=>' (TEXT|expr|questionFetch) ';'      # writeFile
          ;
 
 // LOOPS
@@ -123,7 +123,7 @@ varmanipulation returns[String varx = null]:
                 ;
 
 // Aritmetics
-expr returns[String varx = null]:  
+expr returns[String varx = null, String type = null]:  
             op=('-'|'+') expr           # ExprUnary
         |   expr op=('*'|'/'|'%') expr  # ExprMultDivMod
         |   expr op=('+'|'-') expr      # ExprAddSub

@@ -1,9 +1,13 @@
-module(name, stat, hasVars, hasScanner) ::= <<
+module(name, stat, hasVars, hasScanner, hasPrintWriter) ::= <<
 <if(hasScanner)>
 import java.util.Scanner;
 <endif>
 <if(hasVars)>
 import java.util.HashMap;
+<endif>
+<if(hasPrintWriter)>
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
 <endif>
 
 public class <name> {
@@ -52,12 +56,12 @@ tmp_atrib(type, var, value) ::= <<
 
 atrib(type, var, value, id) ::= <<
 <type> <var> = <value>;
-vars.put("<id>", <var>);
+<if(id)>vars.put("<id>", <var>);<endif>
 >>
 
 atrib_double(type, var, value, id) ::= <<
 <type> <var> = <value>;
-vars.put("<id>", Double.toString(<var>));
+<if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
 atrib_unary(stat,id,type,var,op,e1) ::= <<
@@ -93,12 +97,12 @@ callfunc(name, param) ::= <<
 
 varmanip_front(var, action, id) ::= <<
 <var><action>;
-vars.put("<id>", Double.toString(<var>));
+<if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
 varmanip_back(var, action, id) ::= <<
 <action><var>;
-vars.put("<id>", Double.toString(<var>));
+<if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
 varmanip_number(newvar, var, action, number, mod_var, id) ::= <<
@@ -109,7 +113,7 @@ varmanip_number(newvar, var, action, number, mod_var, id) ::= <<
 <if(number)>
 <var><action><number>;
 <endif>
-vars.put("<id>", Double.toString(<var>));
+<if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
 handle_func_param(type, var, value) ::= <<
@@ -120,4 +124,16 @@ vars.put("<value>", Double.toString(<var>));
 read(file, type, var, id) ::= <<
 Scanner rd = new Scanner(<file>);
 <atrib(type, var, "rd.nextLine()", id)>
+>>
+
+write(file, var, stat, string, double) ::= <<
+<if(stat)><stats(stat)><endif>
+try {
+    PrintWriter <var> = new PrintWriter(<file>);
+    <if(string)><var>.write(<string>);<endif>
+    <if(double)><var>.write(Double.toString(<double>));<endif>
+    <var>.close();
+} catch(FileNotFoundException e) {
+    System.out.println(e);
+}
 >>
