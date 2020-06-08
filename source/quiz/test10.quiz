@@ -1,6 +1,6 @@
 main =>
-    boolean c => TRUE;
-    call bool(c);
+    boolean a => TRUE;
+    call bool(a);
 >>
 
 function(boolean c) bool =>

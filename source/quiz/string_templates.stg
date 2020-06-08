@@ -37,12 +37,15 @@ stats(stat) ::= <<
 <if(stat)><stat; separator="\n"><endif>
 >>
 
-get_from_map(string, double, id, var) ::= <<
+get_from_map(string, double, boolean, id, var) ::= <<
 <if(double)>
 double <var> = vars.containsKey("<id>") ? Double.parseDouble(vars.get("<id>")) : Double.NaN;
 <endif>
 <if(string)>
 String <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
+<endif>
+<if(boolean)>
+boolean <var> = vars.containsKey("<id>") ? Boolean.parseBoolean(vars.get("<id>")) : null;
 <endif>
 >>
 
@@ -52,6 +55,10 @@ double <var> = vars.containsKey("<id>") ? Double.parseDouble(vars.get("<id>")) :
 
 get_from_map_string(id, var) ::= <<
 String <var> = vars.containsKey("<id>") ? vars.get("<id>") : null;
+>>
+
+get_from_map_boolean(id, var) ::= <<
+boolean <var> = vars.containsKey("<id>") ? Boolean.parseBoolean(vars.get("<id>")) : null;
 >>
 
 tmp_atrib(type, var, value) ::= <<
@@ -70,7 +77,7 @@ atrib_double(type, var, value, id) ::= <<
 
 atrib_boolean(type, var, value, id) ::= <<
 <type> <var> = <value>;
-<if(id)>vars.put("<id>", <var>);<endif>
+<if(id)>vars.put("<id>", Boolean.toString(<var>));<endif>
 >>
 
 atrib_unary(stat,id,type,var,op,e1) ::= <<
@@ -129,9 +136,9 @@ varmanip_number(newvar, var, action, number, mod_var, id) ::= <<
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
-handle_func_param(type, var, value) ::= <<
+handle_func_param(type, var, value, double, boolean) ::= <<
 <tmp_atrib(type, var, value)>
-vars.put("<value>", Double.toString(<var>));
+vars.put("<value>", <if(double)>Double.toString<endif><if(boolean)>Boolean.toString<endif>(<var>));
 >>
 
 read(file, type, var, id) ::= <<

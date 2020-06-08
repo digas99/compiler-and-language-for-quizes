@@ -16,7 +16,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private HashMap<String, String> convertion = new HashMap<>();
    private HashMap<String, String> idToTmpVar = new HashMap<>();
    private HashMap<String, Double> realValueOfId = new HashMap<>();
-   private List<String> funcParamsNames = new ArrayList<>();
+   private HashMap<String, String> funcParams = new HashMap<>();
    private HashMap<String, String> varTypes = new HashMap<>();
    private String newVar() {
       numVars++;
@@ -52,7 +52,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (numWriters > 0) module.add("hasPrintWriter", "");
 
       if (hasList) module.add("hasList", "");
-      
+
       return module;
    }
 
@@ -76,10 +76,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitFunction(QuizParser.FunctionContext ctx) {
       ST func = templates.getInstanceOf("function");
       func.add("name", ctx.name.getText());
-
       for (QuizParser.ParamsContext type : ctx.params()) {
          String[] splitted = visit(type).render().split(" ");
          func.add("param", convertion.get(splitted[0])+" "+splitted[1]+", ");
+         System.out.print("splitted: ");
+         System.out.println(splitted[0]+" "+splitted[1]);
+         funcParams.put(splitted[1], splitted[0]);
       }
 
       if (ctx.type != null) func.add("param", convertion.get(ctx.type.getText())+" "+ctx.ID(0));
@@ -94,15 +96,20 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          func.add("building_return", expr);
          func.add("ret", ctx.expr().varx);
          String[] words = expr.split(" ");
-         boolean isInt = false;
          for (String word : words) {
             if (word.equals("double")) {
                func.add("return_type", "double");
-               isInt = true;
+               break;
+            }
+            else if (word.equals("boolean")) {
+               func.add("return_type", "boolean");
+               break;
+            }
+            else {
+               func.add("return_type", "String");
                break;
             }
          }
-         if (!isInt) func.add("return_type", "String");
       }
       else {
          func.add("return_type", "void");
@@ -237,18 +244,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitVarBoolean(QuizParser.VarBooleanContext ctx) {
-      ST varBoolean = templates.getInstanceOf("atrib_boolean");
+      ST atrib = templates.getInstanceOf("atrib_boolean");
       ctx.varx = newVar();
-      String id = ctx.ID().getText();
-      varTypes.put(id, ctx.ID().getText());
-      //    res.add("id", tmpId);
-      //    varTypes.put(tmpId, "double");
-      // }
-      varBoolean.add("val", visit(ctx.listFormatBool()).render());
-      varBoolean.add("type", "boolean");
-      varBoolean.add("var", ctx.varx);
-      varBoolean.add("value", ctx.bool().getText());
-      return varBoolean;
+      atrib.add("type", "boolean");
+      atrib.add("var", ctx.varx);
+      if (ctx.bool() != null) atrib.add("value", convertion.get(visit(ctx.bool()).render()));
+      atrib.add("id", ctx.ID().getText());
+      idToTmpVar.put(ctx.ID().getText(), ctx.varx);
+      varTypes.put(ctx.ID().getText(), "boolean");
+      return atrib;
    }
 
    @Override public ST visitVarQuestion(QuizParser.VarQuestionContext ctx) {
@@ -525,7 +529,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // COMPLETED
    @Override public ST visitCallParams(QuizParser.CallParamsContext ctx) {
       ST callp = templates.getInstanceOf("return_plain_val");
-      callp.add("val", ctx.val.getText());
+      callp.add("val", idToTmpVar.get(ctx.val.getText()));
       return callp;
    }
 
@@ -719,11 +723,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       String id = ctx.ID().getText();
       ST res;
       ctx.varx = newVar();
-      if (!funcParamsNames.contains(id)) {
+      System.out.print("funcParams: ");
+      System.out.println(funcParams);
+      if (!funcParams.containsKey(id)) {
          res = templates.getInstanceOf("get_from_map");
          res.add("id", id);
          res.add("var", ctx.varx);
          if (varTypes.containsKey(id)) {
+            System.out.print("varTypes(nor from funcParams): ");
+            System.out.println(varTypes);
             switch(varTypes.get(id)) {
                case "String":
                   ctx.type = "String";
@@ -733,6 +741,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
                   ctx.type = "double";
                   res.add("double", "");
                   break;
+               case "boolean":
+                  ctx.type = "boolean";
+                  res.add("boolean", "");
+                  break;
             }
          }
          else {
@@ -740,8 +752,18 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          }
       }
       else {
+         System.out.println("inside handle func param");
          res = templates.getInstanceOf("handle_func_param");
-         res.add("type", "double");
+         String type = funcParams.get(id);
+         switch (type) {
+            case "double":
+               res.add("double", "");
+               break;
+            case "boolean":
+               res.add("boolean", "");
+               break;
+         }
+         res.add("type", convertion.get(type));
          res.add("var", ctx.varx);
          res.add("value", id);
       }

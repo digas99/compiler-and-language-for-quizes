@@ -32,7 +32,7 @@ var returns[String varx = null]:
            'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                            # varText
          | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                          # varTextRead
          | 'number'? ID ('=>' (expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
-         | 'boolean'? ID ('=>' bool? ';'                                                                      # varBoolean
+         | 'boolean'? ID ('=>' bool)? ';'                                                                      # varBoolean
          | 'question'? ID ';'                                                                                              # varQuestion
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove

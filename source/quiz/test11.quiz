@@ -1,0 +1,8 @@
+main =>
+    call returnBoolean();
+>>
+
+function () returnBoolean =>
+    boolean b => FALSE;
+    return b;
+>>
