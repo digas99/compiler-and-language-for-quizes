@@ -431,12 +431,24 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return forLoop; 
    }
 
+   // COMPLETED
    @Override public ST visitDoaslong(QuizParser.DoaslongContext ctx) {
-      return visitChildren(ctx);
+      ST doLoop = templates.getInstanceOf("do_while");
+      doLoop.add("condition", visit(ctx.conditional()).render());
+      for (QuizParser.ContentContext cont : ctx.content()) {
+         doLoop.add("stat", visit(cont).render());
+      }
+      return doLoop;
    }
 
+   // COMPLETED
    @Override public ST visitAslong(QuizParser.AslongContext ctx) {
-      return visitChildren(ctx);
+      ST whileLoop = templates.getInstanceOf("while");
+      whileLoop.add("condition", visit(ctx.conditional()).render());
+      for (QuizParser.ContentContext cont : ctx.content()) {
+         whileLoop.add("stat", visit(cont).render());
+      }
+      return whileLoop;
    }
 
    @Override public ST visitIfCond(QuizParser.IfCondContext ctx) {
@@ -471,15 +483,32 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return call;
    }
 
-
    @Override public ST visitCallParams(QuizParser.CallParamsContext ctx) {
       ST callp = templates.getInstanceOf("callparams");
       callp.add("val", ctx.val.getText());
       return callp;
    }
 
+   // IN PROGRESS
    @Override public ST visitConditional(QuizParser.ConditionalContext ctx) {
-      return visitChildren(ctx);
+      ST cond = templates.getInstanceOf("conditional");
+      if (ctx.ID() != null) {
+         String[] content = ctx.getText().split("T");
+         // then there is a NOT
+         if (content.length > 1) {
+            cond.add("not", "!");
+         }
+         cond.add("id", idToTmpVar.get(ctx.ID().getText()));
+      }
+      else if (ctx.expr().size() > 0) {
+         System.out.println("expr");
+      }
+      else {
+         if (ctx.op.getText().equals("!=")) cond.add("not", "!");
+         cond.add("s1", ctx.TEXT(0).getText());
+         cond.add("s2", ctx.TEXT(1).getText());
+      }
+      return cond;
    }
 
    // COMPLETED

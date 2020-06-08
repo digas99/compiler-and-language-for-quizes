@@ -114,8 +114,8 @@ callParams : val=(TEXT|NUMBER|ID) ',';
 
 // CONDITIONAL STATEMENTS
 conditional : 'NOT'? ID
-            | (expr ('AND'|'OR'|'=='|'>'|'<'))+ expr
-            | TEXT '==' TEXT
+            | (expr ('AND'|'OR'|'=='|'!='|'>'|'<'))+ expr
+            | TEXT op=('=='|'!=') TEXT
             ;
 
 // Manipulation var

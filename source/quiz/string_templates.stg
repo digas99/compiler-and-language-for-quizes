@@ -197,3 +197,24 @@ for (boolean <tmpvar2> : <tmpvar>) {
 }
 <endif>
 >>
+
+conditional(s1, s2, not, id) ::= <%
+<if(s1)>
+<if(not)><not>(<endif>
+<s1>.equals(<s2>)
+<if(not)>)<endif>
+<endif>
+<if(id)><not><id><endif>
+%>
+
+do_while(stat, condition) ::= <<
+do {
+    <stats(stat)>
+} while (<condition>);
+>>
+
+while(stat, condition) ::= <<
+while (<condition>) {
+    <stats(stat)>
+}
+>>
