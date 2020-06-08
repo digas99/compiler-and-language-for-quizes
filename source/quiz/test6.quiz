@@ -1,11 +1,11 @@
 main =>
-    call test(2, "3", "qwd");
+    call test(4, "3", "qwd");
     text t => "wfwe";
     call test2(t);
     call test3();
 >>
 
-function (number a, text c, text b) test =>
+function (number n, text c, text b) test =>
     write (CONSOLE) => "sdaas";
 >>
 

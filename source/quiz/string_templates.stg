@@ -103,10 +103,6 @@ callfunc(name, param) ::= <<
 <name>(<param>);
 >>
 
-callparams(val) ::= <<
-<if(val)><val><endif>
->>
-
 varmanip_front(var, action, id) ::= <<
 <var><action>;
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>
@@ -215,6 +211,26 @@ do {
 
 while(stat, condition) ::= <<
 while (<condition>) {
+    <stats(stat)>
+}
+>>
+
+ifstat(condition, stat, elseifstat, final) ::= <<
+if (<condition>) {
+    <stats(stat)>
+}
+<if(elseifstat)>
+<elseifstat>
+<endif>
+<if(final)>
+else {
+    <final>
+}
+<endif>
+>>
+
+elsifstat(condition, stat)::= <<
+else if (<condition>) {
     <stats(stat)>
 }
 >>

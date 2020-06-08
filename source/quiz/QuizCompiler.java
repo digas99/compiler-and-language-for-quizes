@@ -451,16 +451,45 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return whileLoop;
    }
 
+   // COMPLETED
    @Override public ST visitIfCond(QuizParser.IfCondContext ctx) {
-      return visitChildren(ctx);
+      ST ifcond = templates.getInstanceOf("ifstat");
+      ifcond.add("condition", visit(ctx.conditional()).render());
+      for (QuizParser.ContentContext cont : ctx.content()) {
+         ifcond.add("stat", visit(cont).render());
+      }
+      if (ctx.finalCond() != null) {
+         ifcond.add("final", visit(ctx.finalCond()).render());
+      }
+      if (ctx.elsif().size() > 0) {
+         int size = ctx.elsif().size();
+         for (int i = 0; i < size-1; i++) {
+            ifcond.add("elseifstat", visit(ctx.elsif(i)).render()+"\n");
+         }
+         ifcond.add("elseifstat", visit(ctx.elsif(size-1)).render());
+      }
+      return ifcond;
    }
 
+   // COMPLETED
    @Override public ST visitElsif(QuizParser.ElsifContext ctx) {
-      return visitChildren(ctx);
+      ST elseif = templates.getInstanceOf("elsifstat");
+      elseif.add("condition", visit(ctx.conditional()).render());
+      for (QuizParser.ContentContext cont : ctx.content()) {
+         elseif.add("stat", visit(cont).render());
+      }
+      return elseif;
    }
 
+   // COMPLETED
    @Override public ST visitFinalCond(QuizParser.FinalCondContext ctx) {
-      return visitChildren(ctx);
+      ST ifcond = templates.getInstanceOf("return_plain_val");
+      int size = ctx.content().size();
+      for (int i = 0; i < size-1; i++) {
+         ifcond.add("val", visit(ctx.content(i)).render()+"\n");
+      }
+      ifcond.add("val", visit(ctx.content(size-1)).render());
+      return ifcond;
    }
 
    // COMPLETED
@@ -479,12 +508,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
             call.add("param", ctx.last.getText());
          }
       }
-
       return call;
    }
 
+   // COMPLETED
    @Override public ST visitCallParams(QuizParser.CallParamsContext ctx) {
-      ST callp = templates.getInstanceOf("callparams");
+      ST callp = templates.getInstanceOf("return_plain_val");
       callp.add("val", ctx.val.getText());
       return callp;
    }

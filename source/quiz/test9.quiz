@@ -1,0 +1,28 @@
+main =>
+    number n => 0;
+    if ("a" != "sdfds") =>
+        n++;
+    >>
+
+    if ("a" == "a") =>
+        text b => "a";
+    >>
+    final =>
+        write (CONSOLE) => "a";
+        n+=5;
+    >>
+
+    if ("a" == "a") =>
+        n++;
+    >>
+    elsif ("b" != "n") =>
+        n--;
+    >>
+    elsif ("b" == "c") =>
+        n/=2;
+    >>
+    final =>
+        write (CONSOLE) => "a";
+        n+=5;
+    >>
+>>

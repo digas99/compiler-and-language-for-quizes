@@ -11,7 +11,7 @@ main    : 'main' '=>' content+ '>>';
 function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question') ID)? ')' name=ID '=>' (content)* ('return' expr ';')? '>>';
 
 // auxiliar to function to give all possible parameters
-params : type=('text'|'number'|'boolean'|'question') ID ',';
+params : type=('text'|'number'|'boolean'|'question') ID ', ';
 
 // LISTS
 list    : (init='list' 'question')? ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
@@ -110,7 +110,7 @@ finalCond : 'final' '=>' content+ '>>';
 // CALL FUNCTION
 callfunction : 'call' ID '(' (callParams)* last=(TEXT|NUMBER|ID)? ')' ';';
 
-callParams : val=(TEXT|NUMBER|ID) ',';
+callParams : val=(TEXT|NUMBER|ID) ', ';
 
 // CONDITIONAL STATEMENTS
 conditional : 'NOT'? ID
