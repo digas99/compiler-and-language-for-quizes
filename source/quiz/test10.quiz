@@ -1,0 +1,8 @@
+main =>
+    boolean c => TRUE;
+    call bool(c);
+>>
+
+function(boolean c) bool =>
+    write(CONSOLE) => c;
+>>

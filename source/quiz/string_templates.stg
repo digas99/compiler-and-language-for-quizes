@@ -68,6 +68,11 @@ atrib_double(type, var, value, id) ::= <<
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
+atrib_boolean(type, var, value, id) ::= <<
+<type> <var> = <value>;
+<if(id)>vars.put("<id>", <var>);<endif>
+>>
+
 atrib_unary(stat,id,type,var,op,e1) ::= <<
 <stats(stat)>
 <atrib_double(type, var, [op, e1], id)>

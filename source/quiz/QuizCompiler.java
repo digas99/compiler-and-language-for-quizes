@@ -237,7 +237,18 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitVarBoolean(QuizParser.VarBooleanContext ctx) {
-      return visitChildren(ctx);
+      ST varBoolean = templates.getInstanceOf("atrib_boolean");
+      ctx.varx = newVar();
+      String id = ctx.ID().getText();
+      varTypes.put(id, ctx.ID().getText());
+      //    res.add("id", tmpId);
+      //    varTypes.put(tmpId, "double");
+      // }
+      varBoolean.add("val", visit(ctx.listFormatBool()).render());
+      varBoolean.add("type", "boolean");
+      varBoolean.add("var", ctx.varx);
+      varBoolean.add("value", ctx.bool().getText());
+      return varBoolean;
    }
 
    @Override public ST visitVarQuestion(QuizParser.VarQuestionContext ctx) {
