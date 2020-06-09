@@ -113,9 +113,9 @@ callfunction : 'call' ID '(' (callParams)* last=(TEXT|NUMBER|ID)? ')' ';';
 callParams : val=(TEXT|NUMBER|ID) ', ';
 
 // CONDITIONAL STATEMENTS
-conditional : 'NOT'? ID
-            | (expr ('AND'|'OR'|'=='|'!='|'>'|'<'))+ expr
-            | TEXT op=('=='|'!=') TEXT
+conditional : 'NOT'? id=ID
+            | (field1=(ID|NUMBER) op1=('AND'|'OR'|'=='|'!='|'>'|'<'))+ field2=(ID|NUMBER)
+            | TEXT op2=('=='|'!=') TEXT
             ;
 
 // Manipulation var

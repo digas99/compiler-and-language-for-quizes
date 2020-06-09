@@ -206,10 +206,14 @@ for (boolean <tmpvar2> : <tmpvar>) {
 <endif>
 >>
 
-conditional(s1, s2, not, id) ::= <%
+conditional(s1, s2, not, id, op, equals) ::= <%
 <if(s1)>
 <if(not)><not>(<endif>
-<s1>.equals(<s2>)
+<s1>
+<if(equals)><equals>(<endif>
+<if(op)> <op> <endif>
+<s2>
+<if(equals)>)<endif>
 <if(not)>)<endif>
 <endif>
 <if(id)><not><id><endif>

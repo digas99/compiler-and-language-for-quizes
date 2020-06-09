@@ -1,5 +1,8 @@
 main =>
     number n => 0;
+    number a => 2;
+    boolean c => FALSE;
+    boolean d => FALSE;
     if ("a" != "sdfds") =>
         n++;
     >>
@@ -12,13 +15,13 @@ main =>
         n+=5;
     >>
 
-    if ("a" == "a") =>
+    if (n != a) =>
         n++;
     >>
-    elsif ("b" != "n") =>
+    elsif (n > 5) =>
         n--;
     >>
-    elsif ("b" == "c") =>
+    elsif (c AND d) =>
         n/=2;
     >>
     final =>

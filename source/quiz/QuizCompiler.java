@@ -36,6 +36,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       convertion.put("question", "Question");
       convertion.put("TRUE", "true");
       convertion.put("FALSE", "false");
+      convertion.put("AND", "&&");
+      convertion.put("OR", "||");
+      convertion.put("==", "==");
+      convertion.put("!=", "!=");
+      convertion.put(">", ">");
+      convertion.put("<", "<");
    }
 
    // COMPLETED
@@ -536,21 +542,33 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // IN PROGRESS
    @Override public ST visitConditional(QuizParser.ConditionalContext ctx) {
       ST cond = templates.getInstanceOf("conditional");
-      if (ctx.ID() != null) {
+      if (ctx.id != null) {
          String[] content = ctx.getText().split("T");
          // then there is a NOT
          if (content.length > 1) {
             cond.add("not", "!");
          }
-         cond.add("id", idToTmpVar.get(ctx.ID().getText()));
+         cond.add("id", idToTmpVar.get(ctx.ID(0).getText()));
       }
-      else if (ctx.expr().size() > 0) {
-         System.out.println("expr");
+      else if (ctx.field1 != null) {
+         String f1 = ctx.field1.getText();
+         String f2 = ctx.field2.getText();
+
+         if (!isNumber(ctx.field1.getText()))
+            f1 = idToTmpVar.get(ctx.field1.getText());
+
+         if (!isNumber(ctx.field2.getText()))
+            f2 = idToTmpVar.get(ctx.field2.getText());
+
+         cond.add("s1", f1);
+         cond.add("s2", f2);
+         cond.add("op", convertion.get(ctx.op1.getText()));
       }
       else {
-         if (ctx.op.getText().equals("!=")) cond.add("not", "!");
+         if (ctx.op2.getText().equals("!=")) cond.add("not", "!");
          cond.add("s1", ctx.TEXT(0).getText());
          cond.add("s2", ctx.TEXT(1).getText());
+         cond.add("equals", ".equals");
       }
       return cond;
    }
