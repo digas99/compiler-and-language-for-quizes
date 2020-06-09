@@ -3,7 +3,7 @@ grammar Questions;
 
 prog    : question+ ;
 
-question : ID '{' Title ',' Type ',' Difficulty ',' (Tries ',')? (Time ',')? (Points ',')? RightAns ',' WrongAns ','? '}';
+question : '<'ID'>' '{' Title ',' Type ',' Difficulty ',' (Tries ',')? (Time ',')? (Points ',')? RightAns ',' WrongAns ','? '}';
 
 Difficulty  : 'difficulty: EASY'         
             | 'difficulty: MEDIUM'         
@@ -27,9 +27,9 @@ Points : 'points: '[0-9]+;
 
 Time   : 'time: '[0-9]+;
 
-TEXT : '"'.*?'"' ;
+TEXT : '"' ('\\' ["\\] | ~["\\\r\n])* '"'  ;
 
-ID: '<'.*?'>';
+ID: [a-zA-Z0-9]+;
 
 Comment: '--'.*? '\n' -> skip;
 WS: [ \n\t\r]+ -> skip;
