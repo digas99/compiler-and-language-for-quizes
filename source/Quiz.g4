@@ -8,7 +8,7 @@ block   : (function|main);
 main    : 'main' '=>' content+ '>>';
 
 // FUNCTIONS
-function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question') ID)? ')' name=ID '=>' (content)* ('return' expr ';')? '>>';
+function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question') ID)? ')' name=ID '=>' (content)* ('return' (expr|bool) ';')? '>>';
 
 // auxiliar to function to give all possible parameters
 params : type=('text'|'number'|'boolean'|'question') ID ', ';

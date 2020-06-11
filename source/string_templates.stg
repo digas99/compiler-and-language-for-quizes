@@ -1,9 +1,12 @@
-module(name, stat, hasVars, hasScanner, hasPrintWriter, hasList) ::= <<
+module(name, stat, hasVars, hasScanner, hasPrintWriter, hasList, needsEntry) ::= <<
 <if(hasScanner)>
 import java.util.Scanner;
 <endif>
 <if(hasVars)>
 import java.util.HashMap;
+<endif>
+<if(needsEntry)>
+import java.util.Map.Entry;
 <endif>
 <if(hasPrintWriter)>
 import java.io.PrintWriter;
@@ -65,29 +68,43 @@ tmp_atrib(type, var, value) ::= <<
 <type> <var> = <value>;
 >>
 
-atrib(type, var, value, id) ::= <<
+atrib(type, var, value, id, insideFunc) ::= <<
 <type> <var> = <value>;
+<if(insideFunc)>
+// Store this variable if it is in main
+if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
+<endif>
 <if(id)>vars.put("<id>", <var>);<endif>
 >>
 
-atrib_double(type, var, value, id) ::= <<
+atrib_double(type, var, value, id, insideFunc) ::= <<
 <type> <var> = <value>;
+<if(insideFunc)>
+// Store this variable if it is in main
+if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
+<endif>
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
-atrib_boolean(type, var, value, id) ::= <<
+atrib_boolean(type, var, value, id, insideFunc) ::= <<
 <type> <var> = <value>;
+<if(insideFunc)>
+// Store this variable if it is in main
+if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
+<endif>
 <if(id)>vars.put("<id>", Boolean.toString(<var>));<endif>
 >>
 
 atrib_unary(stat,id,type,var,op,e1) ::= <<
 <stats(stat)>
-<atrib_double(type, var, [op, e1], id)>
+<type> <var> = <op><e1>;
+<if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
-binary_operation(stat, id, type, var, e1, op, e2) ::= <<
+binary_operation(stat, id, type, var, e1, op, e2, insideFunc) ::= <<
 <stats(stat)>
-<atrib_double(type, var, [e1, op, e2], id)>
+<type> <var> = <e1> <op> <e2>;
+<if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
 print(stat, text) ::= <<
@@ -95,13 +112,34 @@ print(stat, text) ::= <<
 System.out.println(<text>);
 >>
 
-function(name, return_type, building_return, param, stat, ret) ::= <<
+function(name, return_type, building_return, param, paramsID, stat, ret) ::= <<
 public static <return_type> <name>(<param>) {
-    <stats(stat)>
-    <if(ret)>
+    HashMap\<String, String> funcAuxMap = new HashMap\<>();
+    <if(param)>
+    // Store all variables from main the might be overwriten
+    String[] paramsIDs = {<paramsID>};
+    for (String paramID : paramsIDs) {
+        if (vars.containsKey(paramID)) {
+            funcAuxMap.put(paramID, vars.get(paramID));
+        }
+    }
+    <endif>
 
-    // building the return statement
+    <stats(stat)>
+
+    <if(building_return)>
+    // Building the return statement
+    // Whatever important variable being saved in the vars map is not a problem
+    // because it will be removed in the next loop through funcAuxMap
     <building_return>
+    <endif>
+
+    // Restore to the main map all variable stored in auxmap
+    for (Entry\<String, String> entry : funcAuxMap.entrySet()) {
+        vars.put(entry.getKey(), entry.getValue());
+    }
+
+    <if(ret)>
     return <ret>;
     <endif>
 }
@@ -115,23 +153,35 @@ callfunc(name, param) ::= <<
 <name>(<param>);
 >>
 
-varmanip_front(var, action, id) ::= <<
+varmanip_front(var, action, id, insideFunc) ::= <<
 <var><action>;
+<if(insideFunc)>
+// Store this variable if it is in main
+if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
+<endif>
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
-varmanip_back(var, action, id) ::= <<
+varmanip_back(var, action, id, insideFunc) ::= <<
 <action><var>;
+<if(insideFunc)>
+// Store this variable if it is in main
+if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
+<endif>
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
-varmanip_number(newvar, var, action, number, mod_var, id) ::= <<
+varmanip_number(newvar, var, action, number, mod_var, id, insideFunc) ::= <<
 <if(mod_var)>
 <get_from_map_double(mod_var, newvar)>
 <var><action><mod_var>;
 <endif>
 <if(number)>
 <var><action><number>;
+<endif>
+<if(insideFunc)>
+// Store this variable if it is in main
+if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
 <endif>
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>

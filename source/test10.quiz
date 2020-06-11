@@ -1,8 +1,26 @@
 main =>
-    boolean a => TRUE;
-    call bool(a);
+    number n => 12;
+    number b => 2;
+    call withParams(b);
+    write(CONSOLE) => n;
 >>
 
-function(boolean c) bool =>
-    write(CONSOLE) => c;
+function(number n) withParams =>
+    n => n + 2;
+    write(CONSOLE) => n;
+>>
+
+function () noParams =>
+    number n => 10;
+>>
+
+function(number n) withParamsAndReturn =>
+    n => n + 2;
+    write(CONSOLE) => n;
+    return n;
+>>
+
+function () testingBoolReturn =>
+    number a => 12;
+    return TRUE;
 >>
