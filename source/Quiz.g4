@@ -29,10 +29,10 @@ map     : 'map' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # mapQuestion
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID ('=>' (callfunction|((TEXT '+')* TEXT)|TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                            # varText
+           'text'? ID ('=>' (((TEXT)* TEXT)|callfunction|TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                            # varText
          | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                          # varTextRead
          | 'number'? ID ('=>' (callfunction|expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
-         | 'boolean'? ID ('=>' (callfunction|bool))? ';'                                                                      # varBoolean
+         | 'boolean'? ID ('=>' callfunction|bool)? ';'                                                                      # varBoolean
          | 'question'? ID ';'                                                                                              # varQuestion
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
@@ -42,24 +42,25 @@ var returns[String varx = null]:
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
 
-remove   : 'remove' '(' NUMBER ')' ';'          # removeNumber       
-         | 'remove' '(' TEXT ')' ';'            # removeText
-         | 'remove' '(' ID ')' ';'              # removeId
-         | 'remove' '(' '[' NUMBER ']' ')' ';'  # removeIndice
+remove   : 'remove' '(' NUMBER ')' ';'          
+         | 'remove' '(' TEXT ')' ';' 
+         | 'remove' '(' ID ')' ';'
+         | 'remove' '(' '[' NUMBER ']' ')' ';'
          ;
-add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'   # addList                                     
-         | 'add' '(' TEXT ')' ';'                                               # addText
-         | 'add' '(' ID ')' ';'                                                 # addId
-         | 'add' '(' NUMBER ')' ';'                                             # addNumber
+add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'
+         | 'add' '(' questionFetch ')' ';'
+         | 'add' '(' TEXT ')' ';'
+         | 'add' '(' ID ')' ';'
+         | 'add' '(' NUMBER ')' ';'
          ;
 
 // QUESTION OBJECT CREATION
 question : questionFetchTitle '=>' TEXT ';'                    # questionTitle                         
-         | questionFetchAnsRight '=>' listFormatText ';'       # questionAns         | questionFetchType '=>' ('multiple'|'open') ';'      # questionType
-         | questionFetchTries '=>' (Right
+         | questionFetchAnsRight '=>' listFormatText ';'       # questionAnsRight
          | questionFetchAnsWrong '=>' listFormatText ';'       # questionAnsWrong
          | questionFetchDiff '=>' ('easy'|'medium'|'hard') ';' # questionDifficulty
-ID|NUMBER) ';'             # questionTries
+         | questionFetchType '=>' ('multiple'|'open') ';'      # questionType
+         | questionFetchTries '=>' (ID|NUMBER) ';'             # questionTries
          | questionFetchTime '=>' (ID|NUMBER) ';'              # questionTime
          | questionFetchPoints '=>' (ID|NUMBER) ';'            # questionPoints
          ;
@@ -107,7 +108,7 @@ elsif    : 'elsif' '(' conditional ')' '=>' content+ '>>';
 finalCond : 'final' '=>' content+ '>>';
 
 // CALL FUNCTION
-callfunction : 'call' ID '(' (callParams)* last=(TEXT|NUMBER|ID)? ')' ';'?;
+callfunction : 'call' ID '(' (callParams)* last=(TEXT|NUMBER|ID)? ')' ';';
 
 callParams : val=(TEXT|NUMBER|ID) ', ';
 
