@@ -1,8 +1,0 @@
-main =>
-    boolean a => TRUE;
-    call bool(a);
->>
-
-function(boolean c) bool =>
-    write(CONSOLE) => c;
->>

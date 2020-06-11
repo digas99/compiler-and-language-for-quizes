@@ -1,8 +1,20 @@
 main =>
-    call returnBoolean();
+    boolean a => call returnBoolean();
+    number n => call returnNumber();
+    text b => call returnText();
+    text c => "asdasdas"+"asdsa";
 >>
 
 function () returnBoolean =>
     boolean b => FALSE;
     return b;
+>>
+
+function () returnNumber =>
+    return 6;
+>>
+
+function () returnText =>
+    text a => "123"+"432";
+    return a;
 >>

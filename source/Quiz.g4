@@ -29,10 +29,10 @@ map     : 'map' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # mapQuestion
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID ('=>' (((TEXT)* TEXT)|callfunction|TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                            # varText
+           'text'? ID ('=>' (((TEXT '+')* TEXT ';')|callfunction|singlestring=TEXT ';'|questionFetchTitle|questionFetchDiff|questionFetchType))?  # varText
          | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                          # varTextRead
-         | 'number'? ID ('=>' (callfunction|expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
-         | 'boolean'? ID ('=>' callfunction|bool)? ';'                                                                      # varBoolean
+         | 'number'? ID ('=>' (callfunction|expr ';'|ID '[' (ID|NUMBER) ']' ';'|questionFetchTries|questionFetchTime|questionFetchPoints))? # varNumber
+         | 'boolean'? ID ('=>' (callfunction|bool ';'))?                                                                      # varBoolean
          | 'question'? ID ';'                                                                                              # varQuestion
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
