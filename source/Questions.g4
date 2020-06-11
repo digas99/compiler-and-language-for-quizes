@@ -1,9 +1,12 @@
 
 grammar Questions;
 
-prog    : question+ ;
+prog    : standart question+ ;
 
-question : '<'ID'>' '{' Title ',' Type ',' Difficulty ',' (Tries ',')? (Time ',')? (Points ',')? RightAns ',' WrongAns ','? '}';
+standart : Time Tries Points ;
+
+question : ID '{' Title ',' Type ',' Difficulty ',' (Tries ',')? (Time ',')? (Points ',')? RightAns ',' WrongAns ','? '}'
+         ;
 
 Difficulty  : 'difficulty: EASY'         
             | 'difficulty: MEDIUM'         
@@ -29,7 +32,8 @@ Time   : 'time: '[0-9]+;
 
 TEXT : '"' ('\\' ["\\] | ~["\\\r\n])* '"'  ;
 
-ID: [a-zA-Z0-9]+;
+ID: '<'[a-zA-Z0-9]+'>';
+
 
 Comment: '--'.*? '\n' -> skip;
 WS: [ \n\t\r]+ -> skip;

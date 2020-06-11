@@ -1,7 +1,6 @@
--- tries: 3 -- default: 1
--- time: 300 -- default: no time
--- points: 10 -- default: no points
-
+time: 15
+tries: 8
+points: 10
 
 
 <cidades> { title: "Quais sao cidades?",
@@ -9,7 +8,6 @@ type: MULTIPLE,
 difficulty: EASY,
 right: ["Lisboa"],
 wrong: ["Portugal","Espanha","Brasil"] }
-
 
 
 <cidades01> { title: "Quais sao cidades?",
