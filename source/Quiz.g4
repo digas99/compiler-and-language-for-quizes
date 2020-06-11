@@ -29,10 +29,10 @@ map     : 'map' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # mapQuestion
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID ('=>' (TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                            # varText
+           'text'? ID ('=>' (callfunction|((TEXT '+')* TEXT)|TEXT|questionFetchTitle|questionFetchDiff|questionFetchType))? ';'                            # varText
          | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                          # varTextRead
-         | 'number'? ID ('=>' (expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
-         | 'boolean'? ID ('=>' bool)? ';'                                                                      # varBoolean
+         | 'number'? ID ('=>' (callfunction|expr|ID '[' (ID|NUMBER) ']'|questionFetchTries|questionFetchTime|questionFetchPoints))? ';' # varNumber
+         | 'boolean'? ID ('=>' (callfunction|bool))? ';'                                                                      # varBoolean
          | 'question'? ID ';'                                                                                              # varQuestion
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
@@ -42,25 +42,24 @@ var returns[String varx = null]:
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
 
-remove   : 'remove' '(' NUMBER ')' ';'          
-         | 'remove' '(' TEXT ')' ';' 
-         | 'remove' '(' ID ')' ';'
-         | 'remove' '(' '[' NUMBER ']' ')' ';'
+remove   : 'remove' '(' NUMBER ')' ';'          # removeNumber       
+         | 'remove' '(' TEXT ')' ';'            # removeText
+         | 'remove' '(' ID ')' ';'              # removeId
+         | 'remove' '(' '[' NUMBER ']' ')' ';'  # removeIndice
          ;
-add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'
-         | 'add' '(' questionFetch ')' ';'
-         | 'add' '(' TEXT ')' ';'
-         | 'add' '(' ID ')' ';'
-         | 'add' '(' NUMBER ')' ';'
+add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'   # addList                                     
+         | 'add' '(' TEXT ')' ';'                                               # addText
+         | 'add' '(' ID ')' ';'                                                 # addId
+         | 'add' '(' NUMBER ')' ';'                                             # addNumber
          ;
 
 // QUESTION OBJECT CREATION
 question : questionFetchTitle '=>' TEXT ';'                    # questionTitle                         
-         | questionFetchAnsRight '=>' listFormatText ';'       # questionAnsRight
+         | questionFetchAnsRight '=>' listFormatText ';'       # questionAns         | questionFetchType '=>' ('multiple'|'open') ';'      # questionType
+         | questionFetchTries '=>' (Right
          | questionFetchAnsWrong '=>' listFormatText ';'       # questionAnsWrong
          | questionFetchDiff '=>' ('easy'|'medium'|'hard') ';' # questionDifficulty
-         | questionFetchType '=>' ('multiple'|'open') ';'      # questionType
-         | questionFetchTries '=>' (ID|NUMBER) ';'             # questionTries
+ID|NUMBER) ';'             # questionTries
          | questionFetchTime '=>' (ID|NUMBER) ';'              # questionTime
          | questionFetchPoints '=>' (ID|NUMBER) ';'            # questionPoints
          ;
@@ -108,7 +107,7 @@ elsif    : 'elsif' '(' conditional ')' '=>' content+ '>>';
 finalCond : 'final' '=>' content+ '>>';
 
 // CALL FUNCTION
-callfunction : 'call' ID '(' (callParams)* last=(TEXT|NUMBER|ID)? ')' ';';
+callfunction : 'call' ID '(' (callParams)* last=(TEXT|NUMBER|ID)? ')' ';'?;
 
 callParams : val=(TEXT|NUMBER|ID) ', ';
 

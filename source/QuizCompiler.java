@@ -294,37 +294,37 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
-   @Override public ST visitQuestionTitle(QuizParser.QuestionTitleContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitQuestionTitle(QuizParser.QuestionTitleContext ctx) {
+   //    return visitChildren(ctx);
+   // }
 
-   @Override public ST visitQuestionAnsRight(QuizParser.QuestionAnsRightContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitQuestionAnsRight(QuizParser.QuestionAnsRightContext ctx) {
+   //    return visitChildren(ctx);
+   // }
 
-   @Override public ST visitQuestionAnsWrong(QuizParser.QuestionAnsWrongContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitQuestionAnsWrong(QuizParser.QuestionAnsWrongContext ctx) {
+   //    return visitChildren(ctx);
+   // }
 
-   @Override public ST visitQuestionDifficulty(QuizParser.QuestionDifficultyContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitQuestionDifficulty(QuizParser.QuestionDifficultyContext ctx) {
+   //    return visitChildren(ctx);
+   // }
 
-   @Override public ST visitQuestionType(QuizParser.QuestionTypeContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitQuestionType(QuizParser.QuestionTypeContext ctx) {
+   //    return visitChildren(ctx);
+   // }
 
-   @Override public ST visitQuestionTries(QuizParser.QuestionTriesContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitQuestionTries(QuizParser.QuestionTriesContext ctx) {
+   //    return visitChildren(ctx);
+   // }
 
-   @Override public ST visitQuestionTime(QuizParser.QuestionTimeContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitQuestionTime(QuizParser.QuestionTimeContext ctx) {
+   //    return visitChildren(ctx);
+   // }
 
-   @Override public ST visitQuestionPoints(QuizParser.QuestionPointsContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitQuestionPoints(QuizParser.QuestionPointsContext ctx) {
+   //    return visitChildren(ctx);
+   // }
 
    @Override public ST visitQuestionFetch(QuizParser.QuestionFetchContext ctx) {
       return visitChildren(ctx);

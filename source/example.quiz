@@ -1,5 +1,5 @@
 function () test =>
-    list question qList => get("linguagem_questions"); !! 'get' imports a 'list' of questions from a file
+    map question qMap; !! 'get' imports a 'map' of questions from a file
 
     question newQuestion;
     newQuestion.title => "What dogs do?";
