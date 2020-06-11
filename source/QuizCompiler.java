@@ -251,7 +251,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ctx.varx = newVar();
       atrib.add("type", "String");
       atrib.add("var", ctx.varx);
-      if (ctx.TEXT() != null) atrib.add("value", ctx.TEXT().getText());
+      if (ctx.TEXT() != null) atrib.add("value", ctx.TEXT());
       atrib.add("id", ctx.ID().getText());
       idToTmpVar.put(ctx.ID().getText(), ctx.varx);
       varTypes.put(ctx.ID().getText(), "String");
@@ -295,7 +295,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitVarQuestion(QuizParser.VarQuestionContext ctx) {
-      return visitChildren(ctx);
+      ST atrib = templates.getInstanceOf("atrib");
+      if (insideFunc) atrib.add("insideFunc", "");
+      ctx.varx = newVar();
+      atrib.add("type", "Question");
+      atrib.add("var", ctx.varx);
+      atrib.add("id", ctx.ID().getText());
+      idToTmpVar.put(ctx.ID().getText(), ctx.varx);
+      varTypes.put(ctx.ID().getText(), "Question");
+      return atrib;
    }
 
    @Override public ST visitVarListAdd(QuizParser.VarListAddContext ctx) {
