@@ -228,6 +228,22 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return val;
    }
 
+   @Override public ST visitMapQuestion(QuizParser.MapQuestionContext ctx) {
+      return visitChildren(ctx);
+   }
+   
+   @Override public ST visitMapNums(QuizParser.MapNumsContext ctx) {
+      return visitChildren(ctx);
+   }
+
+   @Override public ST visitMapText(QuizParser.MapTextContext ctx) {
+      return visitChildren(ctx);
+   }
+
+   @Override public ST visitMapBoolean(QuizParser.MapBooleanContext ctx) {
+      return visitChildren(ctx);
+   }
+
    // IN PROGRESS
    @Override public ST visitVarText(QuizParser.VarTextContext ctx) {
       ST atrib = templates.getInstanceOf("atrib");
@@ -287,6 +303,22 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitVarListRemove(QuizParser.VarListRemoveContext ctx) {
+      return visitChildren(ctx);
+   }
+
+   @Override public ST visitVarMapGet(QuizParser.VarMapGetContext ctx) {
+      return visitChildren(ctx);
+   }
+
+   @Override public ST visitVarMapPut(QuizParser.VarMapPutContext ctx) {
+      return visitChildren(ctx);
+   }
+
+   @Override public ST visitVarMapRemove(QuizParser.VarMapRemoveContext ctx) {
+      return visitChildren(ctx);
+   }
+
+   @Override public ST visitVarMapClear(QuizParser.VarMapClearContext ctx) {
       return visitChildren(ctx);
    }
 

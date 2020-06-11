@@ -90,7 +90,7 @@ public class Question {
         this.wrongAns = n;
     }
 
-    public static HashMap<String, Question> getQuestions() {
+    public static HashMap<String, Question> getQuestions(){
         return questions;
     }
 
