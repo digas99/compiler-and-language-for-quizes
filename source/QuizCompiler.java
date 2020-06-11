@@ -254,21 +254,31 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("value", ctx.singlestring);
          atrib.add("needComma", "");
       }
-      else if (ctx.callfunction() != null) atrib.add("value", visit(ctx.callfunction()).render());
-      else if (ctx.TEXT().size() > 1) {
-         String allConcats = "";
-         for (TerminalNode text : ctx.TEXT()) {
-            allConcats+=text + "+";
+      else if (ctx.callfunction() != null)
+         atrib.add("value", visit(ctx.callfunction()).render());
+      else if (ctx.finalstring != null) {
+         String str, finalStr;
+         for (QuizParser.StringsContext s : ctx.strings()) {
+            str = visit(s).render();
+            finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
+            atrib.add("value", finalStr+"+");
          }
-         allConcats = allConcats.substring(0, allConcats.length()-1);
-         atrib.add("value", allConcats);
+         str = ctx.finalstring.getText();
+         finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
+         atrib.add("value", finalStr);
          atrib.add("needComma", "");
       }
-      System.out.println(ctx.TEXT());
-      atrib.add("id", ctx.ID().getText());
-      idToTmpVar.put(ctx.ID().getText(), ctx.varx);
-      varTypes.put(ctx.ID().getText(), "String");
+      atrib.add("id", ctx.ID(0).getText());
+      idToTmpVar.put(ctx.ID(0).getText(), ctx.varx);
+      varTypes.put(ctx.ID(0).getText(), "String");
       return atrib;
+   }
+
+   @Override public ST visitStrings(QuizParser.StringsContext ctx) {
+      ST val = templates.getInstanceOf("return_plain_val");
+      if (ctx.TEXT() != null) val.add("val", ctx.TEXT().getText());
+      else val.add("val", ctx.ID().getText());
+      return val;
    }
 
    // COMPLETED
@@ -438,7 +448,20 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // COMPLETED
    @Override public ST visitWriteConsole(QuizParser.WriteConsoleContext ctx) {
       ST print = templates.getInstanceOf("print");
-      if (ctx.TEXT() != null) print.add("text", ctx.TEXT().getText());
+      if (ctx.finalstring != null) {
+         String str, finalStr;
+         for (QuizParser.StringsContext s : ctx.strings()) {
+            str = visit(s).render();
+            finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
+            print.add("text", finalStr+"+");
+         }
+         str = ctx.finalstring.getText();
+         finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
+         print.add("text", finalStr);
+      }
+      else if (ctx.TEXT() != null) {
+         print.add("text", ctx.TEXT().getText());
+      }
       else if (ctx.expr() != null) {
          print.add("stat", visit(ctx.expr()).render());
          print.add("text", ctx.expr().varx);
@@ -455,7 +478,18 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       writer.add("file", ctx.TEXT(0).getText());
       // TEXT as something more other than the file name
       writer.add("var", newVarWriter());
-      if (ctx.TEXT().size() > 1) {
+      if (ctx.finalstring != null) {
+         String str, finalStr;
+         for (QuizParser.StringsContext s : ctx.strings()) {
+            str = visit(s).render();
+            finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
+            writer.add("string", finalStr+"+");
+         }
+         str = ctx.finalstring.getText();
+         finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
+         writer.add("string", finalStr);
+      }
+      else if (ctx.TEXT().size() > 1) {
          writer.add("string", ctx.TEXT(1));
       }
       else {

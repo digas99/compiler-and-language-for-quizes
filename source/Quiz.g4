@@ -29,7 +29,7 @@ map     : 'map' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # mapQuestion
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID ('=>' (((TEXT '+')* TEXT ';')|callfunction|singlestring=TEXT ';'|questionFetchTitle|questionFetchDiff|questionFetchType))?  # varText
+           'text'? ID ('=>' (((strings)* finalstring=(TEXT|ID) ';')|callfunction|singlestring=TEXT ';'|questionFetchTitle|questionFetchDiff|questionFetchType))?  # varText
          | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                          # varTextRead
          | 'number'? ID ('=>' (callfunction|expr ';'|ID '[' (ID|NUMBER) ']' ';'|questionFetchTries|questionFetchTime|questionFetchPoints))? # varNumber
          | 'boolean'? ID ('=>' (callfunction|bool ';'))?                                                                      # varBoolean
@@ -41,6 +41,8 @@ var returns[String varx = null]:
          | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
+
+strings  : (TEXT|ID) '+';
 
 remove   : 'remove' '(' NUMBER ')' ';'          
          | 'remove' '(' TEXT ')' ';' 
@@ -84,8 +86,8 @@ questionFetchTime     :  ID '.time';
 questionFetchPoints   :  ID '.points';
 
 // WRITE
-write    : 'write' '(' 'CONSOLE' ')' '=>' (TEXT|expr|questionFetch) ';' # writeConsole
-         | 'write' '(' TEXT ')' '=>' (TEXT|expr|questionFetch) ';'      # writeFile
+write    : 'write' '(' 'CONSOLE' ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';' # writeConsole
+         | 'write' '(' TEXT ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';'      # writeFile
          ;
 
 // LOOPS
