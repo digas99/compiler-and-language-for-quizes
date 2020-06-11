@@ -11,6 +11,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private String tmpId = "";
    private int numVars = 0;
    private int numWriters = 0;
+   private int funcAuxMap = 0;
    private boolean hasScanner = false;
    private boolean hasList = false;
    private HashMap<String, String> convertion = new HashMap<>();
@@ -25,6 +26,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private String newVarWriter() {
       numWriters++;
       return "writer"+numWriters;
+   }
+   private String newFuncAuxMap() {
+      funcAuxMap++;
+      return "varsAux"+numWriters;
    }
    private String file;
 
@@ -82,6 +87,8 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitFunction(QuizParser.FunctionContext ctx) {
       ST func = templates.getInstanceOf("function");
       func.add("name", ctx.name.getText());
+      System.out.print("size: ");
+      System.out.println(ctx.params().size());
       for (QuizParser.ParamsContext type : ctx.params()) {
          String[] splitted = visit(type).render().split(" ");
          func.add("param", convertion.get(splitted[0])+" "+splitted[1]+", ");
@@ -90,8 +97,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          funcParams.put(splitted[1], splitted[0]);
       }
 
-      if (ctx.type != null) func.add("param", convertion.get(ctx.type.getText())+" "+ctx.ID(0));
-      
+      System.out.print("type: ");
+      System.out.println(ctx.type.getText());
+      System.out.println(ctx.ID(0));
+
+      if (ctx.type != null) {
+         func.add("param", convertion.get(ctx.type.getText())+" "+ctx.ID(0));
+         funcParams.put(ctx.ID(0).getText(), ctx.type.getText());
+      }
+
       for (QuizParser.ContentContext content : ctx.content()) {
          func.add("stat", visit(content).render());
       }

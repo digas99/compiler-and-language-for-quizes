@@ -7,6 +7,8 @@ public class Test10 {
         bool(var1);
     }
     public static void bool(boolean c) {
+        boolean var2 = c;
+        vars.put("c", Boolean.toString(var2));
         System.out.println(var2);
     }
 }
