@@ -2,9 +2,9 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 public class QuestionsMain {
-   public static void main(String[] args) throws Exception {
+   public static void main(String fileName) throws Exception {
       // create a CharStream that reads from standard input:
-      CharStream input = CharStreams.fromStream(System.in);
+      CharStream input = CharStreams.fromFileName(fileName);
       // create a lexer that feeds off of input CharStream:
       QuestionsLexer lexer = new QuestionsLexer(input);
       // create a buffer of tokens pulled from the lexer:

@@ -1,0 +1,4 @@
+main =>
+    text t => cidades.title;
+    write(CONSOLE) => cidades.title;
+>>

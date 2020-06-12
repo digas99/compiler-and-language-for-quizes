@@ -1,0 +1,31 @@
+main =>
+    number n => 0;
+    number a => 2;
+    boolean c => FALSE;
+    boolean d => FALSE;
+    if ("a" != "sdfds") =>
+        n++;
+    >>
+
+    if ("a" == "a") =>
+        text b => "a";
+    >>
+    final =>
+        write (CONSOLE) => "a";
+        n+=5;
+    >>
+
+    if (n != a) =>
+        n++;
+    >>
+    elsif (n > 5) =>
+        n--;
+    >>
+    elsif (c AND d) =>
+        n/=2;
+    >>
+    final =>
+        write (CONSOLE) => "a";
+        n+=5;
+    >>
+>>

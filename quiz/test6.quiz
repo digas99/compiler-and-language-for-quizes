@@ -1,0 +1,18 @@
+main =>
+    call test(4, "3", "qwd");
+    text t => "wfwe";
+    call test2(t);
+    call test3();
+>>
+
+function (number n, text c, text b) test =>
+    write (CONSOLE) => "sdaas";
+>>
+
+function (text d) test2 =>
+    write (CONSOLE) => "sdaas";
+>>
+
+function () test3 =>
+    write (CONSOLE) => "sdaas";
+>>

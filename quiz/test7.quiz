@@ -1,0 +1,7 @@
+main =>
+    list boolean l => {FALSE, TRUE, FALSE};
+    list number l2 => {1, 12, 3};
+    list text l3 => {"efwwe"};
+    list text l4;
+    l4 => {"sad", "asd"}; 
+>>

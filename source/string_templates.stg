@@ -300,3 +300,5 @@ else if (<condition>) {
     <stats(stat)>
 }
 >>
+
+question_fetch(value) ::= "<value>;"

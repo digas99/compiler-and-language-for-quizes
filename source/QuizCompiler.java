@@ -409,12 +409,25 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    //    return visitChildren(ctx);
    // }
 
+   //COMPLETED
    @Override public ST visitQuestionFetch(QuizParser.QuestionFetchContext ctx) {
-      return visitChildren(ctx);
+      if (ctx.questionFetchTitle() != null) return visit(ctx.questionFetchTitle());
+      if (ctx.questionFetchAnsRight() != null) return visit(ctx.questionFetchAnsRight());
+      if (ctx.questionFetchAnsWrong() != null) return visit(ctx.questionFetchAnsWrong());
+      if (ctx.questionFetchDiff() != null) return visit(ctx.questionFetchDiff());
+      if (ctx.questionFetchType() != null) return visit(ctx.questionFetchType());
+      if (ctx.questionFetchTries() != null) return visit(ctx.questionFetchTries());
+      if (ctx.questionFetchTime() != null) return visit(ctx.questionFetchTime());
+      if (ctx.questionFetchPoints() != null) return visit(ctx.questionFetchPoints());
+      return null;
    }
 
+   //INCOMPLETED
    @Override public ST visitQuestionFetchTitle(QuizParser.QuestionFetchTitleContext ctx) {
-      return visitChildren(ctx);
+      ST questionFetch = templates.getInstanceOf("question_fetch");
+      System.out.println(Question.getQuestion(ctx.ID().getText()).getTitle());
+      //questionFetch.add("value", Question.getQuestion(ctx.ID().getText()).getTitle());
+      return questionFetch;
    }
 
    @Override public ST visitQuestionFetchAnsRight(QuizParser.QuestionFetchAnsRightContext ctx) {
@@ -465,6 +478,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       else if (ctx.expr() != null) {
          print.add("stat", visit(ctx.expr()).render());
          print.add("text", ctx.expr().varx);
+      }
+      else if (ctx.questionFetch() != null) {
+         System.out.println("here");
+         print.add("text", visit(ctx.questionFetch()).render());
       }
       else {
          print.add("text", "\"ERROR: Not a valid value to print!\"");

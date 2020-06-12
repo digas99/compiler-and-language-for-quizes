@@ -1,0 +1,107 @@
+function () test =>
+    map question qMap; !! 'get' imports a 'map' of questions from a file
+
+    question newQuestion;
+    newQuestion.title => "What dogs do?";
+    newQuestion.answers.right => {"Bark", "Howl"};
+    !! etc...
+
+    text fromFile => read("example/ex.txt"); !! 'read' reads 'text' from file
+    text fromKeyboard => read(CONSOLE);      !! or from the console with the keyword 'CONSOLE'
+
+    number n => 8; !! creating a variable of type number (equivalent to double and int in Java)
+
+    write ("example.txt") => fromKeyboard; !! writes text to a file
+    write (CONSOLE) => "test"; !! writes text to the console (a print)
+    write ("another_example.txt") => n; !! writes a number to a file
+
+    for (question q1 in qList) => 
+        write(CONSOLE) => q1.title;
+    >>
+
+    number count => 0;
+
+    !! this for goes from 0 to 100 from 2 to 2 values
+    for (0 to 100)[+2] =>
+        count++;
+    >>
+
+    !! while loop
+    aslong (count < 10) =>
+        count++;
+    >>
+
+    do =>
+        count++;
+    >>
+    aslong (count < 10);
+
+    !! NOT check is equivalent to !check in Java
+    if (NOT check) =>
+        text fromFile => read("example.txt");
+    >>
+    elsif (count == 2) => !! elsif is equivalent to else if in Java
+        text fromKeyboard => read(CONSOLE);
+    >>
+    final => !! final is equivalent to else in Java
+        write(CONSOLE) => "Test";
+    >>
+
+    number var => 6;
+    list number listNums; !! initialize list of numbers
+    listNums => add(5); !! append the number 5 to the list
+    listNums => add(var);
+    listNums => add({1, 5, 3}); !! append list {1, 5, 3} to the list
+    list number list2 => {1, 2, 3, 4}; !! list2 is {1, 2, 3, 4}
+    number x => listNumber[2]; !! put the value of indice 2 of listNumber in x
+    listNumber => remove(5); !! removes all 5s in the list
+    listNumber => remove([2]); !! removes the element in the indice 2 of list
+
+    return a;
+>>
+
+!! FUNCTIONS
+function (number n1, number n2) sumNums =>
+    number sum => 2 + b;
+    return n1 + n2;
+>>
+
+!! example of usage
+
+!! this is equivalent to function main in Java
+main =>
+    map text userOpenAnswers;
+    map boolean userTestMap;
+    map question quiz => get("linguagem_questions");
+    quiz => remove("cidades01");
+    list text allTitles;
+    list text rightAnswers;
+    list text wrongAnswers;
+    list text difficulties;
+    list text types;
+    list number tries;
+    list number times;
+    list number points;
+
+    for (question q1 in qList) =>
+        allTitles => add(q1.title);
+        rightAnswers => add(q1.answers.right); !! q1.answers.right is, for example, {"Lisboa", "Madrid"}
+        wrongAnswers => add(q1.answers.wrong);
+        difficulties => add(q1.difficulty);
+        types => add(q1.type);
+        tries => add(q1.tries);
+        times => add(q1.time);
+        points => add(q1.points);
+    >>
+
+    for (question q in qList) =>
+        write (CONSOLE) => q.title;
+        userOpenAnswers => put(q.title, resposta);
+        userTestMap => put("FutureIdParameterOfQuestions", rightOrWrong);
+    >>
+
+    quiz => clear();
+
+    call sumNums(1, 2);
+>>
+

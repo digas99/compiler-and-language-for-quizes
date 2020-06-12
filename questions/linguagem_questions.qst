@@ -1,0 +1,28 @@
+time: 15
+tries: 8
+points: 10
+
+
+<cidades> { title: "Quais sao cidades?",
+type: MULTIPLE,
+difficulty: EASY,
+right: ["Lisboa"],
+wrong: ["Portugal","Espanha","Brasil"] }
+
+
+<cidades01> { title: "Quais sao cidades?",
+type: OPEN,
+difficulty: HARD,
+tries: 2,
+points: 5,
+right: ["Lisboa","Madrid"],
+wrong: [] }
+
+
+
+<patinhos> { title: "Os patos voam",
+type: MULTIPLE,
+difficulty: MEDIUM,
+time: 250,
+right: ["Verdadeiro"],
+wrong: ["False"] }

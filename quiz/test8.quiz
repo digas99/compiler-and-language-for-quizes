@@ -1,0 +1,11 @@
+main =>
+    text a => "TRUE";
+    number n => 0;
+    do =>
+        n++;
+    >> aslong ("a" != "a");
+
+    aslong (a) =>
+        write (CONSOLE) => "Infinite aslong loop";
+    >>
+>>
