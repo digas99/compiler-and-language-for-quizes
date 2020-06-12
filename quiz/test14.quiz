@@ -1,0 +1,8 @@
+main =>
+    text a => "a b c";
+    list text splitted;
+    splitted => split(a, " ");
+    for (text t in splitted) =>
+        write (CONSOLE) => t+"\n";
+    >>
+>>

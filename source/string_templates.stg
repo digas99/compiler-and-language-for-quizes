@@ -1,4 +1,4 @@
-module(name, stat, hasVars, hasScanner, hasPrintWriter, hasList, needsEntry) ::= <<
+module(name, stat, hasVars, hasScanner, hasPrintWriter, hasList, needsEntry, needsarrayToListStringsAuxFunc) ::= <<
 <if(hasScanner)>
 import java.util.Scanner;
 <endif>
@@ -22,6 +22,8 @@ public class <name> {
     static HashMap\<String, String> vars = new HashMap\<>();
     <endif>
     <stats(stat)>
+
+    <if(needsarrayToListStringsAuxFunc)><arrayToListStrings_auxFunc()><endif>
 }
 >>
 
@@ -109,7 +111,7 @@ binary_operation(stat, id, type, var, e1, op, e2, insideFunc) ::= <<
 
 print(stat, text) ::= <<
 <stats(stat)>
-System.out.println(<text>);
+System.out.print(<text>);
 >>
 
 function(name, return_type, building_return, param, paramsID, stat, ret) ::= <<
@@ -215,9 +217,9 @@ for (double <var> = <start>; <var> <comp> <end>; <var><op>=<increment>) {
 }
 >>
 
-for_in(stat, type, var, var1, var2) ::= <<
+for_in(stat, type, var, var1, var2, double, boolean) ::= <<
 for (<type> <var> : <var2>) {
-    vars.put("<var1>", Double.toString(<var>));
+    vars.put("<var1>", <if(double)>Double.toString(<endif><if(boolean)>Boolean.toString(<endif><var>)<if(double||boolean)>)<endif>;
     <stats(stat)>
 }
 >>
@@ -305,4 +307,16 @@ question_fetch(value) ::= "<value>;"
 
 hashMap(type, var, getQuestions) ::= <<
 HashMap\<String, <type>\> <var> = <if(getQuestions)>Question.getQuestions()<else>new HashMap\<>()<endif>;
+>>
+
+list_split(var, val, split) ::= "<var> = arrayToListStrings(<val>.split(<split>));"
+
+arrayToListStrings_auxFunc() ::= <<
+private static List\<String> arrayToListStrings(String[] arr) {
+    List\<String> finalList = new ArrayList\<>();
+    for (String s : arr) {
+        finalList.add(s);
+    }
+    return finalList;
+}
 >>

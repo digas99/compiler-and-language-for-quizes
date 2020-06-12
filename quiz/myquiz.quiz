@@ -7,13 +7,13 @@ main =>
 function (text title, text opts, text exit) menu =>
     list text options;
     options => split(opts, ",");
-    write (CONSOLE) => title;
+    write (CONSOLE) => title+"\n";
     number count => 1;
     for (text op in options) =>
-        write (CONSOLE) => "["+count+"] "+title;
+        write (CONSOLE) => "["+count+"] "+op+"\n";
         count++;
     >>
-    write (CONSOLE) => "[0] "+exit;
+    write (CONSOLE) => "[0] "+exit+"\n";
     write (CONSOLE) => "Option: ";
     text op => read (CONSOLE);
     return op;

@@ -13,6 +13,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private boolean hasList = false;
    private boolean needsEntry = false;
    private boolean insideFunc = false;
+   private boolean needsarrayToListStringsAuxFunc = false;
    private HashMap<String, String> convertion = new HashMap<>();
    private HashMap<String, String> idToTmpVar = new HashMap<>();
    private HashMap<String, Double> realValueOfId = new HashMap<>();
@@ -60,6 +61,8 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (hasList) module.add("hasList", "");
 
       if (needsEntry) module.add("needsEntry", "");
+
+      if (needsarrayToListStringsAuxFunc) module.add("needsarrayToListStringsAuxFunc", "");
 
       return module;
    }
@@ -371,7 +374,21 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitVarListSplit(QuizParser.VarListSplitContext ctx) {
-      return visitChildren(ctx);
+      needsarrayToListStringsAuxFunc = true;
+      ST split = templates.getInstanceOf("list_split");
+      // this means you are splitting a literal string
+      split.add("var", ctx.ID(0).getText());
+      if (ctx.TEXT().size() > 1) {
+         split.add("val", ctx.TEXT(0).getText());
+         split.add("split", ctx.TEXT(1).getText());
+      }
+      else {
+         String val = ctx.ID(1).getText();
+         String finalVal = idToTmpVar.containsKey(val) ? idToTmpVar.get(val) : val;
+         split.add("val", finalVal);
+         split.add("split", ctx.TEXT(0).getText());
+      }
+      return split;
    }
 
    @Override public ST visitVarMapGet(QuizParser.VarMapGetContext ctx) {
@@ -543,6 +560,14 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ctx.varx = newVar();
       forLoop.add("var", ctx.varx);
       forLoop.add("type", convertion.get(ctx.type.getText()));
+      switch (ctx.type.getText()) {
+         case "number":
+            forLoop.add("double", "");
+            break;
+         case "boolean":
+            forLoop.add("boolean", "");
+            break;
+      }
       String id = ctx.ID(0).getText();
       varTypes.put(id, "String");
       idToTmpVar.put(id, ctx.varx);
