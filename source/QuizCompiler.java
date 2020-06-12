@@ -228,19 +228,32 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitMapQuestion(QuizParser.MapQuestionContext ctx) {
-      return visitChildren(ctx);
+      ST format = templates.getInstanceOf("hashMap");
+      format.add("getQuestions", "");
+      format.add("type", convertion.get(ctx.type.getText()));
+      format.add("var", ctx.ID().getText());
+      return format;
    }
    
    @Override public ST visitMapNums(QuizParser.MapNumsContext ctx) {
-      return visitChildren(ctx);
+      ST format = templates.getInstanceOf("hashMap");
+      format.add("type", convertion.get(ctx.type.getText()).replace("d", "D"));
+      format.add("var", ctx.ID().getText());
+      return format;
    }
 
    @Override public ST visitMapText(QuizParser.MapTextContext ctx) {
-      return visitChildren(ctx);
+      ST format = templates.getInstanceOf("hashMap");
+      format.add("type", convertion.get(ctx.type.getText()));
+      format.add("var", ctx.ID().getText());
+      return format;
    }
 
    @Override public ST visitMapBoolean(QuizParser.MapBooleanContext ctx) {
-      return visitChildren(ctx);
+      ST format = templates.getInstanceOf("hashMap");
+      format.add("type", convertion.get(ctx.type.getText()).replace("b", "B"));
+      format.add("var", ctx.ID().getText());
+      return format;
    }
 
    // IN PROGRESS
@@ -967,6 +980,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (ctx.aslong() != null) return visit(ctx.aslong());
       if (ctx.callfunction() != null) return visit(ctx.callfunction());
       if (ctx.varmanipulation() != null) return visit(ctx.varmanipulation());
+      if (ctx.map() != null) return visit(ctx.map());
       return null;
    }
 
