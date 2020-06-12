@@ -5,4 +5,14 @@ main =>
     for (text t in splitted) =>
         write (CONSOLE) => t+"\n";
     >>
+    text b => splitted[0];
+    write (CONSOLE) => b+"\n";
+
+    list number listOfNmrs => {1, 2, 3, 4};
+    number n => listOfNmrs[2];
+    write (CONSOLE) => n+"\n";
+
+    list boolean listOfBools => {TRUE, FALSE};
+    boolean z => listOfBools[1];
+    write (CONSOLE) => z+"\n";
 >>

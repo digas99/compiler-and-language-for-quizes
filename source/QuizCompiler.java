@@ -270,6 +270,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("value", ctx.singlestring);
          atrib.add("needComma", "");
       }
+      else if (ctx.ID().size() > 1) {
+         String index = ctx.index.getText();
+         String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
+         atrib.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+         atrib.add("needComma", "");
+      }
       else if (ctx.callfunction() != null)
          atrib.add("value", visit(ctx.callfunction()).render());
       else if (ctx.finalstring != null) {
@@ -329,8 +335,19 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          visit.add("id", tmpId);
          if (insideFunc) visit.add("insideFunc", "");
       }
+      else if (ctx.ID().size() > 1) {
+         visit = templates.getInstanceOf("atrib_double");
+         visit.add("type", "double");
+         visit.add("var", ctx.varx);
+         String index = ctx.index.getText();
+         String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
+         visit.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+         visit.add("id", tmpId);
+         idToTmpVar.put(tmpId, ctx.varx);
+         visit.add("needComma", "");
+         if (insideFunc) visit.add("insideFunc", "");
+      }
       else {
-         // TODO
          visit = null;
       }
       return visit;
@@ -346,10 +363,16 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("value", convertion.get(visit(ctx.bool()).render()));
          atrib.add("needComma", "");
       }
-      if (ctx.callfunction() != null) atrib.add("value", visit(ctx.callfunction()).render());
-      atrib.add("id", ctx.ID().getText());
-      idToTmpVar.put(ctx.ID().getText(), ctx.varx);
-      varTypes.put(ctx.ID().getText(), "boolean");
+      else if (ctx.ID().size() > 1) {
+         String index = ctx.index.getText();
+         String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
+         atrib.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+         atrib.add("needComma", "");
+      }
+      else if (ctx.callfunction() != null) atrib.add("value", visit(ctx.callfunction()).render());
+      atrib.add("id", ctx.ID(0).getText());
+      idToTmpVar.put(ctx.ID(0).getText(), ctx.varx);
+      varTypes.put(ctx.ID(0).getText(), "boolean");
       return atrib;
    }
 
@@ -723,7 +746,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return callp;
    }
 
-   // IN PROGRESS
+   // COMPLETED
    @Override public ST visitConditional(QuizParser.ConditionalContext ctx) {
       ST cond = templates.getInstanceOf("conditional");
       if (ctx.id != null) {
