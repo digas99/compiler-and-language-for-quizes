@@ -302,3 +302,7 @@ else if (<condition>) {
 >>
 
 question_fetch(value) ::= "<value>;"
+
+hashMap(type, var, getQuestions) ::= <<
+HashMap\<String, <type>\> <var> = <if(getQuestions)>Question.getQuestions()<else>new HashMap\<>()<endif>;
+>>

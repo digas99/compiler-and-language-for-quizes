@@ -18,7 +18,7 @@ public class QuizMain {
       String quizFile = "../quiz/" + args[1];
 
       String output = args[2];
-      PrintWriter writer = new PrintWriter("../outputs/" + output);
+      PrintWriter writer = new PrintWriter("../outputs/" + output + ".java");
 
       String questionFile = "../questions/" + args[0];
       QuestionsMain.main(questionFile);
@@ -39,7 +39,7 @@ public class QuizMain {
       if (parser.getNumberOfSyntaxErrors() == 0) {
          // print LISP-style tree:
          // System.out.println(tree.toStringTree(parser));
-         String fileName = args[0];
+         String fileName = args[2];
          QuizCompiler compiler = new QuizCompiler(fileName);
          ST res = compiler.visit(tree);
          writer.write(res.render());

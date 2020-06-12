@@ -21,10 +21,10 @@ list    : (init='list' 'question')? ID '=>' 'get' '(' TEXT ')' ';'  # listQuesti
         ;
 
 // MAPS
-map     : 'map' 'question' ID '=>' 'get' '(' TEXT ')' ';'  # mapQuestion
-        | 'map' 'number' ID ';'                            # mapNums
-        | 'map' 'text' ID ';'                              # mapText
-        | 'map' 'boolean' ID ';'                           # mapBoolean
+map     : 'map' type='question' ID ';'                          # mapQuestion
+        | 'map' type='number' ID ';'                            # mapNums
+        | 'map' type='text' ID ';'                              # mapText
+        | 'map' type='boolean' ID ';'                           # mapBoolean
         ;
 
 // VARIABLES

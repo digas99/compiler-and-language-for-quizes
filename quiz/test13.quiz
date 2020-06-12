@@ -1,0 +1,6 @@
+main =>
+    map question mq;
+    map text mt;
+    map number mn;
+    map boolean mb;
+>>
