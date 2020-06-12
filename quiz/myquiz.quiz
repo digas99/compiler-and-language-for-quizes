@@ -2,6 +2,18 @@ main =>
     list number pointsWon;
     text options => "Begin Quiz,Another thing,Another";
     text option => call menu("Quiz Game", options, "Exit");
+    if (option == "1") =>
+        write (CONSOLE) => "Chose "+option+"\nBegin Quiz!\n";
+    >>
+    elsif (option == "2") =>
+        write (CONSOLE) => "Chose "+option+"\nAnother Option!\n";
+    >>
+    elsif (option == "3") =>
+        write (CONSOLE) => "Chose "+option+"\nAnother!\n";
+    >>
+    final =>
+        write (CONSOLE) => "Exiting program...\n";
+    >>
 >>
 
 function (text title, text opts, text exit) menu =>

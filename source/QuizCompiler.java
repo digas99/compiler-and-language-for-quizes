@@ -514,7 +514,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          print.add("text", ctx.expr().varx);
       }
       else if (ctx.questionFetch() != null) {
-         System.out.println("here");
          print.add("text", visit(ctx.questionFetch()).render());
       }
       else {
@@ -701,7 +700,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       call.add("name", ctx.ID(0).getText());
       for (QuizParser.CallParamsContext p : ctx.callParams()) {
          String par = visit(p).render();
-         System.out.println(par);
          call.add("param", par+", ");
       }
       if (ctx.last != null) {
@@ -748,12 +746,16 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
          cond.add("s1", f1);
          cond.add("s2", f2);
-         cond.add("op", convertion.get(ctx.op1.getText()));
+         cond.add("op", convertion.get(ctx.op.getText()));
       }
       else {
-         if (ctx.op2.getText().equals("!=")) cond.add("not", "!");
-         cond.add("s1", ctx.TEXT(0).getText());
-         cond.add("s2", ctx.TEXT(1).getText());
+         if (ctx.op.getText().equals("!=")) cond.add("not", "!");
+         String f3 = ctx.field3.getText();
+         String f4 = ctx.field4.getText();
+         String finalf3 = idToTmpVar.containsKey(f3) ? idToTmpVar.get(f3) : f3;
+         String finalf4 = idToTmpVar.containsKey(f4) ? idToTmpVar.get(f4) : f4;
+         cond.add("s1", finalf3);
+         cond.add("s2", finalf4);
          cond.add("equals", ".equals");
       }
       return cond;

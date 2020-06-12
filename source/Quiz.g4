@@ -117,8 +117,8 @@ callParams : val=(TEXT|NUMBER|ID) ', ';
 
 // CONDITIONAL STATEMENTS
 conditional : 'NOT'? id=ID
-            | (field1=(ID|NUMBER) op1=('AND'|'OR'|'=='|'!='|'>'|'<'))+ field2=(ID|NUMBER)
-            | TEXT op2=('=='|'!=') TEXT
+            | (field1=(ID|NUMBER) op=('AND'|'OR'|'=='|'!='|'>'|'<'))+ field2=(ID|NUMBER)
+            | field3=(ID|TEXT) op=('=='|'!=') field4=(ID|TEXT)
             ;
 
 // Manipulation var

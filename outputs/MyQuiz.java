@@ -13,6 +13,19 @@ public class MyQuiz {
         vars.put("options", var3);
         String var4 = menu("Quiz Game", var3, "Exit");
         vars.put("option", var4);
+        if (var4.equals("1")) {
+            System.out.print("Chose "+var4+"\nBegin Quiz!");
+        }
+        else if (var4.equals("2")) {
+            System.out.print("Chose "+var4+"\nAnother Option!");
+        }
+        else if (var4.equals("3")) {
+            System.out.print("Chose "+var4+"\nAnother!");
+        }
+        else {
+            System.out.print("Exiting program");
+        }
+
     }
     public static String menu(String title, String opts, String exit) {
         HashMap<String, String> funcAuxMap = new HashMap<>();
