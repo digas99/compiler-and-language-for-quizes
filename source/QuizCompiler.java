@@ -357,6 +357,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
+   @Override public ST visitVarListSplit(QuizParser.VarListSplitContext ctx) {
+      return visitChildren(ctx);
+   }
+
    @Override public ST visitVarMapGet(QuizParser.VarMapGetContext ctx) {
       return visitChildren(ctx);
    }
@@ -493,7 +497,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitWriteFile(QuizParser.WriteFileContext ctx) {
       ST writer = templates.getInstanceOf("write");
       writer.add("file", ctx.TEXT(0).getText());
-      // TEXT as something more other than the file name
       writer.add("var", newVarWriter());
       if (ctx.finalstring != null) {
          String str, finalStr;
@@ -659,7 +662,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST call = templates.getInstanceOf("callfunc");
       call.add("name", ctx.ID(0).getText());
       for (QuizParser.CallParamsContext p : ctx.callParams()) {
-         call.add("param", visit(p).render()+", ");
+         String par = visit(p).render();
+         System.out.println(par);
+         call.add("param", par+", ");
       }
       if (ctx.last != null) {
          // if last is an id
@@ -676,7 +681,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // COMPLETED
    @Override public ST visitCallParams(QuizParser.CallParamsContext ctx) {
       ST callp = templates.getInstanceOf("return_plain_val");
-      callp.add("val", idToTmpVar.get(ctx.val.getText()));
+      String val = ctx.val.getText();
+      String valFinal = idToTmpVar.containsKey(val) ? idToTmpVar.get(val) : val;
+      callp.add("val", valFinal);
       return callp;
    }
 

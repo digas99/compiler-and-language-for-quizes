@@ -193,7 +193,7 @@ vars.put("<value>", <if(double)>Double.toString<endif><if(boolean)>Boolean.toStr
 
 read(file, type, var, id) ::= <<
 Scanner rd = new Scanner(<file>);
-<atrib(type, var, "rd.nextLine()", id)>
+<atrib(type, var, "rd.nextLine()", id, "", "")>
 >>
 
 write(file, var, stat, string, double) ::= <<
