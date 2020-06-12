@@ -18,7 +18,7 @@ public class QuizMain {
       String quizFile = "../quiz/" + args[1];
 
       String output = args[2];
-      PrintWriter writer = new PrintWriter("../outputs/" + output + ".java");
+      PrintWriter writer = new PrintWriter(output + ".java");
 
       String questionFile = "../questions/" + args[0];
       QuestionsMain.main(questionFile);

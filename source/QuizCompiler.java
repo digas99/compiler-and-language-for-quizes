@@ -290,6 +290,18 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("value", finalStr);
          atrib.add("needComma", "");
       }
+      else if (ctx.questionFetchTitle() != null) {
+         atrib.add("needComma", "");
+         atrib.add("value", visit(ctx.questionFetchTitle()).render());
+      }
+      else if (ctx.questionFetchDiff() != null) {
+         atrib.add("needComma", "");
+         atrib.add("value", visit(ctx.questionFetchDiff()).render());
+      }
+      else if (ctx.questionFetchType() != null) {
+         atrib.add("needComma", "");
+         atrib.add("value", visit(ctx.questionFetchType()).render());
+      }
       atrib.add("id", ctx.ID(0).getText());
       idToTmpVar.put(ctx.ID(0).getText(), ctx.varx);
       varTypes.put(ctx.ID(0).getText(), "String");
@@ -466,7 +478,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    //    return visitChildren(ctx);
    // }
 
-   //COMPLETED
+   // COMPLETED
    @Override public ST visitQuestionFetch(QuizParser.QuestionFetchContext ctx) {
       if (ctx.questionFetchTitle() != null) return visit(ctx.questionFetchTitle());
       if (ctx.questionFetchAnsRight() != null) return visit(ctx.questionFetchAnsRight());
@@ -479,11 +491,11 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return null;
    }
 
-   //INCOMPLETED
+   // IN PROGRESS
    @Override public ST visitQuestionFetchTitle(QuizParser.QuestionFetchTitleContext ctx) {
       ST questionFetch = templates.getInstanceOf("question_fetch");
-      System.out.println(Question.getQuestion(ctx.ID().getText()).getTitle());
-      //questionFetch.add("value", Question.getQuestion(ctx.ID().getText()).getTitle());
+      questionFetch.add("id", ctx.ID().getText());
+      questionFetch.add("type", "getTitle()");
       return questionFetch;
    }
 
