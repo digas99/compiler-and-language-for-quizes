@@ -39,8 +39,7 @@ public class QuizMain {
       if (parser.getNumberOfSyntaxErrors() == 0) {
          // print LISP-style tree:
          // System.out.println(tree.toStringTree(parser));
-         String fileName = args[2];
-         QuizCompiler compiler = new QuizCompiler(fileName);
+         QuizCompiler compiler = new QuizCompiler(output);
          ST res = compiler.visit(tree);
          writer.write(res.render());
          writer.close();
