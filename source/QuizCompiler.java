@@ -11,6 +11,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private int numWriters = 0;
    private boolean hasScanner = false;
    private boolean hasList = false;
+   private boolean needsMap = false;
    private boolean needsEntry = false;
    private boolean insideFunc = false;
    private boolean needsarrayToListStringsAuxFunc = false;
@@ -52,7 +53,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       for (QuizParser.BlockContext block : ctx.block()) {
          module.add("stat", visit(block).render());
       }
-      if (numVars > 0) module.add("hasVars", numVars);
+      if (numVars > 0 || needsMap) module.add("hasVars", numVars);
 
       if (hasScanner) module.add("hasScanner", "");
 
@@ -230,29 +231,38 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return val;
    }
 
+   //IN PROGRESS
    @Override public ST visitMapQuestion(QuizParser.MapQuestionContext ctx) {
+      needsMap = true;
       ST format = templates.getInstanceOf("hashMap");
       format.add("getQuestions", "");
       format.add("type", convertion.get(ctx.type.getText()));
       format.add("var", ctx.ID().getText());
+      format.add("path", ctx.TEXT().getText());
       return format;
    }
    
+   //COMPLETED
    @Override public ST visitMapNums(QuizParser.MapNumsContext ctx) {
+      needsMap = true;
       ST format = templates.getInstanceOf("hashMap");
       format.add("type", convertion.get(ctx.type.getText()).replace("d", "D"));
       format.add("var", ctx.ID().getText());
       return format;
    }
 
+   //COMPLETED
    @Override public ST visitMapText(QuizParser.MapTextContext ctx) {
+      needsMap = true;
       ST format = templates.getInstanceOf("hashMap");
       format.add("type", convertion.get(ctx.type.getText()));
       format.add("var", ctx.ID().getText());
       return format;
    }
 
+   //COMPLETED
    @Override public ST visitMapBoolean(QuizParser.MapBooleanContext ctx) {
+      needsMap = true;
       ST format = templates.getInstanceOf("hashMap");
       format.add("type", convertion.get(ctx.type.getText()).replace("b", "B"));
       format.add("var", ctx.ID().getText());
@@ -427,19 +437,44 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitVarMapGet(QuizParser.VarMapGetContext ctx) {
+      needsMap = true;
+      ST get = templates.getInstanceOf("hashMap_get");
+      get.add("var", ctx.ID(1).getText());
+      get.add("getter", ctx.ID(0).getText());
+      if(ctx.TEXT() != null){
+         get.add("key", ctx.TEXT().getText());
+      }
+      else{
+         get.add("key", visit(ctx.questionFetch()).render());
+      }
       return visitChildren(ctx);
    }
 
    @Override public ST visitVarMapPut(QuizParser.VarMapPutContext ctx) {
+      needsMap = true;
+      ST put = templates;
+
+      if(ctx.questionFetch() != null){
+         //TEXT(0)
+      }
+      else{
+         // if size txt > 1 --> 2 txt
+         //else
+      }
       return visitChildren(ctx);
    }
 
    @Override public ST visitVarMapRemove(QuizParser.VarMapRemoveContext ctx) {
+      needsMap = true;
       return visitChildren(ctx);
    }
 
    @Override public ST visitVarMapClear(QuizParser.VarMapClearContext ctx) {
-      return visitChildren(ctx);
+      needsMap = true;
+      ST clear = templates.getInstanceOf("hashMap_clear");
+      System.out.println(ctx.ID().getText());
+      clear.add("var", ctx.ID().getText());
+      return clear;
    }
 
    @Override public ST visitAdd(QuizParser.AddContext ctx) {

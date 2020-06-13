@@ -1,6 +1,18 @@
 main =>
-    map question mq;
+    map question mq => get("../questions/linguagem_questions.qst");
     map text mt;
     map number mn;
     map boolean mb;
+    
+    question q1;
+
+    text t1 => "a b c d e";
+    list text lt;
+    lt => split(t1, " ");
+
+    
+
+    write(CONSOLE) => q1;
+    
+    mt => clear();
 >>

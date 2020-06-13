@@ -305,7 +305,14 @@ else if (<condition>) {
 
 question_fetch(id, type) ::= "Question.getQuestion(\"<id>\").<type>"
 
-hashMap(type, var, getQuestions) ::= <<
+hashMap(type, var, getQuestions, path) ::= <<
+<if(getQuestions)>try{
+   QuestionsMain.main(<path>);
+}catch(Exception ex){
+    System.out.println(ex);
+    System.exit(1);
+}
+<endif>
 HashMap\<String, <type>\> <var> = <if(getQuestions)>Question.getQuestions()<else>new HashMap\<>()<endif>;
 >>
 
@@ -318,5 +325,25 @@ private static List\<String> arrayToListStrings(String[] arr) {
         finalList.add(s);
     }
     return finalList;
+}
+>>
+
+hashMap_get(var, getter, key) ::= <<
+<var> = <getter>.get(<key>);
+>>
+
+hashMap_put(var, key, value) ::= <<
+<var>.put(<key>, <value>);
+>>
+
+hashMap_remove(var, key) ::= <<
+if(<var>.containsKey(<key>)){
+    <var>.remove(<key>);
+}
+>>
+
+hashMap_clear(var) ::= <<
+if(!<var>.isEmpty()){
+    <var>.clear();
 }
 >>

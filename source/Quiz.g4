@@ -21,7 +21,7 @@ list    : (init='list' 'question')? ID '=>' 'get' '(' TEXT ')' ';'  # listQuesti
         ;
 
 // MAPS
-map     : 'map' type='question' ID ';'                          # mapQuestion
+map     : 'map' type='question' ID '=>' 'get' '(' TEXT ')' ';'                          # mapQuestion
         | 'map' type='number' ID ';'                            # mapNums
         | 'map' type='text' ID ';'                              # mapText
         | 'map' type='boolean' ID ';'                           # mapBoolean
@@ -37,7 +37,7 @@ var returns[String varx = null]:
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
          | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                  # varListSplit
-         | ID '=>' 'get' '(' (TEXT|questionFetch) ')' ';'                                                                  # varMapGet
+         | ID '=>' 'get' '(' (TEXT|questionFetch) ', ' ID ')' ';'                                                                  # varMapGet
          | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|bool) ')' ';'                                     # varMapPut
          | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
