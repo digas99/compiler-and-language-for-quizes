@@ -151,8 +151,14 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return types;
    }
 
+   // COMPLETED (NEEDS REVISION)
    @Override public ST visitListQuestion(QuizParser.ListQuestionContext ctx) {
-      return visitChildren(ctx);
+      ST list = templates.getInstanceOf("list_question");
+      hasList = true;
+      list.add("var", ctx.ID().getText());
+      list.add("newVar", newVar());
+      list.add("file",ctx.TEXT().getText());
+      return list;
    }
 
    // COMPLETED
@@ -369,6 +375,33 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          visit.add("needComma", "");
          if (insideFunc) visit.add("insideFunc", "");
       }
+      else if (ctx.questionFetchTries() != null) {
+         visit = templates.getInstanceOf("atrib_double");
+         visit.add("type", "double");
+         visit.add("var", ctx.varx);
+         visit.add("needComma", "");
+         visit.add("value", visit(ctx.questionFetchTries()).render());
+         visit.add("id", tmpId);
+         idToTmpVar.put(tmpId, ctx.varx);
+      }
+      else if (ctx.questionFetchTime() != null) {
+         visit = templates.getInstanceOf("atrib_double");
+         visit.add("type", "double");
+         visit.add("var", ctx.varx);
+         visit.add("needComma", "");
+         visit.add("value", visit(ctx.questionFetchTime()).render());
+         visit.add("id", tmpId);
+         idToTmpVar.put(tmpId, ctx.varx);
+      }
+      else if (ctx.questionFetchPoints() != null) {
+         visit = templates.getInstanceOf("atrib_double");
+         visit.add("type", "double");
+         visit.add("var", ctx.varx);
+         visit.add("needComma", "");
+         visit.add("value", visit(ctx.questionFetchPoints()).render());
+         visit.add("id", tmpId);
+         idToTmpVar.put(tmpId, ctx.varx);
+      }
       else {
          visit = null;
       }
@@ -456,7 +489,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    @Override public ST visitVarMapPut(QuizParser.VarMapPutContext ctx) {
       needsMap = true;
-      ST put = templates;
+      //ST put = templates;
 
       if(ctx.questionFetch() != null){
          //TEXT(0)
@@ -579,7 +612,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return null;
    }
 
-   // IN PROGRESS
+   // COMPLETED
    @Override public ST visitQuestionFetchTitle(QuizParser.QuestionFetchTitleContext ctx) {
       ST questionFetch = templates.getInstanceOf("question_fetch");
       questionFetch.add("id", ctx.ID().getText());
@@ -595,24 +628,47 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
+   // COMPLETED
    @Override public ST visitQuestionFetchDiff(QuizParser.QuestionFetchDiffContext ctx) {
-      return visitChildren(ctx);
+      ST questionFetch = templates.getInstanceOf("question_fetch");
+      questionFetch.add("id", ctx.ID().getText());
+      questionFetch.add("type", "getDifficulty()");
+      return questionFetch;
    }
 
+   // COMPLETED
    @Override public ST visitQuestionFetchType(QuizParser.QuestionFetchTypeContext ctx) {
-      return visitChildren(ctx);
+      ST questionFetch = templates.getInstanceOf("question_fetch");
+      questionFetch.add("id", ctx.ID().getText());
+      questionFetch.add("type", "getType()");
+      return questionFetch;
    }
 
+   // COMPLETED
    @Override public ST visitQuestionFetchTries(QuizParser.QuestionFetchTriesContext ctx) {
-      return visitChildren(ctx);
+      ST questionFetch = templates.getInstanceOf("question_fetch");
+      questionFetch.add("id", ctx.ID().getText());
+      questionFetch.add("type", "getTries()");
+      questionFetch.add("double", "");
+      return questionFetch;
    }
 
+   // COMPLETED
    @Override public ST visitQuestionFetchTime(QuizParser.QuestionFetchTimeContext ctx) {
-      return visitChildren(ctx);
+      ST questionFetch = templates.getInstanceOf("question_fetch");
+      questionFetch.add("id", ctx.ID().getText());
+      questionFetch.add("type", "getTime()");
+      questionFetch.add("double", "");
+      return questionFetch;
    }
 
+   // COMPLETED
    @Override public ST visitQuestionFetchPoints(QuizParser.QuestionFetchPointsContext ctx) {
-      return visitChildren(ctx);
+      ST questionFetch = templates.getInstanceOf("question_fetch");
+      questionFetch.add("id", ctx.ID().getText());
+      questionFetch.add("type", "getPoints()");
+      questionFetch.add("double", "");
+      return questionFetch;
    }
 
    // COMPLETED
