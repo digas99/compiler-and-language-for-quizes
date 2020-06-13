@@ -321,10 +321,14 @@ private static List\<String> arrayToListStrings(String[] arr) {
 }
 >>
 
-add_atrib(var)::= <<
-.add(<var>);
+add_atrib(var, isDouble)::= <<
+.add(<if(isDouble)>Double.valueOf(<endif><var><if(isDouble)>)<endif>);
 >>
 
 list_action(id,action)::= <<
 <id><action>
+>>
+
+remove_atrib(var)::= <<
+.remove(<var>);
 >>

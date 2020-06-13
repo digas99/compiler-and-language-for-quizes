@@ -36,9 +36,9 @@ var returns[String varx = null]:
          | 'question'? ID ';'                                                                                              # varQuestion
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
-         | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                  # varListSplit
+         | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                 # varListSplit
          | ID '=>' 'get' '(' (TEXT|questionFetch) ')' ';'                                                                  # varMapGet
-         | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|bool) ')' ';'                                     # varMapPut
+         | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|bool) ')' ';'                                        # varMapPut
          | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
@@ -48,7 +48,7 @@ strings  : (TEXT|ID) '+';
 remove   : 'remove' '(' NUMBER ')' ';'                                                   #removeNumber
          | 'remove' '(' TEXT ')' ';'                                                     #removeText
          | 'remove' '(' ID ')' ';'                                                       #removeID       
-         | 'remove' '(' '[' NUMBER ']' ')' ';'                                          #removeExpNumber
+         | 'remove' '(' '[' NUMBER ']' ')' ';'                                           #removeExpNumber
          ;
 add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'            #addList
          | 'add' '(' questionFetch ')' ';'                                               #addQuestion
