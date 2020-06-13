@@ -10,9 +10,16 @@ main =>
     list text lt;
     lt => split(t1, " ");
 
-    
+    mq => get("cidades", q1);
 
-    write(CONSOLE) => q1;
+    mn => put("eu", 2);
+    mn => put("eu", "e");
+    mn => put("eu", e);
+    mn => put("eu", FALSE);
+    mn => put(q1.title, 2);
+    mn => put(q1.title, "e");
+    mn => put(q1.title, e);
+    mn => put(q1.title, FALSE);
     
     mt => clear();
 >>
