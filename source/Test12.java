@@ -8,12 +8,15 @@ public class Test12 {
         String var1 = "../questions/" + "linguagem_questions" + ".qst";
         QuestionsMain.main(var1);
         List<Question> l = new ArrayList<Question>(Question.getQuestions().values());
-        String var2 = Question.getQuestion("cidades").getTitle();
+        String var2 =Question.getQuestion("cidades").getTitle();
         vars.put("t0", var2);
-        String var3 = Question.getQuestion("cidades").getDifficulty();
+
+        String var3 =Question.getQuestion("cidades").getDifficulty();
         vars.put("t1", var3);
-        String var4 = Question.getQuestion("cidades").getType();
+
+        String var4 =Question.getQuestion("cidades").getType();
         vars.put("t2", var4);
+
         double var5 = Question.getQuestion("cidades").getTries();
         vars.put("t3", Double.toString(var5));
         double var6 = Question.getQuestion("cidades").getTime();
