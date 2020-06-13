@@ -12,6 +12,9 @@ main =>
 
     mq => get("cidades", q1);
 
+    mq => remove(q1.title);
+    mq => remove("cidades");
+
     mn => put("eu", 2);
     mn => put("eu", "e");
     mn => put("eu", e);

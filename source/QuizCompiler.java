@@ -489,7 +489,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return get;
    }
 
-
+   //IN PROGRESS
    @Override public ST visitVarMapPut(QuizParser.VarMapPutContext ctx) {
       needsMap = true;
       ST put = templates.getInstanceOf("hashMap_put");
@@ -553,9 +553,19 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return put;
    }
 
+   //IN PROGRESS
    @Override public ST visitVarMapRemove(QuizParser.VarMapRemoveContext ctx) {
       needsMap = true;
-      return visitChildren(ctx);
+      System.out.println(ctx.getText());
+      ST remo = templates.getInstanceOf("hashMap_remove");
+      remo.add("var", ctx.ID().getText());
+      if(ctx.questionFetch() != null){
+         remo.add("key", visit(ctx.questionFetch()).render());
+      }
+      else if (ctx.TEXT() != null){
+         remo.add("key", ctx.TEXT().getText());
+      }
+      return remo;
    }
 
    //COMPLETED

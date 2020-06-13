@@ -37,9 +37,9 @@ var returns[String varx = null]:
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
          | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                  # varListSplit
-         | ID '=>' 'get' '(' (TEXT|questionFetch) ', ' ID ')' ';'                                                                  # varMapGet
-         | ID '=>' 'put' '(' (TEXT|questionFetch) ', ' (NUMBER|TEXT|ID|bool) ')' ';'                                     # varMapPut
-         | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
+         | ID '=>' 'get' '(' (TEXT|questionFetch|ID) ', ' ID ')' ';'                                                                  # varMapGet
+         | ID '=>' 'put' '(' (TEXT|questionFetch|ID) ', ' (NUMBER|TEXT|ID|bool) ')' ';'                                     # varMapPut
+         | ID '=>' 'remove' '(' (TEXT|questionFetch|ID) ')' ';'                                                               # varMapRemove
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
 
