@@ -48,7 +48,7 @@ strings  : (TEXT|ID) '+';
 remove   : 'remove' '(' NUMBER ')' ';'                                                   #removeNumber
          | 'remove' '(' TEXT ')' ';'                                                     #removeText
          | 'remove' '(' ID ')' ';'                                                       #removeID       
-         | 'remove' '(' '[' NUMBER ']' ')' ';'                                          #removeExpNumber
+         | 'remove' '(' '[' NUMBER ']' ')' ';'                                           #removeExpNumber
          ;
 add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'            #addList
          | 'add' '(' questionFetch ')' ';'                                               #addQuestion

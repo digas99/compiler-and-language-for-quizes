@@ -444,15 +444,18 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    @Override public ST visitVarListAdd(QuizParser.VarListAddContext ctx) {
       ST list = templates.getInstanceOf("list_action");
-      System.out.println(ctx.ID().getText());
       list.add("id",ctx.ID().getText());
       list.add("action",visit(ctx.add()).render());
       return list;
    }
+   
 
-   @Override public ST visitVarListRemove(QuizParser.VarListRemoveContext ctx) {
-      return visitChildren(ctx);
-   }
+   // @Override public ST visitVarListRemove(QuizParser.VarListRemoveContext ctx) {
+   //    ST list = templates.getInstanceOf("list_action");
+   //    list.remove("id",ctx.ID().getText());
+   //    list.remove("action",visit(ctx.add()).render());
+   //    return list;
+   // }
 
    @Override public ST visitVarListSplit(QuizParser.VarListSplitContext ctx) {
       needsarrayToListStringsAuxFunc = true;
@@ -600,15 +603,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    //Add
- @Override public ST visitAddList(QuizParser.AddListContext ctx) {
-   ST add = templates.getInstanceOf("add_atrib");
-  
-
-   return add;
-}
+//  @Override public ST visitAddList(QuizParser.AddListContext ctx) {
+//    ST add = templates.getInstanceOf("add_atrib");
+//    // add.add("list",);
+//    return add;
+// }
 
 @Override public ST visitAddQuestion(QuizParser.AddQuestionContext ctx) {
    ST add = templates.getInstanceOf("add_atrib");
+   add.add("question",visit(ctx.questionFetch()).render());
    return add;
 }
 
@@ -620,13 +623,14 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
 @Override public ST visitAddID(QuizParser.AddIDContext ctx) {
    ST add = templates.getInstanceOf("add_atrib");
+   add.add("var",idToTmpVar.get(ctx.ID().getText()));
    return add;   
 } 
 
 @Override public ST visitAddNumber(QuizParser.AddNumberContext ctx) {
    ST add = templates.getInstanceOf("add_atrib");
-   
-
+   add.add("isDouble","");
+   add.add("var",ctx.NUMBER().getText());
    return add;   
 }
 
@@ -634,23 +638,27 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
 @Override public ST visitRemoveNumber(QuizParser.RemoveNumberContext ctx) {
    ST remove = templates.getInstanceOf("remove_atrib");
+   remove.add("var",ctx.NUMBER().getText());
    return remove;     
 }
 
 @Override public ST visitRemoveText(QuizParser.RemoveTextContext ctx) {
    ST remove = templates.getInstanceOf("remove_atrib");
+   remove.add("var",ctx.TEXT().getText());
    return remove;     
 }
 
 @Override public ST visitRemoveID(QuizParser.RemoveIDContext ctx) {
    ST remove = templates.getInstanceOf("remove_atrib");
+   remove.add("var",ctx.ID().getText());
    return remove;    
 } 
 
-@Override public ST visitRemoveExpNumber(QuizParser.RemoveExpNumberContext ctx) {
-   ST remove = templates.getInstanceOf("remove_atrib");
-   return remove;     
-}
+// @Override public ST visitRemoveExpNumber(QuizParser.RemoveExpNumberContext ctx) {
+//    ST remove = templates.getInstanceOf("remove_atrib");
+//    remove.add("var",ctx.);
+//    return remove;     
+// }
 
    // @Override public ST visitQuestionTitle(QuizParser.QuestionTitleContext ctx) {
    //    return visitChildren(ctx);

@@ -1,0 +1,7 @@
+main =>
+    list number n;
+    n => add(4);
+    for(number m in n)=>
+        write(CONSOLE) => m;
+    >>   
+>>

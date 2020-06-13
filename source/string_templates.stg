@@ -347,14 +347,17 @@ if(!<var>.isEmpty()){
     <var>.clear();
 }
 >>
-add_atrib(var)::= <<
-.add(<var>);
+add_atrib(var, isDouble)::= <<
+.add(<if(isDouble)>Double.valueOf(<endif><var><if(isDouble)>)<endif>);
 >>
 
 list_action(id,action)::= <<
 <id><action>
 >>
 
+remove_atrib(var)::= <<
+.remove(<var>);
+>>
 list_question(var, file, newVar) ::= <<
 String <newVar> = "../questions/" + <file> + ".qst";
 QuestionsMain.main(<newVar>);

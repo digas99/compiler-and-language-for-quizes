@@ -1,9 +1,9 @@
 main => 
     list text l;
-    l => add("shjahak");
+    text t => "jlajsl";
+    l => add(t);
     for(text m in l )=>
         write(CONSOLE) => m;
     >>   
-
 
 >>
