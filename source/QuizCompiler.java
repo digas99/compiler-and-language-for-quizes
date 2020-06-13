@@ -434,11 +434,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitVarQuestion(QuizParser.VarQuestionContext ctx) {
       ST atrib = templates.getInstanceOf("atrib");
       if (insideFunc) atrib.add("insideFunc", "");
-      ctx.varx = newVar();
       atrib.add("isQuestion", "");
       atrib.add("type", "Question");
-      atrib.add("var", ctx.varx);
-      atrib.add("id", ctx.ID().getText());
+      atrib.add("var", ctx.ID().getText());
+      atrib.add("needComma", "");
       idToTmpVar.put(ctx.ID().getText(), ctx.varx);
       varTypes.put(ctx.ID().getText(), "Question");
       return atrib;
@@ -498,9 +497,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          put.add("key", visit(ctx.questionFetch()).render());
          if(ctx.ID().size() > 1){
             put.add("var", ctx.ID(0).getText());
-            put.add("value", ctx.ID(1).getText());
+            put.add("value", idToTmpVar.get(ctx.ID(1).getText()));
          }
          else if(ctx.NUMBER() != null){
+            put.add("isDouble", "");
             put.add("var", ctx.ID(0).getText());
             put.add("value", ctx.NUMBER().getText());
          }
@@ -510,7 +510,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          }
          else{
             put.add("var", ctx.ID(0).getText());
-            put.add("value", visit(ctx.bool()).render());
+            put.add("value", convertion.get(visit(ctx.bool()).render()));
          }
       }
       else{
@@ -518,9 +518,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
             put.add("key", ctx.TEXT(0).getText());
             if(ctx.ID().size() > 1){
                put.add("var", ctx.ID(0).getText());
-               put.add("value", ctx.ID(1).getText());
+               put.add("value", idToTmpVar.get(ctx.ID(1).getText()));
             }
             else if(ctx.NUMBER() != null){
+               put.add("isDouble", "");
                put.add("var", ctx.ID(0).getText());
                put.add("value", ctx.NUMBER().getText());
             }
@@ -530,7 +531,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
             }
             else{
                put.add("var", ctx.ID(0).getText());
-               put.add("value", visit(ctx.bool()).render());
+               put.add("value", convertion.get(visit(ctx.bool()).render()));
             }
          }
 
@@ -538,15 +539,16 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
             put.add("key", ctx.TEXT(0).getText());
             if(ctx.ID().size() > 1){
                put.add("var", ctx.ID(0).getText());
-               put.add("value", ctx.ID(1).getText());
+               put.add("value", idToTmpVar.get(ctx.ID(1).getText()));
             }
             else if(ctx.NUMBER() != null){
+               put.add("isDouble", "");
                put.add("var", ctx.ID(0).getText());
                put.add("value", ctx.NUMBER().getText());
             }
             else{
                put.add("var", ctx.ID(0).getText());
-               put.add("value", visit(ctx.bool()).render());
+               put.add("value", convertion.get(visit(ctx.bool()).render()));
             }
          }
       }
@@ -556,7 +558,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    //IN PROGRESS
    @Override public ST visitVarMapRemove(QuizParser.VarMapRemoveContext ctx) {
       needsMap = true;
-      System.out.println(ctx.getText());
       ST remo = templates.getInstanceOf("hashMap_remove");
       remo.add("var", ctx.ID().getText());
       if(ctx.questionFetch() != null){

@@ -12,17 +12,19 @@ main =>
 
     mq => get("cidades", q1);
 
-    mq => remove(q1.title);
-    mq => remove("cidades");
+    mq => delete(q1.title);
+    mq => delete("cidades");
+
+    number e => 2.71;
 
     mn => put("eu", 2);
-    mn => put("eu", "e");
+    mt => put("eu", "e");
     mn => put("eu", e);
-    mn => put("eu", FALSE);
+    mb => put("eu", FALSE);
     mn => put(q1.title, 2);
-    mn => put(q1.title, "e");
+    mt => put(q1.title, "e");
     mn => put(q1.title, e);
-    mn => put(q1.title, FALSE);
+    mb => put(q1.title, FALSE);
     
     mt => clear();
 >>

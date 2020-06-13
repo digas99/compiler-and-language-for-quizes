@@ -71,7 +71,7 @@ tmp_atrib(type, var, value) ::= <<
 >>
 
 atrib(type, var, value, id, insideFunc, needComma, isQuestion) ::= <<
-<type> <var> = <value><if(needComma)>;<endif>
+<type> <var> <if(!isQuestion)>=<endif><value><if(needComma)>;<endif>
 <if(insideFunc)>
 // Store this variable if it is in main
 if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
@@ -332,8 +332,8 @@ hashMap_get(var, getter, key) ::= <<
 <var> = <getter>.get(<key>);
 >>
 
-hashMap_put(var, key, value) ::= <<
-<var>.put(<key>, <value>);
+hashMap_put(var, key, value, isDouble) ::= <<
+<var>.put(<key>, <if(isDouble)>Double.valueOf(<endif><value><if(isDouble)>)<endif>);
 >>
 
 hashMap_remove(var, key) ::= <<
