@@ -16,7 +16,7 @@ params : type=('text'|'number'|'boolean'|'question') ID ', ';
 // LISTS
 list    : (init='list' 'question')? ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
         | (init='list' 'number')? ID ('=>' listFormatNumber)? ';'   # listNums
-        | (init='list' 'text')? ID ('=>' listFormatText)? ';'       # listText
+        | (init='list' 'text')? ID ('=>' (listFormatText|questionFetchAnsRight|questionFetchAnsWrong))? ';'       # listText
         | (init='list' 'boolean')? ID ('=>' listFormatBool)? ';'    # listBoolean
         ;
 

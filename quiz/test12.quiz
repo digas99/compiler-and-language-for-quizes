@@ -6,10 +6,31 @@ main =>
     number t3 => cidades.tries;
     number t4 => cidades.time;
     number t5 => cidades.points;
+    list text t6 => cidades01.answers.right;
+    list text t7 => cidades.answers.wrong;
     write(CONSOLE) => t0 + "\n";
     write(CONSOLE) => t1 + "\n";
     write(CONSOLE) => t2 + "\n";
     write(CONSOLE) => t3 + "\n";
     write(CONSOLE) => t4 + "\n";
     write(CONSOLE) => t5 + "\n";
+    write(CONSOLE) => "Right answers:\n";
+    for(text t in t6)=>
+        write(CONSOLE) => t + ", ";
+    >>
+    write(CONSOLE) => "\n";
+    write(CONSOLE) => "Wrong answers:\n";
+    for(text t in t7)=>
+        write(CONSOLE) => t + ", ";
+    >> 
+    write(CONSOLE) => "\n";
+
+    text a => "a b c";
+    list text splitted;
+    splitted => split(a, " ");
+    for (text t in splitted) =>
+        write (CONSOLE) => t+"\n";
+    >>
+    text b => splitted[0];
+    write (CONSOLE) => b+"\n";
 >>

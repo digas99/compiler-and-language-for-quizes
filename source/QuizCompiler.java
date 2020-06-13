@@ -181,7 +181,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (ctx.listFormatText() != null) list.add("val", visit(ctx.listFormatText()).render());
       list.add("tmpvar", newVar());
       list.add("tmpvar2", newVar());
-      if (ctx.init != null) list.add("init", "");
+      if (ctx.questionFetchAnsRight() != null) list.add("questionFetch", visit(ctx.questionFetchAnsRight()).render());
+      if (ctx.questionFetchAnsWrong() != null) list.add("questionFetch", visit(ctx.questionFetchAnsWrong()).render());
+      if (ctx.init != null && ctx.questionFetchAnsRight() == null && ctx.questionFetchAnsWrong() == null) list.add("init", "");
       return list;
    }
 
@@ -714,11 +716,17 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitQuestionFetchAnsRight(QuizParser.QuestionFetchAnsRightContext ctx) {
-      return visitChildren(ctx);
+      ST questionFetch = templates.getInstanceOf("question_fetch");
+      questionFetch.add("id", ctx.ID().getText());
+      questionFetch.add("type", "getRightAns()");
+      return questionFetch;
    }
 
    @Override public ST visitQuestionFetchAnsWrong(QuizParser.QuestionFetchAnsWrongContext ctx) {
-      return visitChildren(ctx);
+      ST questionFetch = templates.getInstanceOf("question_fetch");
+      questionFetch.add("id", ctx.ID().getText());
+      questionFetch.add("type", "getWrongAns()");
+      return questionFetch;
    }
 
    // COMPLETED
@@ -742,7 +750,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST questionFetch = templates.getInstanceOf("question_fetch");
       questionFetch.add("id", ctx.ID().getText());
       questionFetch.add("type", "getTries()");
-      questionFetch.add("double", "");
       return questionFetch;
    }
 
@@ -751,7 +758,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST questionFetch = templates.getInstanceOf("question_fetch");
       questionFetch.add("id", ctx.ID().getText());
       questionFetch.add("type", "getTime()");
-      questionFetch.add("double", "");
       return questionFetch;
    }
 
@@ -760,7 +766,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST questionFetch = templates.getInstanceOf("question_fetch");
       questionFetch.add("id", ctx.ID().getText());
       questionFetch.add("type", "getPoints()");
-      questionFetch.add("double", "");
       return questionFetch;
    }
 
