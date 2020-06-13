@@ -45,16 +45,16 @@ var returns[String varx = null]:
 
 strings  : (TEXT|ID) '+';
 
-remove   : 'remove' '(' NUMBER ')' ';'          
-         | 'remove' '(' TEXT ')' ';' 
-         | 'remove' '(' ID ')' ';'
-         | 'remove' '(' '[' NUMBER ']' ')' ';'
+remove   : 'remove' '(' NUMBER ')' ';'                                                   #removeNumber
+         | 'remove' '(' TEXT ')' ';'                                                     #removeText
+         | 'remove' '(' ID ')' ';'                                                       #removeID       
+         | 'remove' '(' '[' NUMBER ']' ')' ';'                                          #removeExpNumber
          ;
-add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'
-         | 'add' '(' questionFetch ')' ';'
-         | 'add' '(' TEXT ')' ';'
-         | 'add' '(' ID ')' ';'
-         | 'add' '(' NUMBER ')' ';'
+add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'            #addList
+         | 'add' '(' questionFetch ')' ';'                                               #addQuestion
+         | 'add' '(' TEXT ')' ';'                                                        #addText
+         | 'add' '(' ID ')' ';'                                                          #addID
+         | 'add' '(' NUMBER ')' ';'                                                      #addNumber
          ;
 
 // QUESTION OBJECT CREATION

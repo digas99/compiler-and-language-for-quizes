@@ -347,3 +347,10 @@ if(!<var>.isEmpty()){
     <var>.clear();
 }
 >>
+add_atrib(var)::= <<
+.add(<var>);
+>>
+
+list_action(id,action)::= <<
+<id><action>
+>>
