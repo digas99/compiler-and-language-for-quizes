@@ -16,13 +16,22 @@ public class Test13 {
         HashMap<String, Double> mn = new HashMap<>();
         HashMap<String, Boolean> mb = new HashMap<>();
         Question var1 = 
-        vars.put("q1", var1);
+
         String var2 = "a b c d e";
         vars.put("t1", var2);
+
         List<String> lt = new ArrayList<>();
 
         lt = arrayToListStrings(var2.split(" "));
-        System.out.print(var1);
+        q1 = mq.get("cidades");
+        mn.put("eu", 2);
+        mn.put("eu", "e");
+        mn.put("eu", e);
+        mn.put("eu", FALSE);
+        mn.put(Question.getQuestion("q1").getTitle(), 2);
+        mn.put(Question.getQuestion("q1").getTitle(), "e");
+        mn.put(Question.getQuestion("q1").getTitle(), e);
+        mn.put(Question.getQuestion("q1").getTitle(), FALSE);
         if(!mt.isEmpty()){
             mt.clear();
         }

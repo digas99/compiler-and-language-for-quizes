@@ -70,13 +70,15 @@ tmp_atrib(type, var, value) ::= <<
 <type> <var> = <value>;
 >>
 
-atrib(type, var, value, id, insideFunc, needComma) ::= <<
+atrib(type, var, value, id, insideFunc, needComma, isQuestion) ::= <<
 <type> <var> = <value><if(needComma)>;<endif>
 <if(insideFunc)>
 // Store this variable if it is in main
 if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
 <endif>
+<if(!isQuestion)>
 <if(id)>vars.put("<id>", <var>);<endif>
+<endif>
 >>
 
 atrib_double(type, var, value, id, insideFunc, needComma) ::= <<

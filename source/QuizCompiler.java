@@ -402,6 +402,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST atrib = templates.getInstanceOf("atrib");
       if (insideFunc) atrib.add("insideFunc", "");
       ctx.varx = newVar();
+      atrib.add("isQuestion", "");
       atrib.add("type", "Question");
       atrib.add("var", ctx.varx);
       atrib.add("id", ctx.ID().getText());
@@ -440,6 +441,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return split;
    }
 
+   //IN PROGRESS
    @Override public ST visitVarMapGet(QuizParser.VarMapGetContext ctx) {
       needsMap = true;
       ST get = templates.getInstanceOf("hashMap_get");
@@ -451,21 +453,71 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       else{
          get.add("key", visit(ctx.questionFetch()).render());
       }
-      return visitChildren(ctx);
+      return get;
    }
+
 
    @Override public ST visitVarMapPut(QuizParser.VarMapPutContext ctx) {
       needsMap = true;
-      ST put = templates;
-
+      ST put = templates.getInstanceOf("hashMap_put");
       if(ctx.questionFetch() != null){
          //TEXT(0)
+         put.add("key", visit(ctx.questionFetch()).render());
+         if(ctx.ID().size() > 1){
+            put.add("var", ctx.ID(0).getText());
+            put.add("value", ctx.ID(1).getText());
+         }
+         else if(ctx.NUMBER() != null){
+            put.add("var", ctx.ID(0).getText());
+            put.add("value", ctx.NUMBER().getText());
+         }
+         else if(ctx.TEXT(0) != null){
+            put.add("var", ctx.ID(0).getText());
+            put.add("value", ctx.TEXT(0).getText());
+         }
+         else{
+            put.add("var", ctx.ID(0).getText());
+            put.add("value", visit(ctx.bool()).render());
+         }
       }
       else{
-         // if size txt > 1 --> 2 txt
-         //else
+         if(ctx.TEXT().size() > 1){
+            put.add("key", ctx.TEXT(0).getText());
+            if(ctx.ID().size() > 1){
+               put.add("var", ctx.ID(0).getText());
+               put.add("value", ctx.ID(1).getText());
+            }
+            else if(ctx.NUMBER() != null){
+               put.add("var", ctx.ID(0).getText());
+               put.add("value", ctx.NUMBER().getText());
+            }
+            else if(ctx.TEXT(1) != null){
+               put.add("var", ctx.ID(0).getText());
+               put.add("value", ctx.TEXT(1).getText());
+            }
+            else{
+               put.add("var", ctx.ID(0).getText());
+               put.add("value", visit(ctx.bool()).render());
+            }
+         }
+
+         else{
+            put.add("key", ctx.TEXT(0).getText());
+            if(ctx.ID().size() > 1){
+               put.add("var", ctx.ID(0).getText());
+               put.add("value", ctx.ID(1).getText());
+            }
+            else if(ctx.NUMBER() != null){
+               put.add("var", ctx.ID(0).getText());
+               put.add("value", ctx.NUMBER().getText());
+            }
+            else{
+               put.add("var", ctx.ID(0).getText());
+               put.add("value", visit(ctx.bool()).render());
+            }
+         }
       }
-      return visitChildren(ctx);
+      return put;
    }
 
    @Override public ST visitVarMapRemove(QuizParser.VarMapRemoveContext ctx) {
@@ -473,6 +525,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
+   //COMPLETED
    @Override public ST visitVarMapClear(QuizParser.VarMapClearContext ctx) {
       needsMap = true;
       ST clear = templates.getInstanceOf("hashMap_clear");
