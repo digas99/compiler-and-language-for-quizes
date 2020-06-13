@@ -438,7 +438,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       atrib.add("type", "Question");
       atrib.add("var", ctx.ID().getText());
       atrib.add("needComma", "");
-      idToTmpVar.put(ctx.ID().getText(), ctx.varx);
       varTypes.put(ctx.ID().getText(), "Question");
       return atrib;
    }
@@ -473,98 +472,120 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return split;
    }
 
-   //IN PROGRESS
+   //COMPLETED
    @Override public ST visitVarMapGet(QuizParser.VarMapGetContext ctx) {
       needsMap = true;
       ST get = templates.getInstanceOf("hashMap_get");
-      get.add("var", ctx.ID(1).getText());
       get.add("getter", ctx.ID(0).getText());
-      if(ctx.TEXT() != null){
-         get.add("key", ctx.TEXT().getText());
-      }
-      else{
-         get.add("key", visit(ctx.questionFetch()).render());
+      if(ctx.ID().size() > 1){
+         if(ctx.ID().size() > 2){
+            String id = ctx.ID(2).getText();
+            String idFinal = idToTmpVar.containsKey(id) ? idToTmpVar.get(id) : id;
+            get.add("var", idFinal);
+            get.add("key", idToTmpVar.get(ctx.ID(1).getText()));
+         }
+         else{
+            String id = ctx.ID(1).getText();
+            System.out.println(id);
+            System.out.println(idToTmpVar);
+            String idFinal = idToTmpVar.containsKey(id) ? idToTmpVar.get(id) : id;
+            get.add("var", idFinal);
+            if(ctx.TEXT() != null){
+               get.add("key", ctx.TEXT().getText());
+            }
+            else{
+               get.add("key", visit(ctx.questionFetch()).render());
+            }
+         }
       }
       return get;
    }
 
-   //IN PROGRESS
+   //COMPLETED
    @Override public ST visitVarMapPut(QuizParser.VarMapPutContext ctx) {
       needsMap = true;
       ST put = templates.getInstanceOf("hashMap_put");
-      if(ctx.questionFetch() != null){
-         //TEXT(0)
-         put.add("key", visit(ctx.questionFetch()).render());
-         if(ctx.ID().size() > 1){
-            put.add("var", ctx.ID(0).getText());
-            put.add("value", idToTmpVar.get(ctx.ID(1).getText()));
-         }
-         else if(ctx.NUMBER() != null){
-            put.add("isDouble", "");
-            put.add("var", ctx.ID(0).getText());
-            put.add("value", ctx.NUMBER().getText());
-         }
-         else if(ctx.TEXT(0) != null){
-            put.add("var", ctx.ID(0).getText());
-            put.add("value", ctx.TEXT(0).getText());
-         }
-         else{
-            put.add("var", ctx.ID(0).getText());
-            put.add("value", convertion.get(visit(ctx.bool()).render()));
-         }
+      if(ctx.ID().size() > 2){
+         put.add("var", ctx.ID(0).getText());
+         put.add("key", idToTmpVar.get(ctx.ID(1).getText()));
+         String id = ctx.ID(2).getText();
+         String idFinal = idToTmpVar.containsKey(id) ? idToTmpVar.get(id) : id;
+         put.add("value", idFinal);
       }
       else{
-         if(ctx.TEXT().size() > 1){
-            put.add("key", ctx.TEXT(0).getText());
-            if(ctx.ID().size() > 1){
-               put.add("var", ctx.ID(0).getText());
+         if(ctx.ID().size() > 1){
+            put.add("var", ctx.ID(0).getText());
+            if(ctx.questionFetch() != null){
+               put.add("key", visit(ctx.questionFetch()).render());
                put.add("value", idToTmpVar.get(ctx.ID(1).getText()));
             }
-            else if(ctx.NUMBER() != null){
-               put.add("isDouble", "");
-               put.add("var", ctx.ID(0).getText());
-               put.add("value", ctx.NUMBER().getText());
-            }
-            else if(ctx.TEXT(1) != null){
-               put.add("var", ctx.ID(0).getText());
-               put.add("value", ctx.TEXT(1).getText());
+            else if(ctx.text1 != null){
+               put.add("key", ctx.text1.getText());
+               put.add("value", idToTmpVar.get(ctx.ID(1).getText()));
             }
             else{
-               put.add("var", ctx.ID(0).getText());
-               put.add("value", convertion.get(visit(ctx.bool()).render()));
+               put.add("key", idToTmpVar.get(ctx.ID(1).getText()));
+               if(ctx.NUMBER() != null){
+                  put.add("isDouble", "");
+                  put.add("value", ctx.NUMBER().getText());
+               }
+               else if(ctx.text2 != null){
+                  put.add("value", ctx.text2.getText());
+               }
+               else{
+                  put.add("value", convertion.get(visit(ctx.bool()).render()));
+               }
             }
          }
-
          else{
-            put.add("key", ctx.TEXT(0).getText());
-            if(ctx.ID().size() > 1){
-               put.add("var", ctx.ID(0).getText());
-               put.add("value", idToTmpVar.get(ctx.ID(1).getText()));
+            put.add("var", ctx.ID(0).getText());
+            if(ctx.questionFetch() != null){
+               put.add("key", visit(ctx.questionFetch()).render());
+               if(ctx.NUMBER() != null){
+                  put.add("isDouble", "");
+                  put.add("value", ctx.NUMBER().getText());
+               }
+               else if(ctx.text2 != null){
+                  put.add("value", ctx.text2.getText());
+               }
+               else{
+                  put.add("value", convertion.get(visit(ctx.bool()).render()));
+               }
             }
-            else if(ctx.NUMBER() != null){
-               put.add("isDouble", "");
-               put.add("var", ctx.ID(0).getText());
-               put.add("value", ctx.NUMBER().getText());
-            }
-            else{
-               put.add("var", ctx.ID(0).getText());
-               put.add("value", convertion.get(visit(ctx.bool()).render()));
+            else if(ctx.text1 != null){
+               put.add("key", ctx.text1.getText());
+               if(ctx.NUMBER() != null){
+                  put.add("isDouble", "");
+                  put.add("value", ctx.NUMBER().getText());
+               }
+               else if(ctx.text2 != null){
+                  put.add("value", ctx.text2.getText());
+               }
+               else{
+                  put.add("value", convertion.get(visit(ctx.bool()).render()));
+               }
             }
          }
       }
       return put;
    }
 
-   //IN PROGRESS
+   //COMPLETED
    @Override public ST visitVarMapRemove(QuizParser.VarMapRemoveContext ctx) {
       needsMap = true;
       ST remo = templates.getInstanceOf("hashMap_remove");
-      remo.add("var", ctx.ID().getText());
-      if(ctx.questionFetch() != null){
-         remo.add("key", visit(ctx.questionFetch()).render());
+      if(ctx.ID().size() > 1){
+         remo.add("var", ctx.ID(0).getText());
+         remo.add("key", idToTmpVar.get(ctx.ID(1).getText()));
       }
-      else if (ctx.TEXT() != null){
-         remo.add("key", ctx.TEXT().getText());
+      else{
+         remo.add("var", ctx.ID(0).getText());
+         if(ctx.questionFetch() != null){
+            remo.add("key", visit(ctx.questionFetch()).render());
+         }
+         else if (ctx.TEXT() != null){
+            remo.add("key", ctx.TEXT().getText());
+         }
       }
       return remo;
    }

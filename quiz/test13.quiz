@@ -17,14 +17,22 @@ main =>
 
     number e => 2.71;
 
+    text t1 => "ola";
+
     mn => put("eu", 2);
     mt => put("eu", "e");
     mn => put("eu", e);
     mb => put("eu", FALSE);
+
     mn => put(q1.title, 2);
     mt => put(q1.title, "e");
     mn => put(q1.title, e);
     mb => put(q1.title, FALSE);
+
+    mn => put(t1, 2);
+    mt => put(t1, "e");
+    mn => put(t1, e);
+    mb => put(t1, FALSE);
     
     mt => clear();
 >>

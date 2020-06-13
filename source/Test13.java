@@ -32,6 +32,9 @@ public class Test13 {
         }
         double var5 = 2.71;
         vars.put("e", Double.toString(var5));
+        String var6 ="ola";
+        vars.put("t1", var6);
+
         mn.put("eu", Double.valueOf(2));
         mt.put("eu", "e");
         mn.put("eu", var5);
@@ -40,6 +43,10 @@ public class Test13 {
         mt.put(Question.getQuestion("q1").getTitle(), "e");
         mn.put(Question.getQuestion("q1").getTitle(), var5);
         mb.put(Question.getQuestion("q1").getTitle(), false);
+        mn.put(var6, Double.valueOf(2));
+        mt.put(var6, "e");
+        mn.put(var6, var5);
+        mb.put(var6, false);
         if(!mt.isEmpty()){
             mt.clear();
         }
