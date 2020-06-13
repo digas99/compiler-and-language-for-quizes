@@ -7,21 +7,17 @@ import java.io.*;
 public class QuizMain {
    public static void main(String[] args) throws Exception {
       // check for file name
-      if (args.length != 3) {
+      if (args.length != 2) {
          System.out.println("Incorrect number of arguments!");
-         System.out.println("java CalculatorMain <questionsFileName> <quizFileName> <outputFileName>");
+         System.out.println("java CalculatorMain <quizFileName> <outputFileName>");
          System.out.println("You need to have the files in the propor directory");
-         System.out.println("You need to write the files with extension");
          System.exit(1);
       }
 
-      String quizFile = "../quiz/" + args[1];
+      String quizFile = "../quiz/" + args[0];
 
-      String output = args[2];
+      String output = args[1];
       PrintWriter writer = new PrintWriter(output + ".java");
-
-      String questionFile = "../questions/" + args[0];
-      QuestionsMain.main(questionFile);
 
       // create a CharStream that reads from standard input:
       CharStream input = CharStreams.fromFileName(quizFile);

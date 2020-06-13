@@ -21,7 +21,7 @@ list    : (init='list' 'question')? ID '=>' 'get' '(' TEXT ')' ';'  # listQuesti
         ;
 
 // MAPS
-map     : 'map' type='question' ID ';'                          # mapQuestion
+map     : 'map' type='question' ID '=>' 'get' '(' TEXT ')' ';'                          # mapQuestion
         | 'map' type='number' ID ';'                            # mapNums
         | 'map' type='text' ID ';'                              # mapText
         | 'map' type='boolean' ID ';'                           # mapBoolean
@@ -36,10 +36,10 @@ var returns[String varx = null]:
          | 'question'? ID ';'                                                                                              # varQuestion
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
-         | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                 # varListSplit
-         | ID '=>' 'get' '(' (TEXT|questionFetch) ')' ';'                                                                  # varMapGet
-         | ID '=>' 'put' '(' (TEXT|questionFetch) ',' (NUMBER|TEXT|ID|bool) ')' ';'                                        # varMapPut
-         | ID '=>' 'remove' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
+         | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                  # varListSplit
+         | ID '=>' 'get' '(' (TEXT|questionFetch) ', ' ID ')' ';'                                                                  # varMapGet
+         | ID '=>' 'delete' '(' (TEXT|questionFetch) ')' ';'                                                               # varMapRemove
+         | ID '=>' 'put' '(' (TEXT|questionFetch) ', ' (NUMBER|TEXT|ID|bool) ')' ';'                                     # varMapPut
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
 
@@ -146,7 +146,7 @@ expr returns[String varx = null, String type = null]:
 content  : map|list|var|write|question|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';');
 
 TEXT     : '"'.*?'"' ;
-NUMBER   : [0-9]+;
+NUMBER   : [0-9]+ ('.' [0-9]+)?;
 ID       : [a-zA-Z0-9]+;
 Comment  : '!!'.*? '\n' -> skip;
 WS       : [ \n\t\r]+ -> skip;

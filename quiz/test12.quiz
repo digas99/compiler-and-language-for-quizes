@@ -1,4 +1,15 @@
 main =>
-    text t => cidades.title;
-    write(CONSOLE) => cidades.title;
+    list question l => get("linguagem_questions");
+    text t0 => cidades.title;
+    text t1 => cidades.difficulty;
+    text t2 => cidades.type;
+    number t3 => cidades.tries;
+    number t4 => cidades.time;
+    number t5 => cidades.points;
+    write(CONSOLE) => t0 + "\n";
+    write(CONSOLE) => t1 + "\n";
+    write(CONSOLE) => t2 + "\n";
+    write(CONSOLE) => t3 + "\n";
+    write(CONSOLE) => t4 + "\n";
+    write(CONSOLE) => t5 + "\n";
 >>

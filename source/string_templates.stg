@@ -28,7 +28,7 @@ public class <name> {
 >>
 
 main(stat) ::= <<
-public static void main(String[] args) {
+public static void main(String[] args) throws Exception {
     <stats(stat)>
 }
 >>
@@ -70,13 +70,15 @@ tmp_atrib(type, var, value) ::= <<
 <type> <var> = <value>;
 >>
 
-atrib(type, var, value, id, insideFunc, needComma) ::= <<
-<type> <var> = <value><if(needComma)>;<endif>
+atrib(type, var, value, id, insideFunc, needComma, isQuestion) ::= <<
+<type> <var> <if(!isQuestion)>=<endif><value><if(needComma)>;<endif>
 <if(insideFunc)>
 // Store this variable if it is in main
 if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
 <endif>
+<if(!isQuestion)>
 <if(id)>vars.put("<id>", <var>);<endif>
+<endif>
 >>
 
 atrib_double(type, var, value, id, insideFunc, needComma) ::= <<
@@ -303,9 +305,14 @@ else if (<condition>) {
 }
 >>
 
-question_fetch(id, type) ::= "Question.getQuestion(\"<id>\").<type>"
-
-hashMap(type, var, getQuestions) ::= <<
+hashMap(type, var, getQuestions, path) ::= <<
+<if(getQuestions)>try{
+   QuestionsMain.main(<path>);
+}catch(Exception ex){
+    System.out.println(ex);
+    System.exit(1);
+}
+<endif>
 HashMap\<String, <type>\> <var> = <if(getQuestions)>Question.getQuestions()<else>new HashMap\<>()<endif>;
 >>
 
@@ -321,9 +328,27 @@ private static List\<String> arrayToListStrings(String[] arr) {
 }
 >>
 
+hashMap_get(var, getter, key) ::= <<
+<var> = <getter>.get(<key>);
+>>
+
+hashMap_put(var, key, value, isDouble) ::= <<
+<var>.put(<key>, <if(isDouble)>Double.valueOf(<endif><value><if(isDouble)>)<endif>);
+>>
+
+hashMap_remove(var, key) ::= <<
+if(<var>.containsKey(<key>)){
+    <var>.remove(<key>);
+}
+>>
+
+hashMap_clear(var) ::= <<
+if(!<var>.isEmpty()){
+    <var>.clear();
+}
+>>
 add_atrib(var, isDouble)::= <<
 .add(<if(isDouble)>Double.valueOf(<endif><var><if(isDouble)>)<endif>);
->>
 
 list_action(id,action)::= <<
 <id><action>
@@ -332,3 +357,12 @@ list_action(id,action)::= <<
 remove_atrib(var)::= <<
 .remove(<var>);
 >>
+list_question(var, file, newVar) ::= <<
+String <newVar> = "../questions/" + <file> + ".qst";
+QuestionsMain.main(<newVar>);
+List\<Question> <var> = new ArrayList\<Question>(Question.getQuestions().values());
+>>
+
+question_fetch(id, type, double) ::= <%
+Question.getQuestion("<id>").<type>
+%>
