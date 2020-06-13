@@ -320,3 +320,11 @@ private static List\<String> arrayToListStrings(String[] arr) {
     return finalList;
 }
 >>
+
+add_atrib(var)::= <<
+.add(<var>);
+>>
+
+list_action(id,action)::= <<
+<id><action>
+>>

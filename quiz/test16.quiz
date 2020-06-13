@@ -1,0 +1,7 @@
+main => 
+    list text l;
+    l => add("shjahak");
+    for(text m in l )=>
+        write(CONSOLE) => m;
+    >>   
+>>

@@ -401,7 +401,11 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitVarListAdd(QuizParser.VarListAddContext ctx) {
-      return visitChildren(ctx);
+      ST list = templates.getInstanceOf("list_action");
+      System.out.println(ctx.ID().getText());
+      list.add("id",ctx.ID().getText());
+      list.add("action",visit(ctx.add()).render());
+      return list;
    }
 
    @Override public ST visitVarListRemove(QuizParser.VarListRemoveContext ctx) {
@@ -442,9 +446,58 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       return visitChildren(ctx);
    }
 
-   @Override public ST visitAdd(QuizParser.AddContext ctx) {
-      return visitChildren(ctx);
-   }
+   //Add
+ @Override public ST visitAddList(QuizParser.AddListContext ctx) {
+   ST add = templates.getInstanceOf("add_atrib");
+  
+
+   return add;
+}
+
+@Override public ST visitAddQuestion(QuizParser.AddQuestionContext ctx) {
+   ST add = templates.getInstanceOf("add_atrib");
+   return add;
+}
+
+@Override public ST visitAddText(QuizParser.AddTextContext ctx) {
+   ST add = templates.getInstanceOf("add_atrib");
+   add.add("var",ctx.TEXT().getText());
+   return add;
+} 
+
+@Override public ST visitAddID(QuizParser.AddIDContext ctx) {
+   ST add = templates.getInstanceOf("add_atrib");
+   return add;   
+} 
+
+@Override public ST visitAddNumber(QuizParser.AddNumberContext ctx) {
+   ST add = templates.getInstanceOf("add_atrib");
+   
+
+   return add;   
+}
+
+//remove
+
+@Override public ST visitRemoveNumber(QuizParser.RemoveNumberContext ctx) {
+   ST remove = templates.getInstanceOf("remove_atrib");
+   return remove;     
+}
+
+@Override public ST visitRemoveText(QuizParser.RemoveTextContext ctx) {
+   ST remove = templates.getInstanceOf("remove_atrib");
+   return remove;     
+}
+
+@Override public ST visitRemoveID(QuizParser.RemoveIDContext ctx) {
+   ST remove = templates.getInstanceOf("remove_atrib");
+   return remove;    
+} 
+
+@Override public ST visitRemoveExpNumber(QuizParser.RemoveExpNumberContext ctx) {
+   ST remove = templates.getInstanceOf("remove_atrib");
+   return remove;     
+}
 
    // @Override public ST visitQuestionTitle(QuizParser.QuestionTitleContext ctx) {
    //    return visitChildren(ctx);
