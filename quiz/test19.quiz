@@ -13,4 +13,6 @@ main =>
     list boolean l3 => {FALSE, FALSE, TRUE};
     boolean r4 => l3[random (0, 2)];
     writeln (CONSOLE) => r4;
+
+    number sizeList => size (l3);
 >>

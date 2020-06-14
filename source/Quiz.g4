@@ -31,7 +31,7 @@ map     : 'map' type='question' ID '=>' 'import' '(' (TEXT|ID) ')' ';' # mapQues
 var returns[String varx = null]: 
            'text'? ID (('=>' (((strings)* (finalstring=(TEXT|ID)|stringFetches) ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')    # varText
          | 'text'? ID '=>' 'read' '(' (TEXT|'CONSOLE') ')' ';'                                                                                                                                  # varTextRead
-         | 'number'? ID ('=>' (callfunction|expr ';'|random ';'|ID '[' (index=(ID|NUMBER)|random) ']' ';'|numberFetches';'))?                                                                   # varNumber
+         | 'number'? ID ('=>' (callfunction|expr ';'|random ';'|ID '[' (index=(ID|NUMBER)|random) ']' ';'|numberFetches';'|size='size' '(' ID ')' ';'))?                                        # varNumber
          | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|))?                                                                                           # varBoolean
          | 'question'? ID ';'                                                                                                                                                                   # varQuestion
          | ID '=>' add                                                                                                                                                                          # varListAdd

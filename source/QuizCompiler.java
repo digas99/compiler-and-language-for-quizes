@@ -391,7 +391,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          visit.add("id", tmpId);
          if (insideFunc) visit.add("insideFunc", "");
       }
-      else if (ctx.ID().size() > 1) {
+      else if (ctx.ID().size() > 1 && ctx.size == null) {
          System.out.println("ID > 2");
          visit = templates.getInstanceOf("atrib_double");
          visit.add("type", "double");
@@ -400,12 +400,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
             String index = ctx.index.getText();
             String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
             visit.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
-            visit.add("needComma", "");
          }
-         else {
-            visit.add("value", ctx.ID(1).getText()+".get("+visit(ctx.random()).render()+")");
-            visit.add("needComma", "");
-         }
+         else visit.add("value", ctx.ID(1).getText()+".get("+visit(ctx.random()).render()+")");
+         visit.add("needComma", "");
          visit.add("id", tmpId);
          idToTmpVar.put(tmpId, ctx.varx);
          if (insideFunc) visit.add("insideFunc", "");
@@ -427,6 +424,16 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          visit.add("needComma", "");
          visit.add("value", visit(ctx.numberFetches()).render());
          visit.add("id", tmpId);
+         idToTmpVar.put(tmpId, ctx.varx);
+      }
+      else if (ctx.size != null) {
+         visit = templates.getInstanceOf("atrib_double");
+         visit.add("type", "double");
+         visit.add("var", ctx.varx);
+         visit.add("value", ctx.ID(1).getText()+".size()");
+         visit.add("id", tmpId);
+         if (insideFunc) visit.add("insideFunc", "");
+         visit.add("needComma", "");
          idToTmpVar.put(tmpId, ctx.varx);
       }
       else {

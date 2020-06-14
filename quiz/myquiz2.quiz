@@ -15,6 +15,13 @@ main =>
                     write (CONSOLE) => q.title+"\n";
                     list text wrongAns => q.wrong;
                     list text rightAns => q.right;
+                    
+                    list text finalList;
+                    !! put one random word from rightAns
+                    number listSize => size (rightAns);
+                    !! we want the max value to be size-1
+                    listSize--;
+                    text theRightAns => rightAns[random(0, listSize)];
                 >>
             >>
         >>
