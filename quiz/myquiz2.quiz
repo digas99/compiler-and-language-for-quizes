@@ -1,122 +1,32 @@
 main =>
-    text userOpt;
-    list question questions;
-    list text alphabet => {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
-    number plays => 0;
-    map number pointsMap;
-    number totalPoints => 0;
-    do =>
-        list number pointsGained;
-        userOpt => call menu("Quiz", "Chose questions file,Start Quiz,See Scores", "Exit");
-        if (userOpt == "1") => !! CHOSE QUESTIONS
-            write (CONSOLE) => "Insira o nome do ficheiro das questões (sem extensão):\nNome: ";
-            text questionsFolder => read (CONSOLE);
-            questions => import (questionsFolder);
-        >>
-        elsif (userOpt == "2") => !! START QUIZ
-            !! creating multiple choice Quiz
-            for (question q in questions) =>
-                number mistakes => 0;
-                number trs => q.tries;
-                aslong (mistakes > trs) =>
-                    if (q.type == "MULTIPLE") =>
-                        write (CONSOLE) => q.title+"\n";
-                        list text wrongAns0 => q.wrong;
-                        !! É necessário fazer o clone, para depois poder remover elementos
-                        !! sem que dê problemas com AbstractLists
-                        list text wrongAns => clone (wrongAns0);
-
-                        list text rightAns => q.right;
-                        
-                        list text finalList;
-                        !! put one random word from rightAns
-                        number rightAnsSize => size (rightAns);
-                        !! we want the max value to be size-1
-                        rightAnsSize--;
-                        text theRightAns => rightAns[random(0, rightAnsSize)];
-                        finalList => add (theRightAns);
-
-                        !! get n wrong questions, randomly
-                        number nmrWrongAnswers => 5;
-                        for i(0 < nmrWrongAnswers) =>
-                            number wrongAnsSize => size (wrongAns);
-                            number max => wrongAnsSize - 1;
-                            number pos => random (0, max);
-                            text theWrongAns => wrongAns[pos];
-                            finalList => add (theWrongAns);
-                            wrongAns => remove (pos);
-                        >>
-                        text rightAnsIndex => "";    
-                        !! display all chosen answers
-                        number nmrAns => nmrWrongAnswers + 1;
-                        for j(0 < nmrAns) =>
-                            number finalListSize => size (finalList);
-                            !! finalListSize - 1 to put in random
-                            number max2 => finalListSize-1;
-                            number pos => random (0, max2);
-
-                            text ansToPrint => finalList[pos];
-                            if (ansToPrint == theRightAns) =>
-                                rightAnsIndex => alphabet[j];
-                            >>
-                            text letter => alphabet[j];
-                            writeln (CONSOLE) => "["+letter+"] "+ansToPrint;
-                            finalList => remove(pos);
-                        >>
-
-                        text userAnswer => read (CONSOLE);
-                        if (userAnswer == rightAnsIndex) =>
-                            writeln (CONSOLE) => "Resposta certa! +" + q.points + " pontos";
-                            pointsGained => add (q.points);
-                        >>
-                        final =>
-                            mistakes++;
-                            writeln (CONSOLE) => "Resposta errada!";
-                            number tries => q.tries;
-                            number diff => tries - mistakes;
-                            writeln (CONSOLE) => "Tem mais "+diff+"tentativa(s)";
-                        >>
-                    >>
-                >>
-            >>
-            number pointsSum => 0;
-            for (number n in pointsGained) =>
-                totalPoints += n;
-                pointsSum += n;
-            >>
-            text p => plays+"";
-            pointsMap => put (p, pointsSum);
-            plays++;
-        >>
-        elsif (userOpt == "3") => !! SEE SCORES
-            for i(0 < plays) =>
-                text aux => i+"";
-                number points;
-                pointsMap => get (aux, points);
-                number play => i + 1;
-                writeln (CONSOLE) => "Play "+play+" - "+points+" points";
-            >>
-            writeln (CONSOLE) => "Total - "+totalPoints+" points";
-        >>
-        final =>
-            writeln (CONSOLE) => "Exiting program...";
-        >>
-        !! CLEAR CONSOLE
-        !! write (CONSOLE) => "\033[H\033[2J";
-    >> aslong (userOpt != "0");
+    list number pointsWon;
+    text options => "Begin Quiz,Another thing,Another";
+    text option => call menu("Quiz Game", options, "Exit");
+    if (option == "1") =>
+        write (CONSOLE) => "Chose "+option+"\nBegin Quiz!\n";
+    >>
+    elsif (option == "2") =>
+        write (CONSOLE) => "Chose "+option+"\nAnother Option!\n";
+    >>
+    elsif (option == "3") =>
+        write (CONSOLE) => "Chose "+option+"\nAnother!\n";
+    >>
+    final =>
+        write (CONSOLE) => "Exiting program...\n";
+    >>
 >>
 
-function (text title, text options, text exitMsg) menu =>
+function (text title, text opts, text exit) menu =>
+    list text options;
+    options => split(opts, ",");
     write (CONSOLE) => title+"\n";
-    list text optsList;
-    optsList => split(options, ",");
-    number counter => 1;
-    for (text opt in optsList) =>
-        write (CONSOLE) => "["+counter+"] "+opt+"\n";
-        counter++;
+    number count => 1;
+    for (text op in options) =>
+        write (CONSOLE) => "["+count+"] "+op+"\n";
+        count++;
     >>
-    write (CONSOLE) => "[0] "+exitMsg+"\n";
+    write (CONSOLE) => "[0] "+exit+"\n";
     write (CONSOLE) => "Option: ";
-    text input => read (CONSOLE);
-    return input;
+    text op => read (CONSOLE);
+    return op;
 >>

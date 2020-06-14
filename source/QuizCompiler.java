@@ -46,6 +46,8 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       convertion.put("!=", "!=");
       convertion.put(">", ">");
       convertion.put("<", "<");
+      convertion.put(">=", ">=");
+      convertion.put("<=", "<=");
    }
 
    
@@ -1009,8 +1011,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       else if (ctx.field1 != null) {
          String f1 = ctx.field1.getText();
          String f2 = ctx.field2.getText();
-         System.out.println(varTypes.get(f1));
-         System.out.println(varTypes.get(f2));
+         if (varTypes.get(f1).equals("String") && varTypes.get(f2).equals("String")) {
+            cond.add("equals", ".equals");
+         }
+         else {
+            cond.add("op", convertion.get(ctx.op.getText()));
+         }
          if (!isNumber(ctx.field1.getText())) {
             if (varTypes.get(f1).equals("double"))
                f1 = "Double.parseDouble(vars.get(\""+ctx.field1.getText()+"\"))";
@@ -1025,8 +1031,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          }
          cond.add("s1", f1);
          cond.add("s2", f2);
-         cond.add("op", convertion.get(ctx.op.getText()));
-         System.out.println(ctx.NUMBER().size());
       }
       else {
          if (ctx.op.getText().equals("!=")) cond.add("not", "!");
@@ -1307,6 +1311,11 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (ctx.callfunction() != null) return visit(ctx.callfunction());
       if (ctx.varmanipulation() != null) return visit(ctx.varmanipulation());
       if (ctx.map() != null) return visit(ctx.map());
+      if (ctx.getText().contains("BREAK")) {
+         ST template = templates.getInstanceOf("return_plain_val");
+         template.add("val","break;");
+         return template;
+      }
       return null;
    }
 

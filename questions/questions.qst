@@ -18,10 +18,123 @@ right: ["Lisboa","Madrid"],
 wrong: [] }
 
 
-
 <historia> { title: "Quem descobriu o caminho marítimo para a Índia",
 type: MULTIPLE,
 difficulty: MEDIUM,
 points: 5,
 right: ["Vasco da Gama"],
 wrong: ["Pedro Álvares Cabral","António Oliveira Salazar","Fernão de Magalhães","Manuel Luís Goucha","Cristiano Ronaldo","Luís de Camões"] }
+
+<futeboleuro> { title: "Quem ganhou o Campeonato da Europa de Seleções de futebol de 2016?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+right: ["Portugal"],
+wrong: ["França","Espanha","Inglaterra","Itália","Alemanha","Hungria","Áustria","Islândia","Bélgica"]}
+
+
+<futebolmundo> { title: "Quem ganhou o Mundial de Seleções de futebol de 2018?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+right: ["França"],
+wrong: ["Portugal","Espanha","Inglaterra","Itália","Alemanha","Rússia","Colômbia","Brasil","Bélgica","Argentina","Chile"]}
+
+
+<euapresidentes> { title: "Quem foi o presidente dos Estados Unidos da América antes do Obama?",
+type: MULTIPLE,
+difficulty: HARD,
+right: ["George Bush"],
+wrong: ["Donald Trump","Bill Clinton","Hillary Clinton","Ronald Reagan","John Kennedy"]}
+
+
+<ptpresidentes> { title: "Quem foi o presidente Portugal antes de Cavaco Silva?",
+type: MULTIPLE,
+difficulty: HARD,
+right: ["Jorge Sampaio"],
+wrong: ["Marcelo Rebelo de Sousa","Mário Soares","Cristiano Ronaldo","Ramalho Eanes","António de Oliveira Salazar"]}
+
+
+<uafundacao> { title: "Em que ano foi fundada a Universidade de Aveiro?",
+type: MULTIPLE,
+difficulty: HARD,
+right: ["1973"],
+wrong: ["1900","1954","1963","2000","1990"]}
+
+
+<basquetebol> { title: "Quem foi a Seleção campeã do mundo em Basquetebol no mundial de 2019 na China?",
+type: MULTIPLE,
+difficulty: HARD,
+right: ["Espanha"],
+wrong: ["Argentina","França","Austrália","Estados Unidos","República Checa","Brasil","Grécia","Lituânia","República Dominicana","Sérvia","Itália","Porto Rico","Rússia"]}
+
+
+<carroPortugal> { title: "Em que ano chegou o primeiro carro a portugal?",
+type: MULTIPLE,
+difficulty: HARD,
+right: ["1895"],
+wrong: ["1879","1902","1888","1850","1905"] }
+
+
+<africa> { title: "Quais são paises africanos?",
+type: MULTIPLE,
+difficulty: HARD,
+tries: 2,
+points: 5,
+right: ["Etiopia","Gabón","Angola","Congo","Chad"],
+wrong: ["Siria","Peru","Portugal","Reino Unido","Argentina"] }
+
+
+<fcp> { title: "Que clube de futebol portuguẽs foi fundado em 1893?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+tries: 2,
+points: 5,
+right: ["FCP"],
+wrong: ["SLB","SCP","SCB","CDF"] }
+
+<feirasnovas> { title: "Onde se realizam,desde 1823, as Feiras Novas?",
+type: MULTIPLE,
+difficulty: HARD,
+tries: 2,
+points: 5,
+right: ["Ponte de Lima"],
+wrong: ["Caminha","Minho","Lourinhã","São joão da Madeira"] }
+
+
+<ShaolinSi> { title: "Qual o nome da vice-campẽa nacional de wushu/kung fu de 2018?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+tries: 2,
+points: 5,
+right: ["Beatriz Rodrigues"],
+wrong: ["Lara Rodrigues","Diogo Correia","Bruno Lopes","Daniel Yarnee Correia"] }
+
+<UA> { title: "Qual a melhor jogadora de basket do mundo?",
+type: MULTIPLE,
+difficulty: EASY,
+tries: 2,
+points: 5,
+right: ["Lara Rodrigues"],
+wrong: ["Becky Hammon","Adrianinha","Breanna Stuwart","Erika de souza"] }
+
+<algarve> { title: "Onde fica o algarve?",
+type: MULTIPLE,
+difficulty: EASY,
+right: ["Portugal"],
+wrong: ["Africa","Espanha","Açores","Camboja","Mauritânia"] }
+
+
+<alemanha> { title: "De que nacionalidade era adolf hitler?",
+type: MULTIPLE,
+difficulty: EASY,
+tries: 1,
+points: 5,
+right: ["Alemã"],
+wrong: ["Portuguesa","Espanhola","Francesa","Angolana","Judeia"] }
+
+<UA> { title: "Na história portuguesa, quem foi salazar?",
+type: MULTIPLE,
+difficulty: EASY,
+tries: 2,
+points: 5,
+right: ["Um ditador"],
+wrong: ["Um bispo","Um mártir","Um vendedor de fruta","Um professor de programação"] }

@@ -83,7 +83,7 @@ write    : writetype=('write'|'writeln') '(' 'CONSOLE' ')' '=>' ((strings)* fina
 // LOOPS
 forLoop returns[String varx = null]:  
            'for' '(' type=('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'                      # forIn
-         | 'for' ID'(' start=(NUMBER|ID) direction=('<'|'>') end=(NUMBER|ID) ')' ('['op=('+'|'-') incr=NUMBER ']')? '=>' content+ '>>' # forTo
+         | 'for' ID'(' start=(NUMBER|ID) direction=('<'|'>'|'<='|'>=') end=(NUMBER|ID) ')' ('['op=('+'|'-') incr=NUMBER ']')? '=>' content+ '>>' # forTo
          ;
 
 doaslong : 'do' '=>' content+ '>>' 'aslong' '(' conditional ')' ';';
@@ -106,7 +106,7 @@ callParams : val=(TEXT|NUMBER|ID) ', ';
 
 // CONDITIONAL STATEMENTS
 conditional : 'NOT'? id=ID
-            | (field1=(ID|NUMBER) op=('AND'|'OR'|'=='|'!='|'>'|'<'|'>='|'<='))+ field2=(ID|NUMBER)
+            | (field1=(ID|NUMBER) op=('AND'|'OR'|'=='|'!='|'>='|'<='|'>'|'<'))+ field2=(ID|NUMBER)
             | (field3=(ID|TEXT)|stringFetches) op=('=='|'!=') (field4=(ID|TEXT)|stringFetches)
             ;
 
@@ -135,7 +135,7 @@ expr returns[String varx = null, String type = null]:
         |   ID                          # ExprId
         ;
 
-content  : map|list|var|write|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';');
+content  : map|list|var|write|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';')|'BREAK' ';';
 
 TEXT     : '"'.*?'"' ;
 NUMBER   : [0-9]+ ('.' [0-9]+)?;

@@ -1,4 +1,3 @@
-time: 10
 tries: 6
 points: 23
 
@@ -8,25 +7,6 @@ type: MULTIPLE,
 difficulty: EASY,
 right: ["Portugal"],
 wrong: ["Africa","Espanha","Açores"] }
-
-
-<pintura> { title: "Em que continente foi encontrada a pintura mais antiga de que há conhecimento?",
-type: OPEN,
-difficulty: MEDIUM,
-tries: 1,
-points: 10,
-right: ["Africa"],
-wrong: [] }
-
-
-
-<sapo> { title: "O portal SAPO foi criado na UA?",
-type: MULTIPLE,
-difficulty: EASY,
-time: 25,
-right: ["Verdadeiro"],
-wrong: ["False"] }
-
 
 
 <alemanha> { title: "De que nacionalidade era adolf hitler?",
