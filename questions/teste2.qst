@@ -1,0 +1,46 @@
+time: 30
+tries: 5
+points: 10
+
+
+<cervejaLisboa> { title: "O que é uma imperial?",
+type: MULTIPLE,
+difficulty: HARD,
+right: ["um fino"],
+wrong: ["sumo de pepino","espumante","copo de vinho"] }
+
+
+<feirasnovas> { title: "Onde se realizam,desde 1823, as Feiras Novas?",
+type: MULTIPLE,
+difficulty: HARD,
+tries: 2,
+points: 5,
+right: ["Ponte de Lima"],
+wrong: ["Caminha","Minho","Lourinhã","São joão da Madeira"] }
+
+
+
+<Sanjoanense> { title: "O clube Sanjoanese é melhor que o Feirense?",
+type: MULTIPLE,
+difficulty: EASY,
+time: 250,
+right: ["Verdadeiro"],
+wrong: ["False"] }
+
+
+
+<ShaolinSi> { title: "Qual o nome da vice-campẽa nacional de wushu/kung fu de 2018?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+tries: 2,
+points: 5,
+right: ["Beatriz Rodrigues"],
+wrong: ["Lara Rodrigues","Diogo Correia","Bruno Lopes","Daniel yarnee Correia"] }
+
+<UA> { title: "Qual a melhor jogadora de basket do mundo?",
+type: MULTIPLE,
+difficulty: EASY,
+tries: 2,
+points: 5,
+right: ["Lara Rodrigues"],
+wrong: ["Becky Hammon","Adrianinha","Breanna Stuwart","Erika de souza"] }

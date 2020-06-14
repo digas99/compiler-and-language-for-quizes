@@ -1,0 +1,39 @@
+time: 10
+tries: 2
+points: 15
+
+
+<carroPortugal> { title: "Em que ano chegou o primeiro carro a portugal?",
+type: MULTIPLE,
+difficulty: HARD,
+right: ["1895"],
+wrong: ["1879","1902","1888","1850","1905"] }
+
+
+<africa> { title: "Quais são paises africanos?",
+type: MULTIPLE,
+difficulty: HARD,
+tries: 2,
+points: 5,
+right: ["Etiopia","Gabón","Angola","Congo","Chad"],
+wrong: ["Siria","Peru"] }
+
+
+
+<ornitorrincos> { title: "Os ornitorrincos são mamiferos que põe ovos?",
+type: MULTIPLE,
+difficulty: EASY,
+time: 250,
+right: ["Verdadeiro"],
+wrong: ["False"] }
+
+
+
+<fcp> { title: "Que clube de futebol portuguẽs foi fundado em 1893?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+tries: 2,
+points: 5,
+right: ["FCP"],
+wrong: ["SLB","SCP"] }
+
