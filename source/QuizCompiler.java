@@ -751,68 +751,52 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    // COMPLETED
    @Override public ST visitQuestionFetchTitle(QuizParser.QuestionFetchTitleContext ctx) {
-      ST questionFetch = templates.getInstanceOf("question_fetch");
-      questionFetch.add("id", ctx.ID().getText());
-      questionFetch.add("type", "getTitle()");
-      return questionFetch;
+      return handleQuestionFetch("question_fetch", ctx.ID().getText(), "getTitle()");
    }
 
    @Override public ST visitQuestionFetchAnsRight(QuizParser.QuestionFetchAnsRightContext ctx) {
       needsArrays = true;
-      ST questionFetch = templates.getInstanceOf("question_fetch");
-      questionFetch.add("id", ctx.ID().getText());
-      questionFetch.add("type", "getRightAns()");
-      return questionFetch;
+      return handleQuestionFetch("question_fetch", ctx.ID().getText(), "getRightAns()");
    }
 
    @Override public ST visitQuestionFetchAnsWrong(QuizParser.QuestionFetchAnsWrongContext ctx) {
       needsArrays = true;
-      ST questionFetch = templates.getInstanceOf("question_fetch");
-      questionFetch.add("id", ctx.ID().getText());
-      questionFetch.add("type", "getWrongAns()");
-      return questionFetch;
+      return handleQuestionFetch("question_fetch", ctx.ID().getText(), "getWrongAns()");
    }
 
    // COMPLETED
    @Override public ST visitQuestionFetchDiff(QuizParser.QuestionFetchDiffContext ctx) {
-      ST questionFetch = templates.getInstanceOf("question_fetch");
-      questionFetch.add("id", ctx.ID().getText());
-      questionFetch.add("type", "getDifficulty()");
-      return questionFetch;
+      return handleQuestionFetch("question_fetch", ctx.ID().getText(), "getDifficulty()");
+      
    }
 
    // COMPLETED
    @Override public ST visitQuestionFetchType(QuizParser.QuestionFetchTypeContext ctx) {
-      ST questionFetch = templates.getInstanceOf("question_fetch");
-      questionFetch.add("id", ctx.ID().getText());
-      questionFetch.add("type", "getType()");
-      return questionFetch;
+      return handleQuestionFetch("question_fetch", ctx.ID().getText(), "getType()");
    }
 
    // COMPLETED
    @Override public ST visitQuestionFetchTries(QuizParser.QuestionFetchTriesContext ctx) {
-      ST questionFetch = templates.getInstanceOf("question_fetch");
-      questionFetch.add("id", ctx.ID().getText());
-      questionFetch.add("type", "getTries()");
-      return questionFetch;
+      return handleQuestionFetch("question_fetch", ctx.ID().getText(), "getTries()");
    }
 
    // COMPLETED
    @Override public ST visitQuestionFetchTime(QuizParser.QuestionFetchTimeContext ctx) {
-      ST questionFetch = templates.getInstanceOf("question_fetch");
-      questionFetch.add("id", ctx.ID().getText());
-      questionFetch.add("type", "getTime()");
-      return questionFetch;
+      return handleQuestionFetch("question_fetch", ctx.ID().getText(), "getTime()");
    }
 
    // COMPLETED
    @Override public ST visitQuestionFetchPoints(QuizParser.QuestionFetchPointsContext ctx) {
-      ST questionFetch = templates.getInstanceOf("question_fetch");
-      questionFetch.add("id", ctx.ID().getText());
-      questionFetch.add("type", "getPoints()");
-      return questionFetch;
+      return handleQuestionFetch("question_fetch", ctx.ID().getText(), "getPoints()");
    }
 
+   private ST handleQuestionFetch(String template, String id, String type) {
+      ST questionFetch = templates.getInstanceOf(template);
+      questionFetch.add("id", id);
+      questionFetch.add("type", type);
+      return questionFetch;
+   }
+   
    // COMPLETED
    @Override public ST visitWriteConsole(QuizParser.WriteConsoleContext ctx) {
       ST print = templates.getInstanceOf("print");
@@ -1122,41 +1106,30 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    // COMPLETED
    @Override public ST visitVarManipPlus(QuizParser.VarManipPlusContext ctx) {
-      ST manip = templates.getInstanceOf("varmanip_front");
-      if (insideFunc) manip.add("insideFunc", "");
-      manip.add("var", idToTmpVar.get(ctx.ID().getText()));
-      manip.add("action", "++");
-      manip.add("id", ctx.ID().getText());
-      return manip;
+      return handleVarManip("varmanip_front", "++", ctx.ID().getText());
    }
 
    // COMPLETED
    @Override public ST visitVarManipMinus(QuizParser.VarManipMinusContext ctx) {
-      ST manip = templates.getInstanceOf("varmanip_front");
-      if (insideFunc) manip.add("insideFunc", "");
-      manip.add("var", idToTmpVar.get(ctx.ID().getText()));
-      manip.add("action", "--");
-      manip.add("id", ctx.ID().getText());
-      return manip;
+      return handleVarManip("varmanip_front", "--", ctx.ID().getText());
    }
 
    // COMPLETED
    @Override public ST visitVarManipPrePlus(QuizParser.VarManipPrePlusContext ctx) {
-      ST manip = templates.getInstanceOf("varmanip_back");
-      if (insideFunc) manip.add("insideFunc", "");
-      manip.add("var", idToTmpVar.get(ctx.ID().getText()));
-      manip.add("action", "++");
-      manip.add("id", ctx.ID().getText());
-      return manip;
+      return handleVarManip("varmanip_back", "++", ctx.ID().getText());
    }
 
    // COMPLETED
    @Override public ST visitVarManipPreMinus(QuizParser.VarManipPreMinusContext ctx) {
-      ST manip = templates.getInstanceOf("varmanip_back");
+      return handleVarManip("varmanip_back", "--", ctx.ID().getText());
+   }
+
+   private ST handleVarManip(String template, String action, String id) {
+      ST manip = templates.getInstanceOf(template);
       if (insideFunc) manip.add("insideFunc", "");
-      manip.add("var", idToTmpVar.get(ctx.ID().getText()));
-      manip.add("action", "--");
-      manip.add("id", ctx.ID().getText());
+      manip.add("var", idToTmpVar.get(id));
+      manip.add("action", action);
+      manip.add("id", id);
       return manip;
    }
 

@@ -35,5 +35,11 @@ public class Test19 {
         boolean var10 = l3.get((0 + (int)(Math.random() * ((2 - 0) + 1))));
         vars.put("r4", Boolean.toString(var10));
         System.out.println(var10);
+        double var12 = 0;
+        vars.put("c", Double.toString(var12));
+        var12++;
+        vars.put("c", Double.toString(var12));
+        --var12;
+        vars.put("c", Double.toString(var12));
     }
 }
