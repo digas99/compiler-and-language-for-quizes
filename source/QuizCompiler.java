@@ -9,7 +9,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private String tmpId = "";
    private int numVars = 0;
    private int numWriters = 0;
-   private boolean hasScanner = false;
+   private int numScanners = 0;
    private boolean hasList = false;
    private boolean needsMap = false;
    private boolean needsEntry = false;
@@ -27,6 +27,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private String newVarWriter() {
       numWriters++;
       return "writer"+numWriters;
+   }
+   private String newVarScanner() {
+      numScanners++;
+      return "rd"+numScanners;
    }
    private String file;
 
@@ -55,7 +59,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       }
       if (numVars > 0 || needsMap) module.add("hasVars", numVars);
 
-      if (hasScanner) module.add("hasScanner", "");
+      if (numScanners > 0) module.add("hasScanner", "");
 
       if (numWriters > 0) module.add("hasPrintWriter", "");
 
@@ -155,9 +159,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitListQuestion(QuizParser.ListQuestionContext ctx) {
       ST list = templates.getInstanceOf("list_question");
       hasList = true;
-      list.add("var", ctx.ID().getText());
+      list.add("var", ctx.ID(0).getText());
       list.add("newVar", newVar());
-      list.add("file",ctx.TEXT().getText());
+      if (ctx.TEXT() != null || ctx.ID().size() > 1) {
+         if (ctx.TEXT() != null) list.add("file",ctx.TEXT().getText());
+         else list.add("file", idToTmpVar.get(ctx.ID(1).getText()));
+      }
+      else {
+         list.add("justInitalize", "");
+      }
       return list;
    }
 
@@ -243,8 +253,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST format = templates.getInstanceOf("hashMap");
       format.add("getQuestions", "");
       format.add("type", convertion.get(ctx.type.getText()));
-      format.add("var", ctx.ID().getText());
-      format.add("path", ctx.TEXT().getText());
+      format.add("var", ctx.ID(0).getText());
+      System.out.println(idToTmpVar);
+      if (ctx.TEXT() != null)  format.add("path", ctx.TEXT().getText());
+      else format.add("path", idToTmpVar.get(ctx.ID(1).getText()));
       return format;
    }
    
@@ -277,6 +289,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    // IN PROGRESS
    @Override public ST visitVarText(QuizParser.VarTextContext ctx) {
+      System.out.println("IS NOT SCANNER "+ctx.ID(0).getText());
       ST atrib = templates.getInstanceOf("atrib");
       if (insideFunc) atrib.add("insideFunc", "");
       ctx.varx = newVar();
@@ -318,6 +331,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("needComma", "");
          atrib.add("value", visit(ctx.questionFetchType()).render());
       }
+      else {
+         atrib.add("needComma", "");
+         atrib.add("isInitialization", "");
+      }
       atrib.add("id", ctx.ID(0).getText());
       idToTmpVar.put(ctx.ID(0).getText(), ctx.varx);
       varTypes.put(ctx.ID(0).getText(), "String");
@@ -327,22 +344,29 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitStrings(QuizParser.StringsContext ctx) {
       ST val = templates.getInstanceOf("return_plain_val");
       if (ctx.TEXT() != null) val.add("val", ctx.TEXT().getText());
-      else val.add("val", ctx.ID().getText());
+      else if (ctx.ID()!= null) val.add("val", ctx.ID().getText());
+      else if (ctx.questionFetchDiff() != null) val.add("val", visit(ctx.questionFetchDiff()).render());
+      else if (ctx.questionFetchTitle() != null) val.add("val", visit(ctx.questionFetchTitle()).render());
+      else val.add("val", visit(ctx.questionFetchType()).render());
       return val;
    }
 
    // COMPLETED
    @Override public ST visitVarTextRead(QuizParser.VarTextReadContext ctx) {
+      System.out.println("IS SCANNER "+ctx.ID().getText());
       ST read = templates.getInstanceOf("read");
       String id = ctx.ID().getText();
+      String newScanner = newVarScanner();
       ctx.varx = newVar();
-      hasScanner = true;
       if (ctx.TEXT() == null) read.add("file", "System.in");
       else read.add("file", ctx.TEXT().getText());
       read.add("type", "String");
       read.add("var", ctx.varx);
       read.add("id", id);
+      read.add("varScanner", newScanner);
       varTypes.put(id, "String");
+      if (insideFunc) read.add("insideFunc", "");
+      idToTmpVar.put(id, ctx.varx);
       return read;
    }
 
@@ -829,7 +853,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitForIn(QuizParser.ForInContext ctx) {
       ST forLoop = templates.getInstanceOf("for_in");
       ctx.varx = newVar();
-      forLoop.add("var", ctx.varx);
+      String id = ctx.ID(0).getText();
+      String idVar = ctx.type.getText().equals("question") ? id : ctx.varx;
+      forLoop.add("var", idVar);
       forLoop.add("type", convertion.get(ctx.type.getText()));
       switch (ctx.type.getText()) {
          case "number":
@@ -838,8 +864,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          case "boolean":
             forLoop.add("boolean", "");
             break;
+         case "question":
+            forLoop.add("question", "");
+            break;
       }
-      String id = ctx.ID(0).getText();
       varTypes.put(id, "String");
       idToTmpVar.put(id, ctx.varx);
       forLoop.add("var1", id);
@@ -998,7 +1026,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // COMPLETED
    @Override public ST visitConditional(QuizParser.ConditionalContext ctx) {
       ST cond = templates.getInstanceOf("conditional");
+      System.out.println("Outside");
       if (ctx.id != null) {
+         System.out.println("Here1");
          String[] content = ctx.getText().split("T");
          // then there is a NOT
          if (content.length > 1) {
@@ -1007,6 +1037,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          cond.add("id", idToTmpVar.get(ctx.ID(0).getText()));
       }
       else if (ctx.field1 != null) {
+         System.out.println("Here2");
          String f1 = ctx.field1.getText();
          String f2 = ctx.field2.getText();
 
@@ -1021,6 +1052,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          cond.add("op", convertion.get(ctx.op.getText()));
       }
       else {
+         System.out.println("Here3");
          if (ctx.op.getText().equals("!=")) cond.add("not", "!");
          String f3 = ctx.field3.getText();
          String f4 = ctx.field4.getText();

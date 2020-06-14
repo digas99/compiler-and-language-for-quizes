@@ -1,0 +1,37 @@
+main =>
+    text userOpt;
+    list question questions;
+    do =>
+        userOpt => call menu("Quiz", "Chose questions file,Start Quiz,See Scores", "Exit");
+        if (userOpt == "1") => !! CHOSE QUESTIONS
+            write (CONSOLE) => "Insira o nome do ficheiro das questões (sem extensão):\nNome: ";
+            text questionsFolder => read (CONSOLE);
+            list question questions => get (questionsFolder);
+        >>
+        elsif (userOpt == "2") => !! START QUIZ
+            for (question q in questions) =>
+                write (CONSOLE) => q.title+"\n";
+            >>
+        >>
+        final =>
+            write (CONSOLE) => "Exiting program...\n";
+        >>
+        !! CLEAR CONSOLE
+        !! write (CONSOLE) => "\033[H\033[2J";
+    >> aslong (userOpt != "0");
+>>
+
+function (text title, text options, text existMsg) menu =>
+    write (CONSOLE) => title+"\n";
+    list text optsList;
+    optsList => split(options, ",");
+    number counter => 1;
+    for (text opt in optsList) =>
+        write (CONSOLE) => "["+counter+"] "+opt+"\n";
+        counter++;
+    >>
+    write (CONSOLE) => "[0] "+existMsg+"\n";
+    write (CONSOLE) => "Option: ";
+    text input => read (CONSOLE);
+    return input;
+>>

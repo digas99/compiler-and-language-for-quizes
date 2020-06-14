@@ -1,7 +1,3 @@
-
-import java.util.*;
-import org.antlr.v4.runtime.*;
-
 public class QuestionInterpreter extends QuestionsBaseVisitor<Question> {
 
    @Override public Question visitProg(QuestionsParser.ProgContext ctx) {
@@ -13,9 +9,9 @@ public class QuestionInterpreter extends QuestionsBaseVisitor<Question> {
       int points = Integer.parseInt(ctx.Points().getText().replace(" ","").split(":")[1]);
       int time = Integer.parseInt(ctx.Time().getText().replace(" ","").split(":")[1]);
 
-      System.out.println(tries);
-      System.out.println(points);
-      System.out.println(time);
+      // System.out.println(tries);
+      // System.out.println(points);
+      // System.out.println(time);
 
 
       Question.setDefaults(time,tries,points);
@@ -30,7 +26,7 @@ public class QuestionInterpreter extends QuestionsBaseVisitor<Question> {
       String type = ctx.Type().getText().split(" ")[1];
       String[] rightAns =ctx.RightAns().getText().replace("right: [", "").replace("]", "").split(",");
       String[] wrongAns =ctx.WrongAns().getText().replace("wrong: [", "").replace("]", "").split(",");
-      String title = ctx.Title().getText().replace("title: ","");
+      String title = ctx.Title().getText().replace("title: ","").replace("\"", "");
       int tries = 0;
       if (ctx.Tries()!= null){
          tries = Integer.parseInt(ctx.Tries().getText().replace(" ","").split(":")[1]);
@@ -53,7 +49,7 @@ public class QuestionInterpreter extends QuestionsBaseVisitor<Question> {
          time = Question.getDefaultTime();
       }
 
-      System.out.println(id);
+      // System.out.println(id);
       return new Question(id, title, type, difficulty, tries, time, points, rightAns, wrongAns);
    }
 }

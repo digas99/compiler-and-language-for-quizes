@@ -14,14 +14,14 @@ function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question')
 params : type=('text'|'number'|'boolean'|'question') ID ', ';
 
 // LISTS
-list    : (init='list' 'question')? ID '=>' 'get' '(' TEXT ')' ';'  # listQuestion
+list    : (init='list' 'question')? ID ('=>' 'get' '(' (TEXT|ID) ')')? ';'  # listQuestion
         | (init='list' 'number')? ID ('=>' listFormatNumber)? ';'   # listNums
         | (init='list' 'text')? ID ('=>' listFormatText)? ';'       # listText
         | (init='list' 'boolean')? ID ('=>' listFormatBool)? ';'    # listBoolean
         ;
 
 // MAPS
-map     : 'map' type='question' ID '=>' 'get' '(' TEXT ')' ';'                          # mapQuestion
+map     : 'map' type='question' ID '=>' 'get' '(' (TEXT|ID) ')' ';' # mapQuestion
         | 'map' type='number' ID ';'                            # mapNums
         | 'map' type='text' ID ';'                              # mapText
         | 'map' type='boolean' ID ';'                           # mapBoolean
@@ -29,8 +29,8 @@ map     : 'map' type='question' ID '=>' 'get' '(' TEXT ')' ';'                  
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID ('=>' (((strings)* finalstring=(TEXT|ID) ';')|ID '[' index=(ID|NUMBER) ']' ';'|callfunction|singlestring=TEXT ';'|questionFetchTitle';'|questionFetchDiff';'|questionFetchType';'))?  # varText
-         | 'text'? ID ('=>' 'read' '(' (TEXT|'CONSOLE') ')')? ';'                                                          # varTextRead
+           'text'? ID (('=>' (((strings)* finalstring=(TEXT|ID) ';')|ID '[' index=(ID|NUMBER) ']' ';'|callfunction|singlestring=TEXT ';'|questionFetchTitle';'|questionFetchDiff';'|questionFetchType';'))? | ';')  # varText
+         | 'text'? ID '=>' 'read' '(' (TEXT|'CONSOLE') ')' ';'                                                          # varTextRead
          | 'number'? ID ('=>' (callfunction|expr ';'|ID '[' index=(ID|NUMBER) ']' ';'|questionFetchTries';'|questionFetchTime';'|questionFetchPoints';'))? # varNumber
          | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' index=(ID|NUMBER) ']' ';'|))?                                                                      # varBoolean
          | 'question'? ID ';'                                                                                              # varQuestion
@@ -43,7 +43,7 @@ var returns[String varx = null]:
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
 
-strings  : (TEXT|ID) '+';
+strings  : (questionFetchTitle|questionFetchDiff|questionFetchType|TEXT|ID) '+';
 
 remove   : 'remove' '(' NUMBER ')' ';'                                                   #removeNumber
          | 'remove' '(' TEXT ')' ';'                                                     #removeText

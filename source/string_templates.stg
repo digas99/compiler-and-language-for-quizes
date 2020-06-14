@@ -70,8 +70,8 @@ tmp_atrib(type, var, value) ::= <<
 <type> <var> = <value>;
 >>
 
-atrib(type, var, value, id, insideFunc, needComma, isQuestion) ::= <<
-<type> <var> <if(!isQuestion)>=<endif><value><if(needComma)>;<endif>
+atrib(type, var, value, id, insideFunc, needComma, isQuestion, isInitialization) ::= <<
+<type> <var><if(!isQuestion)> =<endif><value><if(needComma)><if(isInitialization)> ""<endif>;<endif>
 <if(insideFunc)>
 // Store this variable if it is in main
 if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
@@ -195,9 +195,14 @@ handle_func_param(type, var, value, double, boolean) ::= <<
 vars.put("<value>", <if(double)>Double.toString<endif><if(boolean)>Boolean.toString<endif>(<var>));
 >>
 
-read(file, type, var, id) ::= <<
-Scanner rd = new Scanner(<file>);
-<atrib(type, var, "rd.nextLine()", id, "", "")>
+read(file, type, var, id, insideFunc, varScanner) ::= <<
+Scanner <varScanner> = new Scanner(<file>);
+<type> <var> = <varScanner>.nextLine();
+<if(insideFunc)>
+// Store this variable if it is in main
+if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
+<endif>
+<if(id)>vars.put("<id>", <var>);<endif>
 >>
 
 write(file, var, stat, string, double) ::= <<
@@ -219,9 +224,9 @@ for (double <var> = <start>; <var> <comp> <end>; <var><op>=<increment>) {
 }
 >>
 
-for_in(stat, type, var, var1, var2, double, boolean) ::= <<
+for_in(stat, type, var, var1, var2, double, boolean, question) ::= <<
 for (<type> <var> : <var2>) {
-    vars.put("<var1>", <if(double)>Double.toString(<endif><if(boolean)>Boolean.toString(<endif><var>)<if(double||boolean)>)<endif>;
+    <if(!question)>vars.put("<var1>", <if(double)>Double.toString(<endif><if(boolean)>Boolean.toString(<endif><var>)<if(double||boolean)>)<endif>;<endif>
     <stats(stat)>
 }
 >>
@@ -307,7 +312,7 @@ else if (<condition>) {
 
 hashMap(type, var, getQuestions, path) ::= <<
 <if(getQuestions)>try{
-   QuestionsMain.main(<path>);
+   QuestionsMain.main("../questions/"+<path>+".qst");
 }catch(Exception ex){
     System.out.println(ex);
     System.exit(1);
@@ -358,12 +363,12 @@ list_action(id,action)::= <<
 remove_atrib(var)::= <<
 .remove(<var>);
 >>
-list_question(var, file, newVar) ::= <<
-String <newVar> = "../questions/" + <file> + ".qst";
-QuestionsMain.main(<newVar>);
-List\<Question> <var> = new ArrayList\<Question>(Question.getQuestions().values());
+list_question(var, file, newVar, justInitalize) ::= <<
+<if(!justInitalize)>String <newVar> = "../questions/" + <file> + ".qst";
+QuestionsMain.main(<newVar>);<endif>
+<if(justInitalize)>List\<Question> <endif><var> = new ArrayList\<<if(!justInitalize)>Question<endif>\>(<if(!justInitalize)>Question.getQuestions().values()<endif>);
 >>
 
 question_fetch(id, type, double) ::= <%
-Question.getQuestion("<id>").<type>
+<id>.<type>
 %>
