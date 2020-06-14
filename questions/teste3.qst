@@ -1,0 +1,46 @@
+time: 10
+tries: 6
+points: 23
+
+
+<algarve> { title: "Onde fica o algarve?",
+type: MULTIPLE,
+difficulty: EASY,
+right: ["Portugal"],
+wrong: ["Africa","Espanha","Açores"] }
+
+
+<pintura> { title: "Em que continente foi encontrada a pintura mais antiga de que há conhecimento?",
+type: OPEN,
+difficulty: MEDIUM,
+tries: 1,
+points: 10,
+right: ["Africa"],
+wrong: [] }
+
+
+
+<sapo> { title: "O portal SAPO foi criado na UA?",
+type: MULTIPLE,
+difficulty: EASY,
+time: 25,
+right: ["Verdadeiro"],
+wrong: ["False"] }
+
+
+
+<alemanha> { title: "De que nacionalidade era adolf hitler?",
+type: MULTIPLE,
+difficulty: EASY,
+tries: 1,
+points: 5,
+right: ["Alemã"],
+wrong: ["Portuguesa","Espanhola","Francesa"] }
+
+<UA> { title: "Na história portuguesa, quem foi salazar?",
+type: MULTIPLE,
+difficulty: EASY,
+tries: 2,
+points: 5,
+right: ["Um ditador"],
+wrong: ["Um bispo","Um mártir","Um vendedor de fruta","Um professor de programação"] }
