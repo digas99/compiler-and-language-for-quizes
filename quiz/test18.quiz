@@ -1,8 +1,18 @@
 main =>
-    list question qsts => get("linguagem_questions");
+    list question qsts => import("linguagem_questions");
     text t0 => "Hello" + " World";
     for (question q in qsts) =>
         text t1 => q.title + ", " + q.type;
         text t2 => q.difficulty;
+        text t3;
+        if ("MULTIPLE" == q.type) =>
+            t3 => "this";
+        >>
+        if (q.title == "example") =>
+            t3 => "that";
+        >>
+        if (q.title == q.type) =>
+            t3 => "impossible";
+        >>
     >>
 >>

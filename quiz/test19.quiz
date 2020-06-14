@@ -1,0 +1,16 @@
+main =>
+    number r1 => random (0, 5);
+    writeln (CONSOLE) => r1;
+
+    list text l1 => {"a", "b", "c", "d", "e"};
+    text r2 => l1[random (0, 3)];
+    writeln (CONSOLE) => r2;
+
+    list number l2 => {1, 2, 3, 4, 5, 6};
+    number r3 => l2[random (0, 5)];
+    write (CONSOLE) => r3+"\n";
+
+    list boolean l3 => {FALSE, FALSE, TRUE};
+    boolean r4 => l3[random (0, 2)];
+    writeln (CONSOLE) => r4;
+>>

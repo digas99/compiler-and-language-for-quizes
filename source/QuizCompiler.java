@@ -161,15 +161,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       hasList = true;
       list.add("var", ctx.ID(0).getText());
       list.add("newVar", newVar());
-      if (ctx.TEXT() != null || ctx.ID().size() > 1) {
+      if (ctx.imp != null) {
          if (ctx.TEXT() != null) list.add("file",ctx.TEXT().getText());
          else list.add("file", idToTmpVar.get(ctx.ID(1).getText()));
       }
       
-      if (ctx.init != null && ctx.get == null) {
+      if (ctx.init != null && ctx.imp == null) {
          list.add("justInitialize", "");
       }
-      else if (ctx.init == null && ctx.get != null) {
+      else if (ctx.init == null && ctx.imp != null) {
          list.add("justAtrib", "");
       }
 
@@ -314,10 +314,16 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("needComma", "");
       }
       else if (ctx.ID().size() > 1) {
-         String index = ctx.index.getText();
-         String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
-         atrib.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
-         atrib.add("needComma", "");
+         if (ctx.index != null) {
+            String index = ctx.index.getText();
+            String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
+            atrib.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+            atrib.add("needComma", "");
+         }
+         else {
+            atrib.add("value", ctx.ID(1).getText()+".get("+visit(ctx.random()).render()+")");
+            atrib.add("needComma", "");
+         }
       }
       else if (ctx.callfunction() != null)
          atrib.add("value", visit(ctx.callfunction()).render());
@@ -386,16 +392,33 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          if (insideFunc) visit.add("insideFunc", "");
       }
       else if (ctx.ID().size() > 1) {
+         System.out.println("ID > 2");
          visit = templates.getInstanceOf("atrib_double");
          visit.add("type", "double");
          visit.add("var", ctx.varx);
-         String index = ctx.index.getText();
-         String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
-         visit.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+         if (ctx.index != null) {
+            String index = ctx.index.getText();
+            String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
+            visit.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+            visit.add("needComma", "");
+         }
+         else {
+            visit.add("value", ctx.ID(1).getText()+".get("+visit(ctx.random()).render()+")");
+            visit.add("needComma", "");
+         }
          visit.add("id", tmpId);
          idToTmpVar.put(tmpId, ctx.varx);
-         visit.add("needComma", "");
          if (insideFunc) visit.add("insideFunc", "");
+      }
+      else if (ctx.random() != null && ctx.ID().size() < 2) {
+         visit = templates.getInstanceOf("atrib_double");
+         visit.add("type", "double");
+         visit.add("var", ctx.varx);
+         visit.add("value", visit(ctx.random()).render());
+         visit.add("id", tmpId);
+         if (insideFunc) visit.add("insideFunc", "");
+         visit.add("needComma", "");
+         idToTmpVar.put(tmpId, ctx.varx);
       }
       else if (ctx.questionFetchTries() != null) {
          visit = templates.getInstanceOf("atrib_double");
@@ -441,10 +464,16 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("needComma", "");
       }
       else if (ctx.ID().size() > 1) {
-         String index = ctx.index.getText();
-         String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
-         atrib.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
-         atrib.add("needComma", "");
+         if (ctx.index != null) {
+            String index = ctx.index.getText();
+            String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
+            atrib.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+            atrib.add("needComma", "");
+         }
+         else {
+            atrib.add("value", ctx.ID(1).getText()+".get("+visit(ctx.random()).render()+")");
+            atrib.add("needComma", "");
+         }
       }
       else if (ctx.callfunction() != null) atrib.add("value", visit(ctx.callfunction()).render());
       atrib.add("id", ctx.ID(0).getText());
@@ -656,6 +685,17 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    return add;   
 }
 
+@Override public ST visitRandom(QuizParser.RandomContext ctx) {
+   ST rand = templates.getInstanceOf("get_random");
+   String min = ctx.min.getText();
+   String max = ctx.max.getText();
+   String minFinal = idToTmpVar.containsKey(min) ? idToTmpVar.get(min) : min;
+   String maxFinal = idToTmpVar.containsKey(max) ? idToTmpVar.get(max) : max;
+   rand.add("min", minFinal);
+   rand.add("max", maxFinal);
+   return rand;
+}
+
 //remove
 
 @Override public ST visitRemoveNumber(QuizParser.RemoveNumberContext ctx) {
@@ -818,6 +858,9 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       else {
          print.add("text", "\"ERROR: Not a valid value to print!\"");
       }
+
+      if (ctx.writetype.getText().equals("writeln")) print.add("ln", "ln");
+
       return print;
    }
 
@@ -1072,7 +1115,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
             cond.add("s2", finalf4);
          }
          else {
-            cond.add("s1", visit(ctx.stringFetches(1)).render());
+            if (ctx.stringFetches().size() > 1)
+               cond.add("s2", visit(ctx.stringFetches(1)).render());
+            else
+               cond.add("s2", visit(ctx.stringFetches(0)).render());
          }
 
          cond.add("equals", ".equals");

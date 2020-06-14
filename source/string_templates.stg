@@ -112,9 +112,9 @@ binary_operation(stat, id, type, var, e1, op, e2, insideFunc) ::= <<
 <if(id)>vars.put("<id>", Double.toString(<var>));<endif>
 >>
 
-print(stat, text) ::= <<
+print(stat, text, ln) ::= <<
 <stats(stat)>
-System.out.print(<text>);
+System.out.print<ln>(<text>);
 >>
 
 function(name, return_type, building_return, param, paramsID, stat, ret) ::= <<
@@ -368,3 +368,5 @@ QuestionsMain.main(<newVar>);
 question_fetch(id, type, double) ::= <%
 <id>.<type>
 %>
+
+get_random(min, max) ::= "(<min> + (int)(Math.random() * ((<max> - <min>) + 1)))"

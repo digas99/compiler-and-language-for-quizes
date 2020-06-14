@@ -14,14 +14,14 @@ function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question')
 params : type=('text'|'number'|'boolean'|'question') ID ', ';
 
 // LISTS
-list    : (init='list' 'question')? ID ('=>' get='get' '(' (TEXT|ID) ')')? ';'  # listQuestion
+list    : (init='list' 'question')? ID ('=>' imp='import' '(' (TEXT|ID) ')')? ';'  # listQuestion
         | (init='list' 'number')? ID ('=>' listFormatNumber)? ';'   # listNums
         | (init='list' 'text')? ID ('=>' (listFormatText|questionFetchAnsRight|questionFetchAnsWrong))? ';'       # listText
         | (init='list' 'boolean')? ID ('=>' listFormatBool)? ';'    # listBoolean
         ;
 
 // MAPS
-map     : 'map' type='question' ID '=>' 'get' '(' (TEXT|ID) ')' ';' # mapQuestion
+map     : 'map' type='question' ID '=>' 'import' '(' (TEXT|ID) ')' ';' # mapQuestion
         | 'map' type='number' ID ';'                            # mapNums
         | 'map' type='text' ID ';'                              # mapText
         | 'map' type='boolean' ID ';'                           # mapBoolean
@@ -29,10 +29,10 @@ map     : 'map' type='question' ID '=>' 'get' '(' (TEXT|ID) ')' ';' # mapQuestio
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID (('=>' (((strings)* (finalstring=(TEXT|ID)|stringFetches) ';')|ID '[' index=(ID|NUMBER) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')  # varText
+           'text'? ID (('=>' (((strings)* (finalstring=(TEXT|ID)|stringFetches) ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')  # varText
          | 'text'? ID '=>' 'read' '(' (TEXT|'CONSOLE') ')' ';'                                                          # varTextRead
-         | 'number'? ID ('=>' (callfunction|expr ';'|ID '[' index=(ID|NUMBER) ']' ';'|questionFetchTries';'|questionFetchTime';'|questionFetchPoints';'))? # varNumber
-         | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' index=(ID|NUMBER) ']' ';'|))?                                                                      # varBoolean
+         | 'number'? ID ('=>' (callfunction|expr ';'|random ';'|ID '[' (index=(ID|NUMBER)|random) ']' ';'|questionFetchTries';'|questionFetchTime';'|questionFetchPoints';'))? # varNumber
+         | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|))?                                                                      # varBoolean
          | 'question'? ID ';'                                                                                              # varQuestion
          | ID '=>' add                                                                                                     # varListAdd
          | ID '=>' remove                                                                                                  # varListRemove
@@ -44,6 +44,8 @@ var returns[String varx = null]:
          ;
 
 strings  : (stringFetches|TEXT|ID) '+';
+
+random   : 'random' '(' min=(NUMBER|ID) ', ' max=(NUMBER|ID) ')'; 
 
 remove   : 'remove' '(' NUMBER ')' ';'                                                   #removeNumber
          | 'remove' '(' TEXT ')' ';'                                                     #removeText
@@ -87,7 +89,7 @@ questionFetchTime     :  ID '.time';
 questionFetchPoints   :  ID '.points';
 
 // WRITE
-write    : 'write' '(' 'CONSOLE' ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';' # writeConsole
+write    : writetype=('write'|'writeln') '(' 'CONSOLE' ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';' # writeConsole
          | 'write' '(' TEXT ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';'      # writeFile
          ;
 

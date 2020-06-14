@@ -18,6 +18,27 @@ public class Test18 {
             String var5 =q.getDifficulty();
             vars.put("t2", var5);
 
+            String var6 = "";
+            vars.put("t3", var6);
+
+            if ("MULTIPLE".equals(q.getType())) {
+                String var7 ="this";
+                vars.put("t3", var7);
+
+            }
+
+            if (q.getTitle().equals("example")) {
+                String var8 ="that";
+                vars.put("t3", var8);
+
+            }
+
+            if (q.getTitle().equals(q.getType())) {
+                String var9 ="impossible";
+                vars.put("t3", var9);
+
+            }
+
         }
     }
 }
