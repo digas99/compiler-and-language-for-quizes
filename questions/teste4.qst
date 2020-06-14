@@ -1,0 +1,43 @@
+time: 90
+tries: 2
+points: 18
+
+
+<ford> { title: "Qual destas personagens foi encenada por harrison Ford?",
+type: MULTIPLE,
+difficulty: EASY,
+right: ["Indiana Jones"],
+wrong: ["Batman","Jack Sparrow","Darth Vader"] }
+
+
+<brancaneve> { title: "Qual foi a primeira longa metragem animada da Disney?",
+type: OPEN,
+difficulty: MEDIUM,
+tries: 1,
+points: 10,
+right: ["Branca de Neve", "Branca de Neve e os sete anões"],
+wrong: [] }
+
+
+
+<ru> { title: "O canadá é uma colónia do Reino Unido?",
+type: MULTIPLE,
+difficulty: EASY,
+time: 25,
+right: ["Verdadeiro"],
+wrong: ["False"] }
+
+
+
+<cranio> { title: "Quantos ossos tem a estrutura craniana?",
+type: OPEN,
+difficulty: HARD,
+right: ["22"],
+wrong: [] }
+
+
+<czar> { title: "Como se chamava o ultimo czar da russia?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+right: ["Nicolau II"],
+wrong: ["Nicolau III","Roman Romanov","Linus Torvald"] }

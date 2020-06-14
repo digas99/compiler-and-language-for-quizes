@@ -1,0 +1,37 @@
+time: 67
+tries: 3
+points: 13
+
+
+<camoes> { title: "Porque ficou conhecido Luis Vaz de Camões?",
+type: MULTIPLE,
+difficulty: EASY,
+right: ["Os Lusiadas"],
+wrong: ["Era um cantor famoso","Descobriu o Brasil","Era Imperador"] }
+
+
+<tormentas> { title: "Quem dobrou o cabo das tormentas?",
+type: OPEN,
+difficulty: MEDIUM,
+tries: 1,
+points: 10,
+right: ["Bartolomeu dias"],
+wrong: [] }
+
+
+
+<constelaçao> { title: "Libia fica em Africa?",
+type: MULTIPLE,
+difficulty: EASY,
+time: 25,
+right: ["Verdadeiro"],
+wrong: ["False"] }
+
+
+
+
+<aquiles> { title: "Qual era o ponto fraco de aquiles?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+right: ["Calcanhar"],
+wrong: ["Mindinho","Cotovelo","Queixo"] }

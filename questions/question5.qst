@@ -1,0 +1,43 @@
+time: 40
+tries: 3
+points: 18
+
+
+<luckeyluke> { title: "Por que era famoso o luckey luke?",
+type: MULTIPLE,
+difficulty: EASY,
+right: ["Ser mais rapido que a propria sombra"],
+wrong: ["comer espinafres","pela sua cicatriz em forma de trovão na testa","pelas suas asas"] }
+
+
+<disneychanel> { title: "Qual destas séries passou na Disney Chanel?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+tries: 1,
+points: 10,
+right: ["Kim Possible"],
+wrong: ["Icarly","Zoe 101","winx"] }
+
+
+
+<lua> { title: "A lua é uma estrela?",
+type: MULTIPLE,
+difficulty: EASY,
+time: 25,
+right: ["Verdadeiro"],
+wrong: ["False"] }
+
+
+
+<avengers> { title: "Quem é o primeiro avenger?",
+type: OPEN,
+difficulty: HARD,
+right: ["Capitão America"],
+wrong: [] }
+
+
+<cleopatra> { title: "Quem foi a primeira mulher a fazer a depilação, com cera de abelha, condenando assim todas as mulheres que vieram a seguir?",
+type: MULTIPLE,
+difficulty: MEDIUM,
+right: ["Cleopatra"],
+wrong: ["Kim kardashian","coco chanel","marilyn monroe"] }
