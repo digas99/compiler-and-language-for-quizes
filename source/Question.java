@@ -3,7 +3,6 @@ import java.util.HashMap;
 public class Question {
     private static HashMap<String, Question> questions;
 
-    private static int defaultTime;
     private static int defaultTries;
     private static int defaultPoints;
 
@@ -12,18 +11,16 @@ public class Question {
     private String type;
     private String difficulty;
     private int tries;
-    private int time;
     private int points;
     private String[] rightAns;
     private String[] wrongAns;
 
-    public Question(String id, String title, String type, String difficulty, int tries, int time, int points, String[] rightAns, String[] wrongAns){
+    public Question(String id, String title, String type, String difficulty, int tries, int points, String[] rightAns, String[] wrongAns){
         this.id = id;
         this.title = title;
         this.type = type;
         this.difficulty = difficulty;
         this.tries = tries;
-        this.time = time;
         this.points = points;
         this.rightAns = rightAns;
         this.wrongAns = wrongAns;
@@ -47,9 +44,6 @@ public class Question {
     }
     public int getTries(){
         return tries;
-    }
-    public int getTime(){
-        return time;
     }
     public int getPoints(){
         return points;
@@ -77,9 +71,6 @@ public class Question {
     public void setTries(int n){
         this.tries = n;
     }
-    public void setTime(int n){
-        this.time = n;
-    }
     public void setPoints(int n){
         this.points = n;
     }
@@ -98,13 +89,9 @@ public class Question {
         return questions.get(id);
     }
     
-    public static void setDefaults(int time, int tries, int points){
-        defaultTime = time;
+    public static void setDefaults(int tries, int points){
         defaultTries = tries;
         defaultPoints = points;
-    }
-    public static int getDefaultTime(){
-        return defaultTime;
     }
     public static int getDefaultTries(){
         return defaultTries;

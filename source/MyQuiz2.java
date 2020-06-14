@@ -19,121 +19,180 @@ public class MyQuiz2 {
             alphabet.add(var4);
         }
 
+        double var6 = 0;
+        vars.put("plays", Double.toString(var6));
+        HashMap<String, Double> pointsMap = new HashMap<>();
+        double var8 = 0;
+        vars.put("totalPoints", Double.toString(var8));
         do {
-            String var5 =menu("Quiz", "Chose questions file,Start Quiz,See Scores", "Exit");
-            vars.put("userOpt", var5);
+            List<Double> pointsGained = new ArrayList<>();
 
-            if (var5.equals("1")) {
+            String var11 =menu("Quiz", "Chose questions file,Start Quiz,See Scores", "Exit");
+            vars.put("userOpt", var11);
+
+            if (vars.get("userOpt").equals("1")) {
                 System.out.print("Insira o nome do ficheiro das questões (sem extensão):\nNome: ");
                 Scanner rd1 = new Scanner(System.in);
-                String var6 = rd1.nextLine();
-                vars.put("questionsFolder", var6);
-                String var7 = "../questions/" + var6 + ".qst";
-                QuestionsMain.main(var7);
+                String var12 = rd1.nextLine();
+                vars.put("questionsFolder", var12);
+                String var13 = "../questions/" + var12 + ".qst";
+                QuestionsMain.main(var13);
                 questions = new ArrayList<Question>(Question.getQuestions().values());
 
             }
-            else if (var5.equals("2")) {
+            else if (vars.get("userOpt").equals("2")) {
                 for (Question q : questions) {
-                    if (q.getType().equals("MULTIPLE")) {
-                        System.out.print(q.getTitle()+"\n");
-                        List<String> wrongAns0 = Arrays.asList(q.getWrongAns());
+                    double var16 = 0;
+                    vars.put("mistakes", Double.toString(var16));
+                    double var17 = q.getTries();
+                    vars.put("trs", Double.toString(var17));
+                    while (Double.parseDouble(vars.get("mistakes")) > Double.parseDouble(vars.get("trs"))) {
+                        if (q.getType().equals("MULTIPLE")) {
+                            System.out.print(q.getTitle()+"\n");
+                            List<String> wrongAns0 = Arrays.asList(q.getWrongAns());
 
-                        List<String> wrongAns = new ArrayList(wrongAns0);
-                        List<String> rightAns = Arrays.asList(q.getRightAns());
+                            List<String> wrongAns = new ArrayList(wrongAns0);
+                            List<String> rightAns = Arrays.asList(q.getRightAns());
 
-                        List<String> finalList = new ArrayList<>();
+                            List<String> finalList = new ArrayList<>();
 
-                        double var17 = rightAns.size();
-                        vars.put("rightAnsSize", Double.toString(var17));
-                        var17--;
-                        vars.put("rightAnsSize", Double.toString(var17));
-                        String var18 =rightAns.get((0 + (int)(Math.random() * ((var17 - 0) + 1))));
-                        vars.put("theRightAns", var18);
+                            double var26 = rightAns.size();
+                            vars.put("rightAnsSize", Double.toString(var26));
+                            var26--;
+                            vars.put("rightAnsSize", Double.toString(var26));
+                            String var27 =rightAns.get((0 + (int)(Math.random() * ((var26 - 0) + 1))));
+                            vars.put("theRightAns", var27);
 
-                        finalList.add(var18);
-                        double var20 = 6;
-                        vars.put("nmrWrongAnswers", Double.toString(var20));
-                        for (double var21 = 0; var21 < var20; var21+=1) {
-                            vars.put("i", Double.toString(var21));
-                            double var22 = wrongAns.size();
-                            vars.put("wrongAnsSize", Double.toString(var22));
-                            double var25 = vars.containsKey("wrongAnsSize") ? Double.parseDouble(vars.get("wrongAnsSize")) : Double.NaN;
+                            finalList.add(var27);
+                            double var29 = 5;
+                            vars.put("nmrWrongAnswers", Double.toString(var29));
+                            for (double var30 = 0; var30 < var29; var30+=1) {
+                                vars.put("i", Double.toString(var30));
+                                double var31 = wrongAns.size();
+                                vars.put("wrongAnsSize", Double.toString(var31));
+                                double var34 = vars.containsKey("wrongAnsSize") ? Double.parseDouble(vars.get("wrongAnsSize")) : Double.NaN;
 
-                            double var26 = 1;
-                            vars.put("max", Double.toString(var26));
-                            double var24 = var25 - var26;
-                            vars.put("max", Double.toString(var24));
-                            double var27 = (0 + (int)(Math.random() * ((var24 - 0) + 1)));
-                            vars.put("pos", Double.toString(var27));
-                            String var28 =wrongAns.get((int)var27);
-                            vars.put("theWrongAns", var28);
+                                double var35 = 1;
+                                vars.put("max", Double.toString(var35));
+                                double var33 = var34 - var35;
+                                vars.put("max", Double.toString(var33));
+                                double var36 = (0 + (int)(Math.random() * ((var33 - 0) + 1)));
+                                vars.put("pos", Double.toString(var36));
+                                String var37 =wrongAns.get((int)var36);
+                                vars.put("theWrongAns", var37);
 
-                            finalList.add(var28);
-                            wrongAns.remove((int)var27);
-                        }
-                        String var29 ="";
-                        vars.put("rightAnsIndex", var29);
+                                finalList.add(var37);
+                                wrongAns.remove((int)var36);
+                            }
+                            String var38 ="";
+                            vars.put("rightAnsIndex", var38);
 
-                        double var32 = vars.containsKey("nmrWrongAnswers") ? Double.parseDouble(vars.get("nmrWrongAnswers")) : Double.NaN;
+                            double var41 = vars.containsKey("nmrWrongAnswers") ? Double.parseDouble(vars.get("nmrWrongAnswers")) : Double.NaN;
 
-                        double var33 = 1;
-                        vars.put("nmrAns", Double.toString(var33));
-                        double var31 = var32 + var33;
-                        vars.put("nmrAns", Double.toString(var31));
-                        for (double var34 = 0; var34 < var31; var34+=1) {
-                            vars.put("j", Double.toString(var34));
-                            double var35 = finalList.size();
-                            vars.put("finalListSize", Double.toString(var35));
-                            double var38 = vars.containsKey("finalListSize") ? Double.parseDouble(vars.get("finalListSize")) : Double.NaN;
+                            double var42 = 1;
+                            vars.put("nmrAns", Double.toString(var42));
+                            double var40 = var41 + var42;
+                            vars.put("nmrAns", Double.toString(var40));
+                            for (double var43 = 0; var43 < var40; var43+=1) {
+                                vars.put("j", Double.toString(var43));
+                                double var44 = finalList.size();
+                                vars.put("finalListSize", Double.toString(var44));
+                                double var47 = vars.containsKey("finalListSize") ? Double.parseDouble(vars.get("finalListSize")) : Double.NaN;
 
-                            double var39 = 1;
-                            vars.put("max2", Double.toString(var39));
-                            double var37 = var38 - var39;
-                            vars.put("max2", Double.toString(var37));
-                            double var40 = (0 + (int)(Math.random() * ((var37 - 0) + 1)));
-                            vars.put("pos", Double.toString(var40));
-                            String var41 =finalList.get((int)var40);
-                            vars.put("ansToPrint", var41);
+                                double var48 = 1;
+                                vars.put("max2", Double.toString(var48));
+                                double var46 = var47 - var48;
+                                vars.put("max2", Double.toString(var46));
+                                double var49 = (0 + (int)(Math.random() * ((var46 - 0) + 1)));
+                                vars.put("pos", Double.toString(var49));
+                                String var50 =finalList.get((int)var49);
+                                vars.put("ansToPrint", var50);
 
-                            if (var41.equals(var18)) {
-                                Question rightAnsIndex =alphabet.get((int)var34);
+                                if (vars.get("ansToPrint") == vars.get("theRightAns")) {
+                                    String var51 =alphabet.get((int)var43);
+                                    vars.put("rightAnsIndex", var51);
 
+                                }
+
+                                String var52 =alphabet.get((int)var43);
+                                vars.put("letter", var52);
+
+                                System.out.println("["+var52+"] "+var50);
+                                finalList.remove((int)var49);
+                            }
+                            Scanner rd2 = new Scanner(System.in);
+                            String var53 = rd2.nextLine();
+                            vars.put("userAnswer", var53);
+                            if (vars.get("userAnswer") == vars.get("rightAnsIndex")) {
+                                System.out.println("Resposta certa! +"+q.getPoints()+" pontos");
+                                pointsGained.add(Double.valueOf(q.getPoints()));
+                            }
+                            else {
+                                var16++;
+                                vars.put("mistakes", Double.toString(var16));
+                                System.out.println("Resposta errada!");
+                                double var54 = q.getTries();
+                                vars.put("tries", Double.toString(var54));
+                                double var57 = vars.containsKey("tries") ? Double.parseDouble(vars.get("tries")) : Double.NaN;
+
+                                double var58 = vars.containsKey("mistakes") ? Double.parseDouble(vars.get("mistakes")) : Double.NaN;
+
+                                double var56 = var57 - var58;
+                                vars.put("diff", Double.toString(var56));
+                                System.out.println("Tem mais "+var56+"tentativa(s)");
                             }
 
-                            String var42 =alphabet.get((int)var34);
-                            vars.put("letter", var42);
-
-                            System.out.println("["+var42+"] "+var41);
-                            finalList.remove((int)var40);
-                        }
-                        Scanner rd2 = new Scanner(System.in);
-                        String var43 = rd2.nextLine();
-                        vars.put("userAnswer", var43);
-                        String var44 =var29;
-                        vars.put("rightAnsIndexText", var44);
-
-                        if (var43.equals(var44)) {
-                            System.out.println("Resposta certa! +"+q.getPoints()+" pontos");
-                        }
-                        else {
-                            System.out.println("Resposta errada!");
                         }
 
                     }
-
                 }
+                double var60 = 0;
+                vars.put("pointsSum", Double.toString(var60));
+                for (double var61 : pointsGained) {
+                    vars.put("n", Double.toString(var61));
+                    double var62 = vars.containsKey("n") ? Double.parseDouble(vars.get("n")) : Double.NaN;
+                    var8+=var62;
+                    vars.put("totalPoints", Double.toString(var8));
+                    double var63 = vars.containsKey("n") ? Double.parseDouble(vars.get("n")) : Double.NaN;
+                    var60+=var63;
+                    vars.put("pointsSum", Double.toString(var60));
+                }
+                String var64 =var6+"";
+                vars.put("p", var64);
+
+                pointsMap.put(var64, var60);
+                var6++;
+                vars.put("plays", Double.toString(var6));
+            }
+            else if (vars.get("userOpt").equals("3")) {
+                for (double var65 = 0; var65 < var6; var65+=1) {
+                    vars.put("i", Double.toString(var65));
+                    String var66 =var65+"";
+                    vars.put("aux", var66);
+
+                    double points;
+
+                    points = pointsMap.get(var66);
+                    double var70 = vars.containsKey("i") ? Double.parseDouble(vars.get("i")) : Double.NaN;
+
+                    double var71 = 1;
+                    vars.put("play", Double.toString(var71));
+                    double var69 = var70 + var71;
+                    vars.put("play", Double.toString(var69));
+                    System.out.println("Play "+var69+" - "+points+" points");
+                }
+                System.out.println("Total - "+var8+" points");
             }
             else {
-                System.out.print("Exiting program...\n");
+                System.out.println("Exiting program...");
             }
 
-        } while (!(var5.equals("0")));
+        } while (!(vars.get("userOpt").equals("0")));
     }
-    public static String menu(String title, String options, String existMsg) {
+    public static String menu(String title, String options, String exitMsg) {
         HashMap<String, String> funcAuxMap = new HashMap<>();
         // Store all variables from main the might be overwriten
-        String[] paramsIDs = {"title", "options", "existMsg"};
+        String[] paramsIDs = {"title", "options", "exitMsg"};
         for (String paramID : paramsIDs) {
             if (vars.containsKey(paramID)) {
                 funcAuxMap.put(paramID, vars.get(paramID));
@@ -144,30 +203,30 @@ public class MyQuiz2 {
         List<String> optsList = new ArrayList<>();
 
         optsList = Arrays.asList(options.split(","));
-        double var48 = 1;
+        double var75 = 1;
         // Store this variable if it is in main
         if (vars.containsKey("counter")) funcAuxMap.put("counter", vars.get("counter"));
-        vars.put("counter", Double.toString(var48));
-        for (String var49 : optsList) {
-            vars.put("opt", var49);
-            System.out.print("["+var48+"] "+var49+"\n");
-            var48++;
+        vars.put("counter", Double.toString(var75));
+        for (String var76 : optsList) {
+            vars.put("opt", var76);
+            System.out.print("["+var75+"] "+var76+"\n");
+            var75++;
             // Store this variable if it is in main
             if (vars.containsKey("counter")) funcAuxMap.put("counter", vars.get("counter"));
-            vars.put("counter", Double.toString(var48));
+            vars.put("counter", Double.toString(var75));
         }
-        System.out.print("[0] "+existMsg+"\n");
+        System.out.print("[0] "+exitMsg+"\n");
         System.out.print("Option: ");
         Scanner rd3 = new Scanner(System.in);
-        String var50 = rd3.nextLine();
+        String var77 = rd3.nextLine();
         // Store this variable if it is in main
         if (vars.containsKey("input")) funcAuxMap.put("input", vars.get("input"));
-        vars.put("input", var50);
+        vars.put("input", var77);
 
         // Building the return statement
         // Whatever important variable being saved in the vars map is not a problem
         // because it will be removed in the next loop through funcAuxMap
-        String var51 = vars.containsKey("input") ? vars.get("input") : null;
+        String var78 = vars.containsKey("input") ? vars.get("input") : null;
 
 
         // Restore to the main map all variable stored in auxmap
@@ -175,6 +234,6 @@ public class MyQuiz2 {
             vars.put(entry.getKey(), entry.getValue());
         }
 
-        return var51;
+        return var78;
     }
 }

@@ -83,7 +83,7 @@ if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
 >>
 
 atrib_double(type, var, value, id, insideFunc, needComma) ::= <<
-<type> <var> = <value><if(needComma)>;<endif>
+<type> <var><if(value)> = <value><endif><if(needComma)>;<endif>
 <if(insideFunc)>
 // Store this variable if it is in main
 if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
@@ -179,7 +179,7 @@ if (vars.containsKey("<id>")) funcAuxMap.put("<id>", vars.get("<id>"));
 varmanip_number(newvar, var, action, number, mod_var, id, insideFunc) ::= <<
 <if(mod_var)>
 <get_from_map_double(mod_var, newvar)>
-<var><action><mod_var>;
+<var><action><newvar>;
 <endif>
 <if(number)>
 <var><action><number>;

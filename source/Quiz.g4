@@ -29,11 +29,11 @@ map     : 'map' type='question' ID '=>' 'import' '(' (TEXT|ID) ')' ';' # mapQues
 
 // VARIABLES
 var returns[String varx = null]: 
-           'question'? ID ('=>' ID '[' (index=(ID|NUMBER)|random) ']')? ';'                                                                                                                     # varQuestion
-         | 'text'? ID (('=>' (id=ID ';'|((strings)* (finalstring=(TEXT|ID)|questionFetch) ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')    # varText
+           'text'? ID ('=>' (id=ID|((strings)* (finalstring=(TEXT|ID)|questionFetch))|ID '[' (index=(ID|NUMBER)|random) ']'|callfunction|singlestring=TEXT|stringFetches))? ';'   # varText
+         | 'question'? ID ('=>' ID '[' (index=(ID|NUMBER)|random) ']')? ';'                                                                                                                     # varQuestion
          | 'text'? ID '=>' 'read' '(' (TEXT|'CONSOLE') ')' ';'                                                                                                                                  # varTextRead
-         | 'number'? ID ('=>' (callfunction|expr ';'|random ';'|ID '[' (index=(ID|NUMBER)|random) ']' ';'|numberFetches';'|size='size' '(' ID ')' ';'))?                                        # varNumber
-         | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|))?                                                                                           # varBoolean                                                                                                                    
+         | 'number'? ID ('=>' (callfunction|expr|random|ID '[' (index=(ID|NUMBER)|random) ']'|numberFetches|size='size' '(' ID ')'))? ';'                                      # varNumber
+         | 'boolean'? ID ('=>' ((callfunction|bool)|ID '[' (index=(ID|NUMBER)|random) ']'))? ';'                                                                                      # varBoolean                                                                                                                    
          | ID '=>' add                                                                                                                                                                          # varListAdd
          | ID '=>' remove                                                                                                                                                                       # varListRemove
          | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                                                                                      # varListSplit
@@ -58,17 +58,6 @@ add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'   
          | 'add' '(' NUMBER ')' ';'                                                      #addNumber
          ;
 
-// QUESTION OBJECT CREATION
-question : questionFetchTitle '=>' TEXT ';'                    # questionTitle                         
-         | questionFetchAnsRight '=>' listFormatText ';'       # questionAnsRight
-         | questionFetchAnsWrong '=>' listFormatText ';'       # questionAnsWrong
-         | questionFetchDiff '=>' ('easy'|'medium'|'hard') ';' # questionDifficulty
-         | questionFetchType '=>' ('multiple'|'open') ';'      # questionType
-         | questionFetchTries '=>' (ID|NUMBER) ';'             # questionTries
-         | questionFetchTime '=>' (ID|NUMBER) ';'              # questionTime
-         | questionFetchPoints '=>' (ID|NUMBER) ';'            # questionPoints
-         ;
-
 listFormatNumber : '{' (NUMBER ', ')* NUMBER '}';
 listFormatText   : '{' (TEXT ', ')* TEXT '}';
 listFormatBool   : '{' (bool ', ')* bool '}';
@@ -76,15 +65,14 @@ listFormatBool   : '{' (bool ', ')* bool '}';
 bool  : 'TRUE'|'FALSE';
 
 // QUESTION OBJECT FETCHING
-questionFetch    : questionFetchTitle|questionFetchAnsRight|questionFetchAnsWrong|questionFetchDiff|questionFetchType|questionFetchTries|questionFetchTime|questionFetchPoints;
+questionFetch    : questionFetchTitle|questionFetchAnsRight|questionFetchAnsWrong|questionFetchDiff|questionFetchType|questionFetchTries|questionFetchPoints;
 
 questionFetchTitle    :  ID '.title';
 questionFetchAnsRight :  ID '.right';              
 questionFetchAnsWrong :  ID '.wrong';         
 questionFetchDiff     :  ID '.difficulty';        
 questionFetchType     :  ID '.type';                  
-questionFetchTries    :  ID '.tries';                              
-questionFetchTime     :  ID '.time';                             
+questionFetchTries    :  ID '.tries';                                                         
 questionFetchPoints   :  ID '.points';
 
 // WRITE
@@ -112,18 +100,18 @@ elsif    : 'elsif' '(' conditional ')' '=>' content+ '>>';
 finalCond : 'final' '=>' content+ '>>';
 
 // CALL FUNCTION
-callfunction : 'call' ID '(' (callParams)* last=(TEXT|NUMBER|ID)? ')' ';';
+callfunction : 'call' ID '(' (callParams)* last=(TEXT|NUMBER|ID)? ')';
 
 callParams : val=(TEXT|NUMBER|ID) ', ';
 
 // CONDITIONAL STATEMENTS
 conditional : 'NOT'? id=ID
-            | (field1=(ID|NUMBER) op=('AND'|'OR'|'=='|'!='|'>'|'<'))+ field2=(ID|NUMBER)
+            | (field1=(ID|NUMBER) op=('AND'|'OR'|'=='|'!='|'>'|'<'|'>='|'<='))+ field2=(ID|NUMBER)
             | (field3=(ID|TEXT)|stringFetches) op=('=='|'!=') (field4=(ID|TEXT)|stringFetches)
             ;
 
 stringFetches : questionFetchTitle|questionFetchDiff|questionFetchType;
-numberFetches : questionFetchTries|questionFetchTime|questionFetchPoints;
+numberFetches : questionFetchTries|questionFetchPoints;
 
 // Manipulation var
 varmanipulation returns[String varx = null]: 
@@ -147,7 +135,7 @@ expr returns[String varx = null, String type = null]:
         |   ID                          # ExprId
         ;
 
-content  : map|list|var|write|question|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';');
+content  : map|list|var|write|forLoop|ifCond|doaslong|aslong|callfunction|(varmanipulation ';');
 
 TEXT     : '"'.*?'"' ;
 NUMBER   : [0-9]+ ('.' [0-9]+)?;

@@ -3,9 +3,9 @@ grammar Questions;
 
 prog    : standart question+ ;
 
-standart : Time Tries Points ;
+standart : Tries Points ;
 
-question : ID '{' Title ',' Type ',' Difficulty ',' (Tries ',')? (Time ',')? (Points ',')? RightAns ',' WrongAns ','? '}'
+question : ID '{' Title ',' Type ',' Difficulty ',' (Tries ',')? (Points ',')? RightAns ',' WrongAns ','? '}'
          ;
 
 Difficulty  : 'difficulty: EASY'         
@@ -27,8 +27,6 @@ Title  : 'title: "' .*? '"';
 Tries  : 'tries: '[0-9];
 
 Points : 'points: '[0-9]+;
-
-Time   : 'time: '[0-9]+;
 
 TEXT : '"' ('\\' ["\\] | ~["\\\r\n])* '"'  ;
 

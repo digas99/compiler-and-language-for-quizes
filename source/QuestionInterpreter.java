@@ -7,14 +7,12 @@ public class QuestionInterpreter extends QuestionsBaseVisitor<Question> {
    @Override public Question visitStandart(QuestionsParser.StandartContext ctx) {
       int tries = Integer.parseInt(ctx.Tries().getText().replace(" ","").split(":")[1]);
       int points = Integer.parseInt(ctx.Points().getText().replace(" ","").split(":")[1]);
-      int time = Integer.parseInt(ctx.Time().getText().replace(" ","").split(":")[1]);
 
       // System.out.println(tries);
       // System.out.println(points);
-      // System.out.println(time);
 
 
-      Question.setDefaults(time,tries,points);
+      Question.setDefaults(tries,points);
 
       return visitChildren(ctx);
    }
@@ -41,16 +39,9 @@ public class QuestionInterpreter extends QuestionsBaseVisitor<Question> {
       else {
          points = Question.getDefaultPoints();
       }
-      int time = 0;
-      if (ctx.Time()!= null){
-         time = Integer.parseInt(ctx.Time().getText().replace(" ","").split(":")[1]);
-      }
-      else {
-         time = Question.getDefaultTime();
-      }
 
       // System.out.println(id);
-      return new Question(id, title, type, difficulty, tries, time, points, rightAns, wrongAns);
+      return new Question(id, title, type, difficulty, tries, points, rightAns, wrongAns);
    }
 }
  
