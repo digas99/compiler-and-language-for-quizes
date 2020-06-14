@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 <endif>
 <if(hasList)>
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 <endif>
@@ -245,8 +246,9 @@ for (int <tmpvar2> : <tmpvar>) {
 <endif>
 >>
 
-list_string(init, var, tmpvar, tmpvar2, val) ::= <<
+list_string(init, var, tmpvar, tmpvar2, val, questionFetch) ::= <<
 <if(init)>List\<String> <var> = new ArrayList\<>();<endif>
+<if(questionFetch)>List\<String> <var> = Arrays.asList(<questionFetch>);<endif>
 <if(val)>
 String[] <tmpvar> = {<val>};
 for (String <tmpvar2> : <tmpvar>) {
