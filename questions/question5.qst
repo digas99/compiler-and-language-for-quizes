@@ -1,4 +1,3 @@
-time: 40
 tries: 3
 points: 18
 
@@ -23,7 +22,6 @@ wrong: ["Icarly","Zoe 101","winx"] }
 <lua> { title: "A lua é uma estrela?",
 type: MULTIPLE,
 difficulty: EASY,
-time: 25,
 right: ["Verdadeiro"],
 wrong: ["False"] }
 

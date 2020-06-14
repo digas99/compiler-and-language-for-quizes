@@ -1,4 +1,3 @@
-time: 67
 tries: 3
 points: 13
 
@@ -23,7 +22,6 @@ wrong: [] }
 <constelaçao> { title: "Libia fica em Africa?",
 type: MULTIPLE,
 difficulty: EASY,
-time: 25,
 right: ["Verdadeiro"],
 wrong: ["False"] }
 

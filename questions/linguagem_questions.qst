@@ -1,4 +1,3 @@
-time: 15
 tries: 8
 points: 10
 
@@ -23,6 +22,5 @@ wrong: [] }
 <patinhos> { title: "Os patos voam",
 type: MULTIPLE,
 difficulty: MEDIUM,
-time: 250,
 right: ["Verdadeiro"],
 wrong: ["False"] }

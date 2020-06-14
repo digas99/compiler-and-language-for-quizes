@@ -1,4 +1,3 @@
-time: 90
 tries: 2
 points: 18
 
@@ -23,7 +22,6 @@ wrong: [] }
 <ru> { title: "O canadá é uma colónia do Reino Unido?",
 type: MULTIPLE,
 difficulty: EASY,
-time: 25,
 right: ["Verdadeiro"],
 wrong: ["False"] }
 
