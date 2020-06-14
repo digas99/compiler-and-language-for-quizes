@@ -17,7 +17,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private boolean needsArrays = false;
    private HashMap<String, String> convertion = new HashMap<>();
    private HashMap<String, String> idToTmpVar = new HashMap<>();
-   private HashMap<String, Double> realValueOfId = new HashMap<>();
    private HashMap<String, String> funcParams = new HashMap<>();
    private HashMap<String, String> varTypes = new HashMap<>();
    private String newVar() {
@@ -165,6 +164,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          if (ctx.TEXT() != null) list.add("file",ctx.TEXT().getText());
          else list.add("file", idToTmpVar.get(ctx.ID(1).getText()));
       }
+      else if (ctx.clone != null) {
+         list = templates.getInstanceOf("list_clone");
+         list.add("type", "Question");
+         list.add("id", ctx.ID(0).getText());
+         list.add("target", ctx.ID(1).getText());
+      }
       
       if (ctx.init != null && ctx.imp == null) {
          list.add("justInitialize", "");
@@ -180,11 +185,17 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitListNums(QuizParser.ListNumsContext ctx) {
       ST list = templates.getInstanceOf("list_double");
       hasList = true;
-      list.add("var", ctx.ID().getText());
+      list.add("var", ctx.ID(0).getText());
       if (ctx.listFormatNumber() != null) list.add("val", visit(ctx.listFormatNumber()).render());
       list.add("tmpvar", newVar());
       list.add("tmpvar2", newVar());
       if (ctx.init != null) list.add("init", "");
+      if (ctx.clone != null) {
+         list = templates.getInstanceOf("list_clone");
+         list.add("type", "double");
+         list.add("id", ctx.ID(0).getText());
+         list.add("target", ctx.ID(1).getText());
+      }
       return list;
    }
 
@@ -192,13 +203,19 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitListText(QuizParser.ListTextContext ctx) {
       ST list = templates.getInstanceOf("list_string");
       hasList = true;
-      list.add("var", ctx.ID().getText());
-      if (ctx.listFormatText() != null) list.add("val", visit(ctx.listFormatText()).render());
+      list.add("var", ctx.ID(0).getText());
       list.add("tmpvar", newVar());
       list.add("tmpvar2", newVar());
+      if (ctx.listFormatText() != null) list.add("val", visit(ctx.listFormatText()).render());
       if (ctx.questionFetchAnsRight() != null) list.add("questionFetch", visit(ctx.questionFetchAnsRight()).render());
       if (ctx.questionFetchAnsWrong() != null) list.add("questionFetch", visit(ctx.questionFetchAnsWrong()).render());
       if (ctx.init != null && ctx.questionFetchAnsRight() == null && ctx.questionFetchAnsWrong() == null) list.add("init", "");
+      if (ctx.clone != null) {
+         list = templates.getInstanceOf("list_clone");
+         list.add("type", "String");
+         list.add("id", ctx.ID(0).getText());
+         list.add("target", ctx.ID(1).getText());
+      }
       return list;
    }
 
@@ -206,11 +223,17 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitListBoolean(QuizParser.ListBooleanContext ctx) {
       ST list = templates.getInstanceOf("list_boolean");
       hasList = true;
-      list.add("var", ctx.ID().getText());
+      list.add("var", ctx.ID(0).getText());
       if (ctx.listFormatBool() != null) list.add("val", visit(ctx.listFormatBool()).render());
       list.add("tmpvar", newVar());
       list.add("tmpvar2", newVar());
       if (ctx.init != null) list.add("init", "");
+      if (ctx.clone != null) {
+         list = templates.getInstanceOf("list_clone");
+         list.add("type", "boolean");
+         list.add("id", ctx.ID(0).getText());
+         list.add("target", ctx.ID(1).getText());
+      }
       return list;
    }
 
@@ -296,7 +319,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
    // IN PROGRESS
    @Override public ST visitVarText(QuizParser.VarTextContext ctx) {
-      System.out.println("IS NOT SCANNER "+ctx.ID(0).getText());
       ST atrib = templates.getInstanceOf("atrib");
       if (insideFunc) atrib.add("insideFunc", "");
       ctx.varx = newVar();
@@ -314,11 +336,36 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("needComma", "");
       }
       else if (ctx.ID().size() > 1) {
+         System.out.println(ctx.ID());
          if (ctx.index != null) {
             String index = ctx.index.getText();
             String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
-            atrib.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+            atrib.add("value", ctx.ID(1).getText()+".get("+"(int)"+finalIndex+")");
             atrib.add("needComma", "");
+         }
+         else if (ctx.id != null) {
+            System.out.println(ctx.id.getText());
+            System.out.println(varTypes);
+            String type = varTypes.get(ctx.ID(0).getText());
+            if (type == null) type = varTypes.get(ctx.id.getText());
+            if (type.equals("double")) {
+               atrib = templates.getInstanceOf("atrib_double");
+               atrib.add("type", "double");
+               atrib.add("var", ctx.varx);
+               atrib.add("value", idToTmpVar.get(ctx.id.getText()));
+               atrib.add("needComma", "");
+            }
+            else if (type.equals("boolean")) {
+               atrib = templates.getInstanceOf("atrib_boolean");
+               atrib.add("type", "boolean");
+               atrib.add("var", ctx.varx);
+               atrib.add("value", idToTmpVar.get(ctx.id.getText()));
+               atrib.add("needComma", "");
+            }
+            else {
+               atrib.add("value", idToTmpVar.get(ctx.id.getText()));
+               atrib.add("needComma", "");
+            }
          }
          else {
             atrib.add("value", ctx.ID(1).getText()+".get("+visit(ctx.random()).render()+")");
@@ -333,14 +380,15 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          atrib.add("value", finalStr);
          atrib.add("needComma", "");
       }
-      else if (ctx.stringFetches() != null) {
+      else if (ctx.questionFetch() != null) {
          atrib.add("needComma", "");
-         atrib.add("value", visit(ctx.stringFetches()).render());
+         atrib.add("value", visit(ctx.questionFetch()).render());
       }
       else {
          atrib.add("needComma", "");
          atrib.add("isInitialization", "");
       }
+      if (insideFunc) atrib.add("insideFunc", "");
       atrib.add("id", ctx.ID(0).getText());
       idToTmpVar.put(ctx.ID(0).getText(), ctx.varx);
       varTypes.put(ctx.ID(0).getText(), "String");
@@ -351,13 +399,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST val = templates.getInstanceOf("return_plain_val");
       if (ctx.TEXT() != null) val.add("val", ctx.TEXT().getText());
       else if (ctx.ID()!= null) val.add("val", ctx.ID().getText());
-      else val.add("val", visit(ctx.stringFetches()).render());
+      else val.add("val", visit(ctx.questionFetch()).render());
       return val;
    }
 
    // COMPLETED
    @Override public ST visitVarTextRead(QuizParser.VarTextReadContext ctx) {
-      System.out.println("IS SCANNER "+ctx.ID().getText());
       ST read = templates.getInstanceOf("read");
       String id = ctx.ID().getText();
       String newScanner = newVarScanner();
@@ -378,13 +425,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitVarNumber(QuizParser.VarNumberContext ctx) {
       tmpId = ctx.ID(0).getText();
       ctx.varx = newVar();
-      ST visit;
+      ST visit = templates.getInstanceOf("atrib_double");
       if (ctx.expr() != null) {
          visit = visit(ctx.expr());
          idToTmpVar.put(tmpId, ctx.expr().varx);
       }
       else if (ctx.callfunction() != null) {
-         visit = templates.getInstanceOf("atrib_double");
          visit.add("type", "double");
          visit.add("var", ctx.varx);
          visit.add("value", visit(ctx.callfunction()).render());
@@ -393,13 +439,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       }
       else if (ctx.ID().size() > 1 && ctx.size == null) {
          System.out.println("ID > 2");
-         visit = templates.getInstanceOf("atrib_double");
          visit.add("type", "double");
          visit.add("var", ctx.varx);
          if (ctx.index != null) {
             String index = ctx.index.getText();
             String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
-            visit.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+            visit.add("value", ctx.ID(1).getText()+".get("+"(int)"+finalIndex+")");
          }
          else visit.add("value", ctx.ID(1).getText()+".get("+visit(ctx.random()).render()+")");
          visit.add("needComma", "");
@@ -408,7 +453,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          if (insideFunc) visit.add("insideFunc", "");
       }
       else if (ctx.random() != null && ctx.ID().size() < 2) {
-         visit = templates.getInstanceOf("atrib_double");
          visit.add("type", "double");
          visit.add("var", ctx.varx);
          visit.add("value", visit(ctx.random()).render());
@@ -418,7 +462,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          idToTmpVar.put(tmpId, ctx.varx);
       }
       else if (ctx.numberFetches() != null) {
-         visit = templates.getInstanceOf("atrib_double");
          visit.add("type", "double");
          visit.add("var", ctx.varx);
          visit.add("needComma", "");
@@ -427,7 +470,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          idToTmpVar.put(tmpId, ctx.varx);
       }
       else if (ctx.size != null) {
-         visit = templates.getInstanceOf("atrib_double");
          visit.add("type", "double");
          visit.add("var", ctx.varx);
          visit.add("value", ctx.ID(1).getText()+".size()");
@@ -436,9 +478,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          visit.add("needComma", "");
          idToTmpVar.put(tmpId, ctx.varx);
       }
-      else {
-         visit = null;
-      }
+      varTypes.put(tmpId, "double");
       return visit;
    }
 
@@ -456,7 +496,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          if (ctx.index != null) {
             String index = ctx.index.getText();
             String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
-            atrib.add("value", ctx.ID(1).getText()+".get("+finalIndex+")");
+            atrib.add("value", ctx.ID(1).getText()+".get("+"(int)"+finalIndex+")");
             atrib.add("needComma", "");
          }
          else {
@@ -474,11 +514,21 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    @Override public ST visitVarQuestion(QuizParser.VarQuestionContext ctx) {
       ST atrib = templates.getInstanceOf("atrib");
       if (insideFunc) atrib.add("insideFunc", "");
-      atrib.add("isQuestion", "");
       atrib.add("type", "Question");
-      atrib.add("var", ctx.ID().getText());
+      atrib.add("var", ctx.ID(0).getText());
+      if (ctx.ID().size() > 1) {
+         if (ctx.index != null) {
+            String index = ctx.index.getText();
+            String finalIndex = idToTmpVar.containsKey(index) ? idToTmpVar.get(index) : index;
+            atrib.add("value", ctx.ID(1).getText()+".get("+"(int)"+finalIndex+")");
+         }
+         else atrib.add("value", ctx.ID(1).getText()+".get("+visit(ctx.random()).render()+")");
+      }
+      else {
+         atrib.add("isQuestion", "");
+      }
       atrib.add("needComma", "");
-      varTypes.put(ctx.ID().getText(), "Question");
+      varTypes.put(ctx.ID(0).getText(), "Question");
       return atrib;
    }
 
@@ -490,12 +540,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
    
 
-   // @Override public ST visitVarListRemove(QuizParser.VarListRemoveContext ctx) {
-   //    ST list = templates.getInstanceOf("list_action");
-   //    list.remove("id",ctx.ID().getText());
-   //    list.remove("action",visit(ctx.add()).render());
-   //    return list;
-   // }
+   @Override public ST visitVarListRemove(QuizParser.VarListRemoveContext ctx) {
+      ST list = templates.getInstanceOf("list_action");
+      list.add("id",ctx.ID().getText());
+      list.add("action",visit(ctx.remove()).render());
+      return list;
+   }
 
    @Override public ST visitVarListSplit(QuizParser.VarListSplitContext ctx) {
       needsArrays = true;
@@ -643,73 +693,67 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    //Add
-//  @Override public ST visitAddList(QuizParser.AddListContext ctx) {
-//    ST add = templates.getInstanceOf("add_atrib");
-//    // add.add("list",);
-//    return add;
-// }
+   //  @Override public ST visitAddList(QuizParser.AddListContext ctx) {
+   //    ST add = templates.getInstanceOf("add_atrib");
+   //    // add.add("list",);
+   //    return add;
+   // }
 
-@Override public ST visitAddQuestion(QuizParser.AddQuestionContext ctx) {
-   ST add = templates.getInstanceOf("add_atrib");
-   add.add("question",visit(ctx.questionFetch()).render());
-   return add;
-}
+   @Override public ST visitAddQuestion(QuizParser.AddQuestionContext ctx) {
+      ST add = templates.getInstanceOf("add_atrib");
+      add.add("question",visit(ctx.questionFetch()).render());
+      return add;
+   }
 
-@Override public ST visitAddText(QuizParser.AddTextContext ctx) {
-   ST add = templates.getInstanceOf("add_atrib");
-   add.add("var",ctx.TEXT().getText());
-   return add;
-} 
+   @Override public ST visitAddText(QuizParser.AddTextContext ctx) {
+      ST add = templates.getInstanceOf("add_atrib");
+      add.add("var",ctx.TEXT().getText());
+      return add;
+   } 
 
-@Override public ST visitAddID(QuizParser.AddIDContext ctx) {
-   ST add = templates.getInstanceOf("add_atrib");
-   add.add("var",idToTmpVar.get(ctx.ID().getText()));
-   return add;   
-} 
+   @Override public ST visitAddID(QuizParser.AddIDContext ctx) {
+      ST add = templates.getInstanceOf("add_atrib");
+      add.add("var",idToTmpVar.get(ctx.ID().getText()));
+      return add;   
+   } 
 
-@Override public ST visitAddNumber(QuizParser.AddNumberContext ctx) {
-   ST add = templates.getInstanceOf("add_atrib");
-   add.add("isDouble","");
-   add.add("var",ctx.NUMBER().getText());
-   return add;   
-}
+   @Override public ST visitAddNumber(QuizParser.AddNumberContext ctx) {
+      ST add = templates.getInstanceOf("add_atrib");
+      add.add("isDouble","");
+      add.add("var",ctx.NUMBER().getText());
+      return add;   
+   }
 
-@Override public ST visitRandom(QuizParser.RandomContext ctx) {
-   ST rand = templates.getInstanceOf("get_random");
-   String min = ctx.min.getText();
-   String max = ctx.max.getText();
-   String minFinal = idToTmpVar.containsKey(min) ? idToTmpVar.get(min) : min;
-   String maxFinal = idToTmpVar.containsKey(max) ? idToTmpVar.get(max) : max;
-   rand.add("min", minFinal);
-   rand.add("max", maxFinal);
-   return rand;
-}
+   @Override public ST visitRandom(QuizParser.RandomContext ctx) {
+      ST rand = templates.getInstanceOf("get_random");
+      String min = ctx.min.getText();
+      String max = ctx.max.getText();
+      String minFinal = idToTmpVar.containsKey(min) ? idToTmpVar.get(min) : min;
+      String maxFinal = idToTmpVar.containsKey(max) ? idToTmpVar.get(max) : max;
+      rand.add("min", minFinal);
+      rand.add("max", maxFinal);
+      return rand;
+   }
 
-//remove
+   //remove
 
-@Override public ST visitRemoveNumber(QuizParser.RemoveNumberContext ctx) {
-   ST remove = templates.getInstanceOf("remove_atrib");
-   remove.add("var",ctx.NUMBER().getText());
-   return remove;     
-}
+   @Override public ST visitRemoveNumber(QuizParser.RemoveNumberContext ctx) {
+      ST remove = templates.getInstanceOf("remove_atrib");
+      remove.add("var",ctx.NUMBER().getText());
+      return remove;     
+   }
 
-@Override public ST visitRemoveText(QuizParser.RemoveTextContext ctx) {
-   ST remove = templates.getInstanceOf("remove_atrib");
-   remove.add("var",ctx.TEXT().getText());
-   return remove;     
-}
+   @Override public ST visitRemoveText(QuizParser.RemoveTextContext ctx) {
+      ST remove = templates.getInstanceOf("remove_atrib");
+      remove.add("var",ctx.TEXT().getText());
+      return remove;     
+   }
 
-@Override public ST visitRemoveID(QuizParser.RemoveIDContext ctx) {
-   ST remove = templates.getInstanceOf("remove_atrib");
-   remove.add("var",ctx.ID().getText());
-   return remove;    
-} 
-
-// @Override public ST visitRemoveExpNumber(QuizParser.RemoveExpNumberContext ctx) {
-//    ST remove = templates.getInstanceOf("remove_atrib");
-//    remove.add("var",ctx.);
-//    return remove;     
-// }
+   @Override public ST visitRemoveID(QuizParser.RemoveIDContext ctx) {
+      ST remove = templates.getInstanceOf("remove_atrib");
+      remove.add("var", "(int)"+idToTmpVar.get(ctx.ID().getText()));
+      return remove;    
+   } 
 
    // @Override public ST visitQuestionTitle(QuizParser.QuestionTitleContext ctx) {
    //    return visitChildren(ctx);
@@ -905,7 +949,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       
       String id = ctx.ID(0).getText();
       forLoop.add("id", id);
-      varTypes.put(id, "String");
+      varTypes.put(id, "double");
       idToTmpVar.put(id, ctx.varx);
       
       for (QuizParser.ContentContext content : ctx.content()) {
@@ -921,24 +965,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (isNumber(end)) forLoop.add("end", end);
       else forLoop.add("end", idToTmpVar.get(end));
 
-      double startInt, endInt;
-      try {
-         startInt = Integer.parseInt(start);
-      } catch(NumberFormatException e) {
-         startInt = realValueOfId.get(start);
-      }
-
-      try {
-         endInt = Integer.parseInt(end);
-      } catch(NumberFormatException e) {
-         endInt = realValueOfId.get(end);
-      }
-
-      double res = startInt - endInt;
-
-      if (res < 0)
-         forLoop.add("comp", "<");
-      else forLoop.add("comp", ">");
+      forLoop.add("comp", ctx.direction.getText());
 
       if (ctx.incr != null) {
          forLoop.add("increment", ctx.incr.getText());
@@ -955,10 +982,10 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // COMPLETED
    @Override public ST visitDoaslong(QuizParser.DoaslongContext ctx) {
       ST doLoop = templates.getInstanceOf("do_while");
-      doLoop.add("condition", visit(ctx.conditional()).render());
       for (QuizParser.ContentContext cont : ctx.content()) {
          doLoop.add("stat", visit(cont).render());
       }
+      doLoop.add("condition", visit(ctx.conditional()).render());
       return doLoop;
    }
 
@@ -1045,9 +1072,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // COMPLETED
    @Override public ST visitConditional(QuizParser.ConditionalContext ctx) {
       ST cond = templates.getInstanceOf("conditional");
-      System.out.println("Outside");
       if (ctx.id != null) {
-         System.out.println("Here1");
          String[] content = ctx.getText().split("T");
          // then there is a NOT
          if (content.length > 1) {
@@ -1056,7 +1081,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          cond.add("id", idToTmpVar.get(ctx.ID(0).getText()));
       }
       else if (ctx.field1 != null) {
-         System.out.println("Here2");
          String f1 = ctx.field1.getText();
          String f2 = ctx.field2.getText();
 
@@ -1068,10 +1092,13 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
          cond.add("s1", f1);
          cond.add("s2", f2);
-         cond.add("op", convertion.get(ctx.op.getText()));
+
+         if (!isNumber(ctx.field1.getText()) && !isNumber(ctx.field2.getText()))
+            cond.add("equals", ".equals");
+         else
+            cond.add("op", convertion.get(ctx.op.getText()));
       }
       else {
-         System.out.println("Here3");
          if (ctx.op.getText().equals("!=")) cond.add("not", "!");
          if (ctx.field3 != null) {
             String f3 = ctx.field3.getText();
@@ -1261,7 +1288,6 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST res = templates.getInstanceOf("atrib_double");
       if (insideFunc) res.add("insideFunc", "");
       ctx.varx = newVar();
-      realValueOfId.put(tmpId, Double.parseDouble(ctx.NUMBER().getText()));
       ctx.type = "double";
       if (!tmpId.equals("")) {
          res.add("id", tmpId);

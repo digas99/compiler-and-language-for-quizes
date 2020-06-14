@@ -355,6 +355,7 @@ list_action(id,action)::= <<
 remove_atrib(var)::= <<
 .remove(<var>);
 >>
+
 list_question(var, file, newVar, justInitialize, justAtrib) ::= <<
 <if(!justInitialize)>String <newVar> = "../questions/" + <file> + ".qst";
 QuestionsMain.main(<newVar>);
@@ -364,6 +365,8 @@ QuestionsMain.main(<newVar>);
 <else>List\<Question> <var> = new ArrayList\<Question>(Question.getQuestions().values());
 <endif>
 >>
+
+list_clone(type, id, target) ::= "List\<<type>> <id> = new ArrayList(<target>);"
 
 question_fetch(id, type, double) ::= <%
 <id>.<type>

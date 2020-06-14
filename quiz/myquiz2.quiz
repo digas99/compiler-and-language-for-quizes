@@ -1,6 +1,7 @@
 main =>
     text userOpt;
     list question questions;
+    list text alphabet => {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
     do =>
         userOpt => call menu("Quiz", "Chose questions file,Start Quiz,See Scores", "Exit");
         if (userOpt == "1") => !! CHOSE QUESTIONS
@@ -13,15 +14,57 @@ main =>
             for (question q in questions) =>
                 if (q.type == "MULTIPLE") =>
                     write (CONSOLE) => q.title+"\n";
-                    list text wrongAns => q.wrong;
+                    list text wrongAns0 => q.wrong;
+                    !! É necessário fazer o clone, para depois poder remover elementos
+                    !! sem que dê problemas com AbstractLists
+                    list text wrongAns => clone (wrongAns0);
+
                     list text rightAns => q.right;
                     
                     list text finalList;
                     !! put one random word from rightAns
-                    number listSize => size (rightAns);
+                    number rightAnsSize => size (rightAns);
                     !! we want the max value to be size-1
-                    listSize--;
-                    text theRightAns => rightAns[random(0, listSize)];
+                    rightAnsSize--;
+                    text theRightAns => rightAns[random(0, rightAnsSize)];
+                    finalList => add (theRightAns);
+
+                    !! get n wrong questions, randomly
+                    number nmrWrongAnswers => 6;
+                    for i(0 < nmrWrongAnswers) =>
+                        number wrongAnsSize => size (wrongAns);
+                        number max => wrongAnsSize - 1;
+                        number pos => random (0, max);
+                        text theWrongAns => wrongAns[pos];
+                        finalList => add (theWrongAns);
+                        wrongAns => remove (pos);
+                    >>
+                    text rightAnsIndex => "";    
+                    !! display all chosen answers
+                    number nmrAns => nmrWrongAnswers + 1;
+                    for j(0 < nmrAns) =>
+                        number finalListSize => size (finalList);
+                        !! finalListSize - 1 to put in random
+                        number max2 => finalListSize-1;
+                        number pos => random (0, max2);
+
+                        text ansToPrint => finalList[pos];
+                        if (ansToPrint == theRightAns) =>
+                            rightAnsIndex => alphabet[j];
+                        >>
+                        text letter => alphabet[j];
+                        writeln (CONSOLE) => "["+letter+"] "+ansToPrint;
+                        finalList => remove(pos);
+                    >>
+
+                    text userAnswer => read (CONSOLE);
+                    text rightAnsIndexText => rightAnsIndex;
+                    if (userAnswer == rightAnsIndexText) =>
+                        writeln (CONSOLE) => "Resposta certa! +" + q.points + " pontos";
+                    >>
+                    final =>
+                        writeln (CONSOLE) => "Resposta errada!";
+                    >>
                 >>
             >>
         >>

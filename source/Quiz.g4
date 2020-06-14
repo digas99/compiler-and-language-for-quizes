@@ -14,10 +14,10 @@ function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question')
 params : type=('text'|'number'|'boolean'|'question') ID ', ';
 
 // LISTS
-list    : (init='list' 'question')? ID ('=>' imp='import' '(' (TEXT|ID) ')')? ';'  # listQuestion
-        | (init='list' 'number')? ID ('=>' listFormatNumber)? ';'   # listNums
-        | (init='list' 'text')? ID ('=>' (listFormatText|questionFetchAnsRight|questionFetchAnsWrong))? ';'       # listText
-        | (init='list' 'boolean')? ID ('=>' listFormatBool)? ';'    # listBoolean
+list    : (init='list' 'question')? ID ('=>' (clone='clone' '(' ID ')'|(imp='import' '(' (TEXT|ID) ')')))? ';'  # listQuestion
+        | (init='list' 'number')? ID ('=>' (clone='clone' '(' ID ')'|listFormatNumber))? ';'   # listNums
+        | (init='list' 'text')? ID ('=>' (clone='clone' '(' ID ')'|listFormatText|questionFetchAnsRight|questionFetchAnsWrong))? ';'       # listText
+        | (init='list' 'boolean')? ID ('=>' (clone='clone' '(' ID ')'|listFormatBool))? ';'    # listBoolean
         ;
 
 // MAPS
@@ -29,11 +29,11 @@ map     : 'map' type='question' ID '=>' 'import' '(' (TEXT|ID) ')' ';' # mapQues
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID (('=>' (((strings)* (finalstring=(TEXT|ID)|stringFetches) ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')    # varText
+           'question'? ID ('=>' ID '[' (index=(ID|NUMBER)|random) ']')? ';'                                                                                                                     # varQuestion
+         | 'text'? ID (('=>' (id=ID ';'|((strings)* (finalstring=(TEXT|ID)|questionFetch) ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')    # varText
          | 'text'? ID '=>' 'read' '(' (TEXT|'CONSOLE') ')' ';'                                                                                                                                  # varTextRead
          | 'number'? ID ('=>' (callfunction|expr ';'|random ';'|ID '[' (index=(ID|NUMBER)|random) ']' ';'|numberFetches';'|size='size' '(' ID ')' ';'))?                                        # varNumber
-         | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|))?                                                                                           # varBoolean
-         | 'question'? ID ';'                                                                                                                                                                   # varQuestion
+         | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|))?                                                                                           # varBoolean                                                                                                                    
          | ID '=>' add                                                                                                                                                                          # varListAdd
          | ID '=>' remove                                                                                                                                                                       # varListRemove
          | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                                                                                      # varListSplit
@@ -43,14 +43,13 @@ var returns[String varx = null]:
          | ID '=>' 'clear' '(' ')' ';'                                                                                                                                                          # varMapClear
          ;
 
-strings  : (stringFetches|TEXT|ID) '+';
+strings  : (questionFetch|TEXT|ID) '+';
 
 random   : 'random' '(' min=(NUMBER|ID) ', ' max=(NUMBER|ID) ')'; 
 
 remove   : 'remove' '(' NUMBER ')' ';'                                                   #removeNumber
          | 'remove' '(' TEXT ')' ';'                                                     #removeText
          | 'remove' '(' ID ')' ';'                                                       #removeID       
-         | 'remove' '(' '[' NUMBER ']' ')' ';'                                           #removeExpNumber
          ;
 add      : 'add' '(' (listFormatNumber|listFormatBool|listFormatText) ')' ';'            #addList
          | 'add' '(' questionFetch ')' ';'                                               #addQuestion
@@ -96,7 +95,7 @@ write    : writetype=('write'|'writeln') '(' 'CONSOLE' ')' '=>' ((strings)* fina
 // LOOPS
 forLoop returns[String varx = null]:  
            'for' '(' type=('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'                      # forIn
-         | 'for' ID'(' start=(NUMBER|ID) 'to' end=(NUMBER|ID) ')' ('['op=('+'|'-') incr=NUMBER ']')? '=>' content+ '>>' # forTo
+         | 'for' ID'(' start=(NUMBER|ID) direction=('<'|'>') end=(NUMBER|ID) ')' ('['op=('+'|'-') incr=NUMBER ']')? '=>' content+ '>>' # forTo
          ;
 
 doaslong : 'do' '=>' content+ '>>' 'aslong' '(' conditional ')' ';';

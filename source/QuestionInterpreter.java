@@ -24,8 +24,8 @@ public class QuestionInterpreter extends QuestionsBaseVisitor<Question> {
       String id = ctx.ID().getText().substring(1,ctx.ID().getText().length()-1);
       String difficulty = ctx.Difficulty().getText().split(" ")[1];
       String type = ctx.Type().getText().split(" ")[1];
-      String[] rightAns =ctx.RightAns().getText().replace("right: [", "").replace("]", "").split(",");
-      String[] wrongAns =ctx.WrongAns().getText().replace("wrong: [", "").replace("]", "").split(",");
+      String[] rightAns =ctx.RightAns().getText().replace("right: [", "").replace("]", "").replace("\"", "").split(",");
+      String[] wrongAns =ctx.WrongAns().getText().replace("wrong: [", "").replace("]", "").replace("\"", "").split(",");
       String title = ctx.Title().getText().replace("title: ","").replace("\"", "");
       int tries = 0;
       if (ctx.Tries()!= null){

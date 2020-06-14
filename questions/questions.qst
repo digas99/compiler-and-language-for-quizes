@@ -1,0 +1,28 @@
+time: 15
+tries: 3
+points: 10
+
+
+<cidades> { title: "Quais sao cidades?",
+type: MULTIPLE,
+difficulty: EASY,
+right: ["Lisboa","Madrid"],
+wrong: ["Portugal","Espanha","Brasil","França","Alemanha","Inglaterra"] }
+
+
+<cidades01> { title: "Quais sao cidades?",
+type: OPEN,
+difficulty: HARD,
+tries: 2,
+points: 5,
+right: ["Lisboa","Madrid"],
+wrong: [] }
+
+
+
+<historia> { title: "Quem descobriu o caminho marítimo para a Índia",
+type: MULTIPLE,
+difficulty: MEDIUM,
+time: 250,
+right: ["Vasco da Gama"],
+wrong: ["Pedro Álvares Cabral","António Oliveira Salazar","Fernão de Magalhães","Manuel Luís Goucha","Cristiano Ronaldo","Luís de Camões"] }
