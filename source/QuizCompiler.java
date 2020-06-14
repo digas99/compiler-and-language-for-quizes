@@ -420,30 +420,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          visit.add("needComma", "");
          idToTmpVar.put(tmpId, ctx.varx);
       }
-      else if (ctx.questionFetchTries() != null) {
+      else if (ctx.numberFetches() != null) {
          visit = templates.getInstanceOf("atrib_double");
          visit.add("type", "double");
          visit.add("var", ctx.varx);
          visit.add("needComma", "");
-         visit.add("value", visit(ctx.questionFetchTries()).render());
-         visit.add("id", tmpId);
-         idToTmpVar.put(tmpId, ctx.varx);
-      }
-      else if (ctx.questionFetchTime() != null) {
-         visit = templates.getInstanceOf("atrib_double");
-         visit.add("type", "double");
-         visit.add("var", ctx.varx);
-         visit.add("needComma", "");
-         visit.add("value", visit(ctx.questionFetchTime()).render());
-         visit.add("id", tmpId);
-         idToTmpVar.put(tmpId, ctx.varx);
-      }
-      else if (ctx.questionFetchPoints() != null) {
-         visit = templates.getInstanceOf("atrib_double");
-         visit.add("type", "double");
-         visit.add("var", ctx.varx);
-         visit.add("needComma", "");
-         visit.add("value", visit(ctx.questionFetchPoints()).render());
+         visit.add("value", visit(ctx.numberFetches()).render());
          visit.add("id", tmpId);
          idToTmpVar.put(tmpId, ctx.varx);
       }
@@ -1130,6 +1112,12 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       if (ctx.questionFetchDiff() != null) return visit(ctx.questionFetchDiff());
       else if (ctx.questionFetchTitle() != null) return visit(ctx.questionFetchTitle());
       else return visit(ctx.questionFetchType());
+   }
+
+   @Override public ST visitNumberFetches(QuizParser.NumberFetchesContext ctx) {
+      if (ctx.questionFetchTries() != null) return visit(ctx.questionFetchTries());
+      else if (ctx.questionFetchTime() != null) return visit(ctx.questionFetchTime());
+      else return visit(ctx.questionFetchPoints());
    }
 
    // COMPLETED

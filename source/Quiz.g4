@@ -29,18 +29,18 @@ map     : 'map' type='question' ID '=>' 'import' '(' (TEXT|ID) ')' ';' # mapQues
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID (('=>' (((strings)* (finalstring=(TEXT|ID)|stringFetches) ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')  # varText
-         | 'text'? ID '=>' 'read' '(' (TEXT|'CONSOLE') ')' ';'                                                          # varTextRead
-         | 'number'? ID ('=>' (callfunction|expr ';'|random ';'|ID '[' (index=(ID|NUMBER)|random) ']' ';'|questionFetchTries';'|questionFetchTime';'|questionFetchPoints';'))? # varNumber
-         | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|))?                                                                      # varBoolean
-         | 'question'? ID ';'                                                                                              # varQuestion
-         | ID '=>' add                                                                                                     # varListAdd
-         | ID '=>' remove                                                                                                  # varListRemove
-         | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                  # varListSplit
-         | ID '=>' 'get' '(' (TEXT|questionFetch|ID) ', ' ID ')' ';'                                                                  # varMapGet
-         | ID '=>' 'delete' '(' (TEXT|questionFetch|ID) ')' ';'                                                               # varMapRemove
-         | ID '=>' 'put' '(' ((text1=TEXT)|questionFetch|ID) ', ' (NUMBER|(text2=TEXT)|ID|bool) ')' ';'                                     # varMapPut
-         | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
+           'text'? ID (('=>' (((strings)* (finalstring=(TEXT|ID)|stringFetches) ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')    # varText
+         | 'text'? ID '=>' 'read' '(' (TEXT|'CONSOLE') ')' ';'                                                                                                                                  # varTextRead
+         | 'number'? ID ('=>' (callfunction|expr ';'|random ';'|ID '[' (index=(ID|NUMBER)|random) ']' ';'|numberFetches';'))?                                                                   # varNumber
+         | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' (index=(ID|NUMBER)|random) ']' ';'|))?                                                                                           # varBoolean
+         | 'question'? ID ';'                                                                                                                                                                   # varQuestion
+         | ID '=>' add                                                                                                                                                                          # varListAdd
+         | ID '=>' remove                                                                                                                                                                       # varListRemove
+         | ID '=>' 'split' '(' (TEXT|ID) ', ' TEXT ')' ';'                                                                                                                                      # varListSplit
+         | ID '=>' 'get' '(' (TEXT|questionFetch|ID) ', ' ID ')' ';'                                                                                                                            # varMapGet
+         | ID '=>' 'delete' '(' (TEXT|questionFetch|ID) ')' ';'                                                                                                                                 # varMapRemove
+         | ID '=>' 'put' '(' ((text1=TEXT)|questionFetch|ID) ', ' (NUMBER|(text2=TEXT)|ID|bool) ')' ';'                                                                                         # varMapPut
+         | ID '=>' 'clear' '(' ')' ';'                                                                                                                                                          # varMapClear
          ;
 
 strings  : (stringFetches|TEXT|ID) '+';
@@ -89,13 +89,13 @@ questionFetchTime     :  ID '.time';
 questionFetchPoints   :  ID '.points';
 
 // WRITE
-write    : writetype=('write'|'writeln') '(' 'CONSOLE' ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';' # writeConsole
-         | 'write' '(' TEXT ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';'      # writeFile
+write    : writetype=('write'|'writeln') '(' 'CONSOLE' ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';'  # writeConsole
+         | 'write' '(' TEXT ')' '=>' ((strings)* finalstring=(TEXT|ID)|TEXT|expr|questionFetch) ';'                             # writeFile
          ;
 
 // LOOPS
 forLoop returns[String varx = null]:  
-           'for' '(' type=('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'                # forIn
+           'for' '(' type=('text'|'number'|'boolean'|'question') ID 'in' ID ')' '=>' content+ '>>'                      # forIn
          | 'for' ID'(' start=(NUMBER|ID) 'to' end=(NUMBER|ID) ')' ('['op=('+'|'-') incr=NUMBER ']')? '=>' content+ '>>' # forTo
          ;
 
@@ -124,6 +124,7 @@ conditional : 'NOT'? id=ID
             ;
 
 stringFetches : questionFetchTitle|questionFetchDiff|questionFetchType;
+numberFetches : questionFetchTries|questionFetchTime|questionFetchPoints;
 
 // Manipulation var
 varmanipulation returns[String varx = null]: 
