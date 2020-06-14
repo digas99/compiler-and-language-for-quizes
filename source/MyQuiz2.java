@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 public class MyQuiz2 {
     static HashMap<String, String> vars = new HashMap<>();
@@ -11,6 +12,7 @@ public class MyQuiz2 {
         vars.put("userOpt", var1);
 
         List<Question> questions = new ArrayList<>();
+
         do {
             String var3 =menu("Quiz", "Chose questions file,Start Quiz,See Scores", "Exit");
             vars.put("userOpt", var3);
@@ -21,11 +23,20 @@ public class MyQuiz2 {
                 String var4 = rd1.nextLine();
                 vars.put("questionsFolder", var4);
                 String var5 = "../questions/" + var4 + ".qst";
-                QuestionsMain.main(var5);questions = new ArrayList<Question>(Question.getQuestions().values());
+                QuestionsMain.main(var5);
+                questions = new ArrayList<Question>(Question.getQuestions().values());
+
             }
             else if (var3.equals("2")) {
                 for (Question q : questions) {
-                    System.out.print(q.getTitle()+"\n");
+                    if (q.getType().equals("MULTIPLE")) {
+                        System.out.print(q.getTitle()+"\n");
+                        List<String> wrongAns = Arrays.asList(q.getWrongAns());
+
+                        List<String> rightAns = Arrays.asList(q.getRightAns());
+
+                    }
+
                 }
             }
             else {
@@ -47,31 +58,31 @@ public class MyQuiz2 {
         System.out.print(title+"\n");
         List<String> optsList = new ArrayList<>();
 
-        optsList = arrayToListStrings(options.split(","));
-        double var10 = 1;
+        optsList = Arrays.asList(options.split(","));
+        double var14 = 1;
         // Store this variable if it is in main
         if (vars.containsKey("counter")) funcAuxMap.put("counter", vars.get("counter"));
-        vars.put("counter", Double.toString(var10));
-        for (String var11 : optsList) {
-            vars.put("opt", var11);
-            System.out.print("["+var10+"] "+var11+"\n");
-            var10++;
+        vars.put("counter", Double.toString(var14));
+        for (String var15 : optsList) {
+            vars.put("opt", var15);
+            System.out.print("["+var14+"] "+var15+"\n");
+            var14++;
             // Store this variable if it is in main
             if (vars.containsKey("counter")) funcAuxMap.put("counter", vars.get("counter"));
-            vars.put("counter", Double.toString(var10));
+            vars.put("counter", Double.toString(var14));
         }
         System.out.print("[0] "+existMsg+"\n");
         System.out.print("Option: ");
         Scanner rd2 = new Scanner(System.in);
-        String var12 = rd2.nextLine();
+        String var16 = rd2.nextLine();
         // Store this variable if it is in main
         if (vars.containsKey("input")) funcAuxMap.put("input", vars.get("input"));
-        vars.put("input", var12);
+        vars.put("input", var16);
 
         // Building the return statement
         // Whatever important variable being saved in the vars map is not a problem
         // because it will be removed in the next loop through funcAuxMap
-        String var13 = vars.containsKey("input") ? vars.get("input") : null;
+        String var17 = vars.containsKey("input") ? vars.get("input") : null;
 
 
         // Restore to the main map all variable stored in auxmap
@@ -79,14 +90,6 @@ public class MyQuiz2 {
             vars.put(entry.getKey(), entry.getValue());
         }
 
-        return var13;
-    }
-
-    private static List<String> arrayToListStrings(String[] arr) {
-        List<String> finalList = new ArrayList<>();
-        for (String s : arr) {
-            finalList.add(s);
-        }
-        return finalList;
+        return var17;
     }
 }

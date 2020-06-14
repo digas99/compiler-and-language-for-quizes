@@ -6,12 +6,16 @@ main =>
         if (userOpt == "1") => !! CHOSE QUESTIONS
             write (CONSOLE) => "Insira o nome do ficheiro das questões (sem extensão):\nNome: ";
             text questionsFolder => read (CONSOLE);
-            list question questions => get (questionsFolder);
+            questions => get (questionsFolder);
         >>
         elsif (userOpt == "2") => !! START QUIZ
+            !! creating multiple choice Quiz
             for (question q in questions) =>
-                write (CONSOLE) => q.title+"\n";
-                
+                if (q.type == "MULTIPLE") =>
+                    write (CONSOLE) => q.title+"\n";
+                    list text wrongAns => q.wrong;
+                    list text rightAns => q.right;
+                >>
             >>
         >>
         final =>

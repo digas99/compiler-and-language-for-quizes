@@ -14,7 +14,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    private boolean needsMap = false;
    private boolean needsEntry = false;
    private boolean insideFunc = false;
-   private boolean needsarrayToListStringsAuxFunc = false;
+   private boolean needsArrays = false;
    private HashMap<String, String> convertion = new HashMap<>();
    private HashMap<String, String> idToTmpVar = new HashMap<>();
    private HashMap<String, Double> realValueOfId = new HashMap<>();
@@ -67,7 +67,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
 
       if (needsEntry) module.add("needsEntry", "");
 
-      if (needsarrayToListStringsAuxFunc) module.add("needsarrayToListStringsAuxFunc", "");
+      if (needsArrays) module.add("needsArrays", "");
 
       return module;
    }
@@ -165,9 +165,14 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
          if (ctx.TEXT() != null) list.add("file",ctx.TEXT().getText());
          else list.add("file", idToTmpVar.get(ctx.ID(1).getText()));
       }
-      else {
-         list.add("justInitalize", "");
+      
+      if (ctx.init != null && ctx.get == null) {
+         list.add("justInitialize", "");
       }
+      else if (ctx.init == null && ctx.get != null) {
+         list.add("justAtrib", "");
+      }
+
       return list;
    }
 
@@ -297,6 +302,13 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ctx.varx = newVar();
       atrib.add("type", "String");
       atrib.add("var", ctx.varx);
+      if (ctx.strings().size() > 0) {
+         for (QuizParser.StringsContext s : ctx.strings()) {
+            String str = visit(s).render();
+            String finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
+            atrib.add("value", finalStr+"+");
+         }
+      }
       if (ctx.singlestring != null) {
          atrib.add("value", ctx.singlestring);
          atrib.add("needComma", "");
@@ -310,28 +322,14 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       else if (ctx.callfunction() != null)
          atrib.add("value", visit(ctx.callfunction()).render());
       else if (ctx.finalstring != null) {
-         String str, finalStr;
-         for (QuizParser.StringsContext s : ctx.strings()) {
-            str = visit(s).render();
-            finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
-            atrib.add("value", finalStr+"+");
-         }
-         str = ctx.finalstring.getText();
-         finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
+         String str = ctx.finalstring.getText();
+         String finalStr = idToTmpVar.containsKey(str) ? idToTmpVar.get(str) : str;
          atrib.add("value", finalStr);
          atrib.add("needComma", "");
       }
-      else if (ctx.questionFetchTitle() != null) {
+      else if (ctx.stringFetches() != null) {
          atrib.add("needComma", "");
-         atrib.add("value", visit(ctx.questionFetchTitle()).render());
-      }
-      else if (ctx.questionFetchDiff() != null) {
-         atrib.add("needComma", "");
-         atrib.add("value", visit(ctx.questionFetchDiff()).render());
-      }
-      else if (ctx.questionFetchType() != null) {
-         atrib.add("needComma", "");
-         atrib.add("value", visit(ctx.questionFetchType()).render());
+         atrib.add("value", visit(ctx.stringFetches()).render());
       }
       else {
          atrib.add("needComma", "");
@@ -347,9 +345,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       ST val = templates.getInstanceOf("return_plain_val");
       if (ctx.TEXT() != null) val.add("val", ctx.TEXT().getText());
       else if (ctx.ID()!= null) val.add("val", ctx.ID().getText());
-      else if (ctx.questionFetchDiff() != null) val.add("val", visit(ctx.questionFetchDiff()).render());
-      else if (ctx.questionFetchTitle() != null) val.add("val", visit(ctx.questionFetchTitle()).render());
-      else val.add("val", visit(ctx.questionFetchType()).render());
+      else val.add("val", visit(ctx.stringFetches()).render());
       return val;
    }
 
@@ -484,7 +480,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    // }
 
    @Override public ST visitVarListSplit(QuizParser.VarListSplitContext ctx) {
-      needsarrayToListStringsAuxFunc = true;
+      needsArrays = true;
       ST split = templates.getInstanceOf("list_split");
       // this means you are splitting a literal string
       split.add("var", ctx.ID(0).getText());
@@ -740,6 +736,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitQuestionFetchAnsRight(QuizParser.QuestionFetchAnsRightContext ctx) {
+      needsArrays = true;
       ST questionFetch = templates.getInstanceOf("question_fetch");
       questionFetch.add("id", ctx.ID().getText());
       questionFetch.add("type", "getRightAns()");
@@ -747,6 +744,7 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
    }
 
    @Override public ST visitQuestionFetchAnsWrong(QuizParser.QuestionFetchAnsWrongContext ctx) {
+      needsArrays = true;
       ST questionFetch = templates.getInstanceOf("question_fetch");
       questionFetch.add("id", ctx.ID().getText());
       questionFetch.add("type", "getWrongAns()");
@@ -1059,15 +1057,33 @@ public class QuizCompiler extends QuizBaseVisitor<ST> {
       else {
          System.out.println("Here3");
          if (ctx.op.getText().equals("!=")) cond.add("not", "!");
-         String f3 = ctx.field3.getText();
-         String f4 = ctx.field4.getText();
-         String finalf3 = idToTmpVar.containsKey(f3) ? idToTmpVar.get(f3) : f3;
-         String finalf4 = idToTmpVar.containsKey(f4) ? idToTmpVar.get(f4) : f4;
-         cond.add("s1", finalf3);
-         cond.add("s2", finalf4);
+         if (ctx.field3 != null) {
+            String f3 = ctx.field3.getText();
+            String finalf3 = idToTmpVar.containsKey(f3) ? idToTmpVar.get(f3) : f3;
+            cond.add("s1", finalf3);
+         }
+         else {
+            cond.add("s1", visit(ctx.stringFetches(0)).render());
+         }
+
+         if (ctx.field4 != null) {
+            String f4 = ctx.field4.getText();
+            String finalf4 = idToTmpVar.containsKey(f4) ? idToTmpVar.get(f4) : f4;
+            cond.add("s2", finalf4);
+         }
+         else {
+            cond.add("s1", visit(ctx.stringFetches(1)).render());
+         }
+
          cond.add("equals", ".equals");
       }
       return cond;
+   }
+
+   @Override public ST visitStringFetches(QuizParser.StringFetchesContext ctx) {
+      if (ctx.questionFetchDiff() != null) return visit(ctx.questionFetchDiff());
+      else if (ctx.questionFetchTitle() != null) return visit(ctx.questionFetchTitle());
+      else return visit(ctx.questionFetchType());
    }
 
    // COMPLETED

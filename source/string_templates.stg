@@ -1,4 +1,4 @@
-module(name, stat, hasVars, hasScanner, hasPrintWriter, hasList, needsEntry, needsarrayToListStringsAuxFunc) ::= <<
+module(name, stat, hasVars, hasScanner, hasPrintWriter, hasList, needsEntry, needsArrays) ::= <<
 <if(hasScanner)>
 import java.util.Scanner;
 <endif>
@@ -13,9 +13,11 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 <endif>
 <if(hasList)>
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+<endif>
+<if(needsArrays)>
+import java.util.Arrays;
 <endif>
 
 public class <name> {
@@ -23,8 +25,6 @@ public class <name> {
     static HashMap\<String, String> vars = new HashMap\<>();
     <endif>
     <stats(stat)>
-
-    <if(needsarrayToListStringsAuxFunc)><arrayToListStrings_auxFunc()><endif>
 }
 >>
 
@@ -323,17 +323,7 @@ hashMap(type, var, getQuestions, path) ::= <<
 HashMap\<String, <type>\> <var> = <if(getQuestions)>Question.getQuestions()<else>new HashMap\<>()<endif>;
 >>
 
-list_split(var, val, split) ::= "<var> = arrayToListStrings(<val>.split(<split>));"
-
-arrayToListStrings_auxFunc() ::= <<
-private static List\<String> arrayToListStrings(String[] arr) {
-    List\<String> finalList = new ArrayList\<>();
-    for (String s : arr) {
-        finalList.add(s);
-    }
-    return finalList;
-}
->>
+list_split(var, val, split) ::= "<var> = Arrays.asList(<val>.split(<split>));"
 
 hashMap_get(var, getter, key) ::= <<
 <var> = <getter>.get(<key>);
@@ -365,10 +355,14 @@ list_action(id,action)::= <<
 remove_atrib(var)::= <<
 .remove(<var>);
 >>
-list_question(var, file, newVar, justInitalize) ::= <<
-<if(!justInitalize)>String <newVar> = "../questions/" + <file> + ".qst";
-QuestionsMain.main(<newVar>);<endif>
-<if(justInitalize)>List\<Question> <endif><var> = new ArrayList\<<if(!justInitalize)>Question<endif>\>(<if(!justInitalize)>Question.getQuestions().values()<endif>);
+list_question(var, file, newVar, justInitialize, justAtrib) ::= <<
+<if(!justInitialize)>String <newVar> = "../questions/" + <file> + ".qst";
+QuestionsMain.main(<newVar>);
+<endif>
+<if(justInitialize)>List\<Question> <var> = new ArrayList\<>();
+<elseif(justAtrib)><var> = new ArrayList\<Question>(Question.getQuestions().values());
+<else>List\<Question> <var> = new ArrayList\<Question>(Question.getQuestions().values());
+<endif>
 >>
 
 question_fetch(id, type, double) ::= <%

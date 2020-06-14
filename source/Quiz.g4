@@ -14,7 +14,7 @@ function : 'function' '(' (params)* (type=('text'|'number'|'boolean'|'question')
 params : type=('text'|'number'|'boolean'|'question') ID ', ';
 
 // LISTS
-list    : (init='list' 'question')? ID ('=>' 'get' '(' (TEXT|ID) ')')? ';'  # listQuestion
+list    : (init='list' 'question')? ID ('=>' get='get' '(' (TEXT|ID) ')')? ';'  # listQuestion
         | (init='list' 'number')? ID ('=>' listFormatNumber)? ';'   # listNums
         | (init='list' 'text')? ID ('=>' (listFormatText|questionFetchAnsRight|questionFetchAnsWrong))? ';'       # listText
         | (init='list' 'boolean')? ID ('=>' listFormatBool)? ';'    # listBoolean
@@ -29,7 +29,7 @@ map     : 'map' type='question' ID '=>' 'get' '(' (TEXT|ID) ')' ';' # mapQuestio
 
 // VARIABLES
 var returns[String varx = null]: 
-           'text'? ID (('=>' (((strings)* finalstring=(TEXT|ID) ';')|ID '[' index=(ID|NUMBER) ']' ';'|callfunction|singlestring=TEXT ';'|questionFetchTitle';'|questionFetchDiff';'|questionFetchType';'))? | ';')  # varText
+           'text'? ID (('=>' (((strings)* (finalstring=(TEXT|ID)|stringFetches) ';')|ID '[' index=(ID|NUMBER) ']' ';'|callfunction|singlestring=TEXT ';'|stringFetches';'))? | ';')  # varText
          | 'text'? ID '=>' 'read' '(' (TEXT|'CONSOLE') ')' ';'                                                          # varTextRead
          | 'number'? ID ('=>' (callfunction|expr ';'|ID '[' index=(ID|NUMBER) ']' ';'|questionFetchTries';'|questionFetchTime';'|questionFetchPoints';'))? # varNumber
          | 'boolean'? ID ('=>' ((callfunction|bool ';')|ID '[' index=(ID|NUMBER) ']' ';'|))?                                                                      # varBoolean
@@ -43,7 +43,7 @@ var returns[String varx = null]:
          | ID '=>' 'clear' '(' ')' ';'                                                                                     # varMapClear
          ;
 
-strings  : (questionFetchTitle|questionFetchDiff|questionFetchType|TEXT|ID) '+';
+strings  : (stringFetches|TEXT|ID) '+';
 
 remove   : 'remove' '(' NUMBER ')' ';'                                                   #removeNumber
          | 'remove' '(' TEXT ')' ';'                                                     #removeText
@@ -78,8 +78,8 @@ bool  : 'TRUE'|'FALSE';
 questionFetch    : questionFetchTitle|questionFetchAnsRight|questionFetchAnsWrong|questionFetchDiff|questionFetchType|questionFetchTries|questionFetchTime|questionFetchPoints;
 
 questionFetchTitle    :  ID '.title';
-questionFetchAnsRight :  ID '.answers.right';              
-questionFetchAnsWrong :  ID '.answers.wrong';         
+questionFetchAnsRight :  ID '.right';              
+questionFetchAnsWrong :  ID '.wrong';         
 questionFetchDiff     :  ID '.difficulty';        
 questionFetchType     :  ID '.type';                  
 questionFetchTries    :  ID '.tries';                              
@@ -118,8 +118,10 @@ callParams : val=(TEXT|NUMBER|ID) ', ';
 // CONDITIONAL STATEMENTS
 conditional : 'NOT'? id=ID
             | (field1=(ID|NUMBER) op=('AND'|'OR'|'=='|'!='|'>'|'<'))+ field2=(ID|NUMBER)
-            | field3=(ID|TEXT) op=('=='|'!=') field4=(ID|TEXT)
+            | (field3=(ID|TEXT)|stringFetches) op=('=='|'!=') (field4=(ID|TEXT)|stringFetches)
             ;
+
+stringFetches : questionFetchTitle|questionFetchDiff|questionFetchType;
 
 // Manipulation var
 varmanipulation returns[String varx = null]: 

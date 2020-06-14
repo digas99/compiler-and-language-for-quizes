@@ -1,0 +1,8 @@
+main =>
+    list question qsts => get("linguagem_questions");
+    text t0 => "Hello" + " World";
+    for (question q in qsts) =>
+        text t1 => q.title + ", " + q.type;
+        text t2 => q.difficulty;
+    >>
+>>
