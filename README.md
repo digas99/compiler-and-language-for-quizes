@@ -7,7 +7,8 @@ The Interpreter is used to fetch questions data from a file with the extention *
 ## Compiler
 The Compiler builds a Quiz according to the *.quiz* file written and the questions fetched from the *.qst* file.
 
-## Report and documentation [here](REPORT.pdf)
+## Report and documentation
+[document](REPORT.pdf) [PT-PT]
 
 ## Setup
 Depending on what is the user's approach towards this project, different things can be done.
